@@ -1,0 +1,111 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+#root {
+    max-width: 100%;  /* El ancho se adapta al 100% de la pantalla */
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+    background-color: #1f1e1e; /* Fondo gris */
+    min-height: 100vh; /* Asegura que cubra toda la pantalla */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+.logo {
+    height: 15em; /* Aumenta el tamaño de la imagen */
+    padding: 0;
+    will-change: filter;
+    transition: filter 300ms;
+    margin-left: 4em;
+    border: 5px solid #61dafb; /* Añade un borde azul claro */
+    border-radius: 50%; /* Bordes redondeados, efecto circular */
+  }
+  
+  .logo:hover {
+    filter: drop-shadow(0 0 2em #11e011aa);
+  }
+  .logo.react:hover {
+    filter: drop-shadow(0 0 2em #61dafbaa);
+  }
+  h2{
+    color: aliceblue;
+    font-family: 'Georgia', serif; /* Fuente clásica y elegante */
+    font-size: 3rem; /* Tamaño del texto */
+    color: #f3f4f6; /* Un color blanco más suave */
+    letter-spacing: 0.1em; /* Espaciado elegante entre letras */
+    text-transform: none; /* Mantener el texto como está */
+    border-bottom: 3px solid rgba(255, 255, 255, 0.3); /* Borde inferior sutil */
+    padding-bottom: 0.5em; /* Espacio debajo del texto */
+    margin-bottom: 1rem; /* Espacio bajo el título */
+    font-weight: 500; /* Peso de la fuente equilibrado */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Sombra sutil para darle profundidad */
+    transition: all 0.3s ease; /* Transición suave en hover */
+}
+
+.mt-12:hover {
+    color: #aeeec1; /* Ligero cambio de color en hover */
+    border-bottom-color: rgba(112, 219, 13, 0.6); /* Borde más visible en hover */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Sombra más marcada en hover */
+}
+
+
+  .custom-button {
+    background-color:#171817;  /* Color de fondo */
+    color: #fff;  /* Color del texto */
+    font-size: 14px;  /* Tamaño de la letra */
+    padding: 10px 20px;  /* Tamaño del botón */
+    border-radius: 8px;  /* Bordes redondeados */
+    border: none;  /* Sin borde */
+    cursor: pointer;  /* Cambiar cursor al pasar por encima */
+    transition: background-color 0.3s ease;  /* Efecto suave al cambiar de color */
+    margin-top: 20px;  /* Añade espacio por encima del botón */
+  }
+  
+  /* Efecto al pasar el cursor */
+  .custom-button:hover {
+    background-color:  #65a30d;  /* Cambia a un verde más oscuro */
+    color: #fff;  /* Mantiene el color blanco */
+  }
+
+
+  form {
+    background-color: #3f3d3d; /* Fondo gris claro para el formulario */
+    padding: 2rem;
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para destacar el formulario */
+    max-width: 400px; /* Ancho máximo del formulario */
+    width: 100%; /* El formulario ocupa todo el ancho posible hasta 400px */
+  }
+
+  form:hover{
+        filter: drop-shadow(0 0 2em #11e011aa);
+  }
+  
+  
+  @keyframes logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    a:nth-of-type(2) .logo {
+      animation: logo-spin infinite 20s linear;
+    }
+  }
+  
+  .card {
+    padding: 2em;
+  }
+  
+  .read-the-docs {
+    color: #888;
+  }
