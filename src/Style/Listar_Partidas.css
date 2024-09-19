@@ -1,0 +1,76 @@
+.contenedor-partidas {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 60%;
+    max-height: 80vh;
+    overflow-y: auto;
+    background-color: white;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-right: 1.5rem;
+  }
+  
+  .contenedor-lista {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 0.75rem;
+  }  
+
+  .item-partida {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+    background-color: white;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.75rem;
+    transition: background-color 0.2s ease;
+}
+
+    .item-partida:hover {
+        background-color: #f3f4f6;
+    }
+  
+  .list-item-izq {
+    min-width: 0;
+    flex: 1 1 0%;
+  }
+  
+  .item-partida-nombre {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #111827;
+  }
+  
+  .item-partida-jugadores {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+  
+  @media (min-width: 640px) {
+    .item-partida-der {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+  }
+  
+  .item-partida-boton {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: #3b82f6;
+    cursor: pointer;
+  }
+
+  .texto-centrado {
+    text-align: center;
+    color: #6b7280;
+  }
+  
