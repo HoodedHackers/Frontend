@@ -4,7 +4,9 @@ import { createRoot } from 'react-dom/client'
 import Listar_Partidas from './Listar_Partidas.jsx'
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <Listar_Partidas />
-  </StrictMode>,
+  <div className="background">
+    <StrictMode>
+      <Listar_Partidas partidas={[]}/>
+    </StrictMode>
+  </div>
 )

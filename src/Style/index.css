@@ -71,3 +71,11 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.background {
+  background-image: url('/Imagenes/FondoLobby.jpg');
+  background-position: center;
+  height: 100vh;
+  width: 100%;
+}
+
