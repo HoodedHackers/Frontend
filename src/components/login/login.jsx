@@ -17,7 +17,8 @@ const Login = () => {
         },
         body: JSON.stringify({ name: data.nickname }),
       });
-
+  
+      // Verificar si hay respuesta y si es válida
       if (!response.ok) {
         const errorData = await response.json();
         if (response.status === 400) {
@@ -25,16 +26,18 @@ const Login = () => {
         }
         throw new Error(errorData.detail || "Error en la respuesta del servidor");
       }
-
+  
       const result = await response.json();
+      console.log('Nombre agregado:',result)
       localStorage.setItem("nickname", data.nickname);
       localStorage.setItem("identifier", result.identifier);
-      navigate("/Opciones"); // Mover aquí
+      navigate("/Opciones");
     } catch (error) {
       setErrorMessage(error.message || "Error en la solicitud");
       console.error("Error durante la solicitud:", error);
     }
   };
+  
 
   const onSubmit = async (data) => {
     setErrorMessage("");

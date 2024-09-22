@@ -76,14 +76,12 @@
 .customButton {
   background: linear-gradient(135deg, #aaa, #777);
   color: #f3eeee;
-  padding: 10px 20px;
-  font-size: 1.5rem;
+  padding: 12px 24px;
+  font-size: 1.2rem;
   border-radius: 6px;
-  border: 4px solid transparent;
-  position: relative;
+  border: none;
   cursor: pointer;
-  margin-top: 20px;
-  transition: transform 0.4s ease, background 0.3s ease;
+  transition: background 0.3s ease, transform 0.3s ease;
 }
 
 .customButton:before {
@@ -107,8 +105,8 @@
 
 .customButton:hover {
   background: linear-gradient(135deg, #ff1eff, #00ffea);
-  transform: scale(1.08); 
-  box-shadow: 0 0 15px #ff1eff, 0 0 20px #00ffea; 
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #ff1eff, 0 0 20px #00ffea;
 }
 
 .container {
