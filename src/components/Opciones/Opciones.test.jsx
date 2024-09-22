@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import Opciones from "./Opciones";
@@ -41,7 +41,7 @@ describe("Opciones Component", () => {
     const crearPartidaButton = screen.getByRole("button", { name: /Crear Partida/i });
     fireEvent.click(crearPartidaButton);
 
-    expect(navigate).toHaveBeenCalledWith("/Partida"); // Cambiado a /Partida
+    expect(navigate).toHaveBeenCalledWith("/Partida");
     expect(navigate).toHaveBeenCalledTimes(1);
   });
 
@@ -55,7 +55,7 @@ describe("Opciones Component", () => {
     const unirsePartidaButton = screen.getByRole("button", { name: /Unirse a Partida/i });
     fireEvent.click(unirsePartidaButton);
 
-    expect(navigate).toHaveBeenCalledWith("/Partida"); // Cambiado a /Partida
+    expect(navigate).toHaveBeenCalledWith("/Partida");
     expect(navigate).toHaveBeenCalledTimes(1);
   });
 
