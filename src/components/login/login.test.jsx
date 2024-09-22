@@ -67,7 +67,7 @@ describe("Login Component", () => {
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
-        "http://127.0.0.1:8080/api/name",
+        "https://httpbin.org/post",
         expect.objectContaining({
           method: "POST",
           body: JSON.stringify({ name: "Ely" }),
