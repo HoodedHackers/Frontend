@@ -5,9 +5,9 @@ import './CrearPartida.css';
 export default function CrearPartida() {
 
     const [partidaDatos, setPartidaDatos] = useState({
-        nombrePartida: '',
-        minJugadores: '',
-        maxJugadores: ''
+        nombre: '',
+        min_jugadores: 0,
+        max_jugadores: 0
     })
 
     const manejarPartidaDatos = (e) => {
@@ -20,23 +20,38 @@ export default function CrearPartida() {
     const manejarBotonCrearPartida = async (e) => {
         e.preventDefault(); // Prevenir comportamiento por defecto del formulario
 
-        const partidaJson = {  // Crear un objeto JSON con los datos de la partida
-            nombrePartida: partidaDatos.nombrePartida,
-            minJugadores: partidaDatos.minJugadores,
-            maxJugadores: partidaDatos.maxJugadores
-        }
+        const solicitudJson = {
+            partida: {
+                nombre: partidaDatos.nombre,
+                min_jugadores: partidaDatos.min_jugadores,
+                max_jugadores: partidaDatos.max_jugadores
+            },
+            jugador: {
+                id_jugador: 1, // Puedes cambiar estos valores según tu lógica
+                nombre: "Jugador 1",
+                host: true,
+                en_partida: true
+            }
+        };
 
         try {
-            const response = await fetch('https://httpbin.org/post', {
+            const response = await fetch('http://127.0.0.1:8000/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json', // Indicar que se envía JSON
                 },
-                body: JSON.stringify(partidaJson) // Convertir el objeto a un string JSON
+                body: JSON.stringify(solicitudJson) // Convertir el objeto a un string JSON
             })
-            const data = await response.json();
-            console.log('Éxito:', data)
-            // Agregar lógica para redirigir o mostrar mensaje de éxito al usuario
+            if (response.ok) { // Comprobar si la respuesta es exitosa (status 200-299)
+                const data = await response.json();
+                console.log('Partida creada:', data);
+                
+                // Aquí podrías obtener el ID de la partida o cualquier dato necesario de 'data'
+                // const partidaId = data.id; // Asumiendo que la respuesta incluye un 'partidaId'
+                
+                // Redirigir al usuario a la pantalla de espera, pasando el ID de la partida
+                // navigate(`/partida/${partidaId}/espera`); // Cambia la ruta según tu configuración
+            }
         } catch (error) {
             console.error('Error:', error)
         }
@@ -46,42 +61,42 @@ export default function CrearPartida() {
         <form onSubmit={manejarBotonCrearPartida} className="form-container">
             <div className="form-group">
                 <div className="form-field">
-                    <label htmlFor="nombrePartida">Nombre de Partida</label>
+                    <label htmlFor="nombre">Nombre de Partida</label>
                     <input
-                        id="nombrePartida"
-                        name="nombrePartida"
+                        id="nombre"
+                        name="nombre"
                         type="text"
                         autoComplete="off"
                         required
-                        value={partidaDatos.nombrePartida}
+                        value={partidaDatos.nombre}
                         onChange={manejarPartidaDatos}
                     />
                 </div>
 
                 <div className="form-field">
-                    <label htmlFor="minJugadores">Min Jugadores</label>
+                    <label htmlFor="min_jugadores">Min Jugadores</label>
                     <input
-                        id="minJugadores"
-                        name="minJugadores"
+                        id="min_jugadores"
+                        name="min_jugadores"
                         type="text"
                         autoComplete="off"
-                        inputMode="numeric" // Utilizar inputMode en lugar de type="number"
+                        inputMode="numeric"
                         required
-                        value={partidaDatos.minJugadores}
+                        value={partidaDatos.min_jugadores}
                         onChange={manejarPartidaDatos}
                     />
                 </div>
 
                 <div className="form-field">
-                    <label htmlFor="maxJugadores">Max Jugadores</label>
+                    <label htmlFor="max_jugadores">Max Jugadores</label>
                     <input
-                        id="maxJugadores"
-                        name="maxJugadores"
+                        id="max_jugadores"
+                        name="max_jugadores"
                         type="text"
                         autoComplete="off"
-                        inputMode="numeric" // Utilizar inputMode en lugar de type="number"
+                        inputMode="numeric"
                         required
-                        value={partidaDatos.maxJugadores}
+                        value={partidaDatos.max_jugadores}
                         onChange={manejarPartidaDatos}
                     />
                 </div>
