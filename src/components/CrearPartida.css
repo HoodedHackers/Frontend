@@ -1,0 +1,94 @@
+/* Fondo para toda la pantalla */
+body {
+    background-image: url('./fondo.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+/* Contenedor del formulario */
+.form-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #00d9ff;
+    border-radius: 8px;
+    box-shadow: 0 0 15px #00d9ff
+    , 0 0 25px #e00000, 0 0 35px #00d9ff;
+    background-color: #000000;
+}
+
+/* Agrupación de los campos del formulario */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Campo individual del formulario */
+.form-field {
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estilo del label */
+.form-field label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #00d9ff; 
+    text-shadow: 0 0 5px #e00000, 0 0 10px #e00000; 
+}
+
+/* Estilo de los inputs */
+.form-field input {
+    padding: 8px;
+    border: 1px solid #00d9ff; 
+    border-radius: 4px;
+    font-size: 16px;
+    color: #FFFFFF;
+    background-color: #333333;
+    outline: none;
+    box-shadow: 0 0 10px #00d9ff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-field input:focus {
+    border-color: #e00000; 
+    box-shadow: 0 0 15px #e00000; 
+}
+
+/* Contenedor del botón */
+.button-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Estilo del botón de crear partida */
+.crear-partida-boton {
+    background-color: #00d9ff
+     !important; 
+    color: #000000 !important;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 15px #00d9ff, 0 0 25px #00d9ff;
+}
+
+.crear-partida-boton:hover {
+    background-color: #e00000 !important; 
+    box-shadow: 0 0 20px #e00000, 0 0 30px #e00000; 
+}
+
+.crear-partida-boton:active {
+    background-color: #00d9ff
+     !important; 
+    box-shadow: 0 0 25px #00d9ff, 0 0 35px #00d9ff;
+}
+
