@@ -1,39 +1,14 @@
 import "./Style/Listar_Partidas.css";
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-const ACCIONES = {
-  ACTUALIZACION_EN_PARTIDAS: 'actualizacion_en_partidas',
-  RESPUESTA_UNION: 'respuesta_union',
-  AGREGAR_JUGADOR:'agregar_jugador'
-};
 
 function Listar_Partidas() {
   const [partidas, setPartidas] = useState([]);
   const [botonesDeshabilitados, setBotonesDeshabilitados] = useState({});
   const navigate = useNavigate();
-  const wsRef = useRef(null);
-
-  const manejarWs = (event) => {
-    const data = JSON.parse(event.data);
-    switch (data.action) {
-      case ACCIONES.ACTUALIZACION_EN_PARTIDAS:
-        fetchPartidas();
-        break;
-      case ACCIONES.RESPUESTA_UNION:
-        const { partidaId, success } = data;
-        if (success) {
-          navigate('/Partida/' + partidaId);
-        } 
-        break;
-      default:
-        console.warn(`Acción desconocida: ${data.action}`);
-    }
-  };
 
   const Unirse = async (id) => {
-    const message = JSON.stringify({ action: ACCIONES.AGREGAR_JUGADOR, partidaId: id });
-    wsRef.current.send(message);
+    navigate(`/partida/${id}`);
   };
 
   const fetchPartidas = async () => {
@@ -59,17 +34,6 @@ function Listar_Partidas() {
     // Fetch inicial
     fetchPartidas();
 
-    // Configuración del WebSocket
-    const ws = new WebSocket('ws://127.0.0.1:8000/ws/lobby');
-    wsRef.current = ws;
-
-    // Manejador de mensajes del WebSocket
-    ws.onmessage = manejarWs;
-
-    // Cleanup: cerrar el WebSocket al desmontar el componente
-    return () => {
-      ws.close();
-    };
   }, []);
 
   return (

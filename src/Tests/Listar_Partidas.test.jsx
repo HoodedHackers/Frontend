@@ -3,12 +3,6 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter, BrowserRouter } from "react-router-dom";
 import Listar_Partidas from '../Listar_Partidas';
 
-const ACCIONES = {
-  ACTUALIZACION_EN_PARTIDAS: 'actualizacion_en_partidas',
-  RESPUESTA_UNION: 'respuesta_union',
-  AGREGAR_JUGADOR:'agregar_jugador'
-};
-
 const navigateMock = vi.fn();
 
 vi.mock('react-router-dom', async () => {
@@ -143,16 +137,6 @@ describe('Listar_Partidas Component', () => {
         json: () => Promise.resolve([{ id: 1, nombre: 'Partida Milo', jugadores: 1, max_jugadores: 4 }]),
       })
     );
-    
-    // Mock del WebSocket
-    const wsMock = {
-      send: vi.fn(),
-      onmessage: null,
-      close: vi.fn(),
-    };
-
-    // Simular la creación de un WebSocket
-    vi.spyOn(window, 'WebSocket').mockImplementation(() => wsMock);
 
     render(
       <BrowserRouter>
@@ -164,9 +148,6 @@ describe('Listar_Partidas Component', () => {
     await waitFor(() => {
       const unirseButton = screen.getByRole('button', { name: /Unirse/i });
       fireEvent.click(unirseButton);
-
-      // Simula la respuesta del WebSocket
-      wsMock.onmessage({ data: JSON.stringify({ action: ACCIONES.RESPUESTA_UNION, partidaId: 1, success: true }) });
     });
 
     expect(navigateMock).toHaveBeenCalledWith('/Partida/1');
@@ -180,14 +161,6 @@ describe('Listar_Partidas Component', () => {
       })
     );
     
-    // Mock del WebSocket
-    const wsMock = {
-      close: vi.fn(), // Mock de la función close
-    };
-  
-    // Mock de la implementación del WebSocket
-    vi.spyOn(window, 'WebSocket').mockImplementation(() => wsMock);
-
     render(
       <MemoryRouter>
         <Listar_Partidas />
@@ -199,96 +172,4 @@ describe('Listar_Partidas Component', () => {
     expect(unirseButton).toBeDisabled();
   });
 
-  it('Vuelve a renderizar cuando recibe un mensaje del ws', async () => {
-    // Mock del WebSocket
-    const wsMock = {
-      send: vi.fn(),
-      onmessage: null,
-      close: vi.fn(),
-    };
-
-    // Mock de la implementación del WebSocket
-    vi.spyOn(window, 'WebSocket').mockImplementation(() => wsMock);
-
-    // Mock del fetch inicial
-    vi.spyOn(global, 'fetch').mockImplementation(() =>
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve([{ id: 1, nombre: 'Partida Milo', jugadores: 1, max_jugadores: 4 }]),
-      })
-    );
-
-    render(
-      <MemoryRouter>
-        <Listar_Partidas />
-      </MemoryRouter>
-    );
-
-    // Verificar que la primera partida se renderiza
-    expect(await screen.findByText(/Partida Milo/i)).toBeInTheDocument();
-
-    // Simular que recibe un mensaje del WebSocket que indica actualización de partidas
-    wsMock.onmessage({ data: JSON.stringify({ action: ACCIONES.ACTUALIZACION_EN_PARTIDAS }) });
-
-    // Mock de fetch para que retorne 4 partidas
-    fetch.mockImplementationOnce(() =>
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve([
-          { id: 1, nombre: 'Partida Milo', jugadores: 1, max_jugadores: 4 },
-          { id: 2, nombre: 'Partida Ely', jugadores: 2, max_jugadores: 4 },
-          { id: 3, nombre: 'Partida Ema', jugadores: 3, max_jugadores: 4 },
-          { id: 4, nombre: 'Partida Andy', jugadores: 4, max_jugadores: 4 }
-        ]),
-      })
-    );
-    
-    // Esperar a que se rendericen las nuevas partidas
-    await waitFor(() => {
-      expect(screen.getByText(/Partida Milo/i)).toBeInTheDocument();
-      expect(screen.getByText(/Partida Ely/i)).toBeInTheDocument();
-      expect(screen.getByText(/Partida Ema/i)).toBeInTheDocument();
-      expect(screen.getByText(/Partida Andy/i)).toBeInTheDocument();
-    });
-
-    // Simular otro mensaje del WebSocket
-    wsMock.onmessage({ data: JSON.stringify({ action: ACCIONES.ACTUALIZACION_EN_PARTIDAS }) });
-
-    // Mock para que retorne partidas actualizadas
-    fetch.mockImplementationOnce(() =>
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve([
-          { id: 1, nombre: 'Partida Milo', jugadores: 2, max_jugadores: 4 }, // Jugador se unio
-          { id: 2, nombre: 'Partida Ely', jugadores: 2, max_jugadores: 4 }, // Jugador se fue
-          { id: 3, nombre: 'Partida Ema', jugadores: 2, max_jugadores: 4 }
-        ]),
-      })
-    );
-
-    // Esperar a que se rendericen las actualizaciones
-    await waitFor(() => {
-      expect(screen.getByText(/Partida Milo/i)).toBeInTheDocument();
-      expect(screen.getByText(/Partida Ely/i)).toBeInTheDocument();
-      expect(screen.getByText(/Partida Ema/i)).toBeInTheDocument();
-      expect(screen.queryByText(/Partida Andy/i)).not.toBeInTheDocument();
-    });
-    
-    // Simular un último mensaje del WebSocket que indica que no hay partidas disponibles
-    wsMock.onmessage({ data: JSON.stringify({ action: ACCIONES.ACTUALIZACION_EN_PARTIDAS }) });
-
-    // Mock para que retorne un estado sin partidas
-    fetch.mockImplementationOnce(() =>
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve([]),
-      })
-    );
-
-    // Verificar que el mensaje de "no hay partidas" se renderiza
-    await waitFor(() => {
-      const mensaje = screen.findByText('No hay partidas disponibles en este momento. Por favor, intente crear una partida.');
-      expect(mensaje).toBeInTheDocument();
-    });
-  });
 });
