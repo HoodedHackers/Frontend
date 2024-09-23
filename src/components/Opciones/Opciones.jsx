@@ -7,9 +7,13 @@ const Opciones = () => {
   const nickname = localStorage.getItem("nickname");
 
   const handleCreateGame = () => {
+    const jugador1 = localStorage.getItem("nickname") || "Jugador1"; // Obtener nickname del localStorage
+    const jugadores = [jugador1, "Jugador2", "Jugador3", "Jugador4"]; // Personaliza más nombres
+    
+    localStorage.setItem("jugadores", JSON.stringify(jugadores)); // Guardar en localStorage
     navigate("/Partida");
   };
-
+  
   const handleJoinGame = () => {
     navigate("/Partida");
   };

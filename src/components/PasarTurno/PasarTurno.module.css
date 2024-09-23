@@ -1,0 +1,14 @@
+.botonPasarTurno {
+    background-color: #ffcc00; /* Color de fondo */
+    color: #fff; /* Color del texto */
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px; /* Ajusta el padding para hacerlo más pequeño */
+    cursor: pointer;
+    font-size: 14px; /* Tamaño de fuente más pequeño */
+    transition: background-color 0.3s;
+}
+
+.botonPasarTurno:hover {
+    background-color: #ffb300; /* Color de fondo al pasar el mouse */
+}

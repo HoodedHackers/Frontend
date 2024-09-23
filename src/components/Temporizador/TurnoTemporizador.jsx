@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./TurnoTemporizador.module.css";
 
-const TurnoTemporizador = ({ tiempoLimite, jugadorActual, jugadoresEnPartida }) => {
+const TurnoTemporizador = ({ tiempoLimite, jugadorActual, jugadoresEnPartida, resetTimer }) => {
   const [timeLeft, setTimeLeft] = useState(tiempoLimite);
   const [turnoFinalizado, setTurnoFinalizado] = useState(false);
   const audioRef = useRef(new Audio("/dun-dun-dun.mp3"));
   const [temporizadorIniciado, setTemporizadorIniciado] = useState(false);
+  const [mostrarNotificacion, setMostrarNotificacion] = useState(false);
 
   useEffect(() => {
     if (jugadoresEnPartida >= 2) {
@@ -21,8 +22,12 @@ const TurnoTemporizador = ({ tiempoLimite, jugadorActual, jugadoresEnPartida }) 
         setTimeLeft((prevTime) => {
           if (prevTime > 0) return prevTime - 1;
           else {
-            setTurnoFinalizado(true);
-            audioRef.current.play(); // Reproduce el audio
+            // Solo ejecuta esta parte si el turno no ha finalizado
+            if (!turnoFinalizado) {
+              setTurnoFinalizado(true);
+              audioRef.current.play(); // Reproduce el audio
+              setMostrarNotificacion(true); // Muestra la notificación
+            }
             return 0; // Asegúrate de no ir por debajo de 0
           }
         });
@@ -31,24 +36,25 @@ const TurnoTemporizador = ({ tiempoLimite, jugadorActual, jugadoresEnPartida }) 
 
     return () => {
       clearInterval(countdown);
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
     };
   }, [temporizadorIniciado, turnoFinalizado]);
 
   useEffect(() => {
     if (turnoFinalizado) {
       const timeout = setTimeout(() => {
-        resetTimer(); // Reinicia el temporizador después de que termine el turno
-      }, 2000);
+        resetTimerFunc(); // Reinicia el temporizador después de que termine el turno
+        setMostrarNotificacion(false); // Oculta la notificación
+      }, 3000); // Espera 3 segundos antes de ocultar
 
       return () => clearTimeout(timeout);
     }
   }, [turnoFinalizado]);
 
-  const resetTimer = () => {
+  const resetTimerFunc = () => {
     setTimeLeft(tiempoLimite);
     setTurnoFinalizado(false);
+    audioRef.current.pause(); // Detiene el audio
+    audioRef.current.currentTime = 0; // Reinicia el audio
   };
 
   const minutes = Math.floor(timeLeft / 60);
@@ -67,7 +73,7 @@ const TurnoTemporizador = ({ tiempoLimite, jugadorActual, jugadoresEnPartida }) 
         )}
       </div>
 
-      {turnoFinalizado && (
+      {mostrarNotificacion && (
         <div className={styles.toast}>
           <p className={styles.finalizadoTexto}>¡Tu turno finalizó!</p>
         </div>

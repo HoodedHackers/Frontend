@@ -1,32 +1,33 @@
 .timerContainer {
   position: relative;
   display: flex;
-  justify-content: center; /* Centra el contenido horizontalmente */
-  align-items: center; /* Centra el contenido verticalmente */
-  margin-top: 40px; /* Espacio desde la parte superior de la pantalla */
-  margin-bottom: 20px; /* Espacio entre el temporizador y el título */
+  justify-content: center; 
+  align-items: center; 
+  margin-top: 40px; 
+  margin-bottom: 20px; 
+  gap: 10px; 
 }
 
 .rectangulo {
-  width: 70px; /* Disminuir el ancho */
-  height: auto; /* Mantiene la altura automática */
-  padding: 8px; /* Ajusta el padding */
+  width: 70px; 
+  height: auto; 
+  padding: 8px; 
   border-radius: 10px;
   background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
   display: flex;
-  flex-direction: column; /* Apila el temporizador y el turno */
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(8px);
   border: 2px solid rgba(250, 247, 247, 0.5);
-  margin: 0 auto; /* Centra el rectángulo horizontalmente */
+  margin: 0 auto; 
 }
 
 .timerText {
   font-size: 1.0rem;
   font-weight: bold;
-  color: #ffeb3b; /* Color más brillante para el temporizador */
+  color: #ffeb3b; 
   text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.3);
   font-family: 'Arial', sans-serif;
 }
@@ -43,7 +44,7 @@
 /* Para pantallas de hasta 480px */
 @media (max-width: 480px) {
   .rectangulo {
-    width: 80px; /* Ajustar el ancho para pantallas pequeñas */
+    width: 80px; 
   }
 
   .timerText {
