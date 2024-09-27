@@ -1,6 +1,10 @@
 # El Switcher
 
-Bla bla bla
+El Switcher es un juego de mesa de estrategia e ingenio, en el que los jugadores deberán
+formar figuras determinadas, moviendo las fichas en el tablero, según las tarjetas
+de movimiento. Cada jugador tendrá un mazo con figuras para ir descartando a medida
+que se formen en el tablero y evitando que otros jugadores completen sus figuras.
+Quién primero lo termine sus cartas de figura será el ganador.
 
 # Como levantar
 
