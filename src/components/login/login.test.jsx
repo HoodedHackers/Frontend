@@ -1,9 +1,8 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import * as ReactRouter from "react-router";
 import Login from "./login";
-import { act } from "@testing-library/react";
 
 describe("Login Component", () => {
   let button = null;
@@ -11,6 +10,21 @@ describe("Login Component", () => {
   const navigate = vi.fn();
 
   beforeEach(() => {
+    // Mock para useNavigate
+    vi.spyOn(ReactRouter, "useNavigate").mockImplementation(() => navigate);
+
+    // Mock global de fetch con cualquier URL
+    global.fetch = vi.fn((url, options) => {
+      if (url === "http://127.0.0.1:8000/api/name") {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ identifier: "12345" }),
+        });
+      } else {
+        return Promise.reject(new Error("URL no mockeada"));
+      }
+    });
+
     render(
       <BrowserRouter>
         <Login />
@@ -19,21 +33,15 @@ describe("Login Component", () => {
 
     button = screen.getByRole("button", { name: /Iniciar/i });
     input = screen.getByPlaceholderText(/Nickname/i);
+  });
 
-    // Mock para useNavigate
-    vi.spyOn(ReactRouter, "useNavigate").mockImplementation(() => navigate);
-
-    // Mock global de fetch
-    global.fetch = vi.fn(() =>
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve({ name: "Ely" }),
-      })
-    );
+  afterEach(() => {
+    vi.clearAllMocks(); // Limpiar mocks
+    localStorage.clear(); // Limpiar localStorage
   });
 
   it("Renderiza el componente Login correctamente", () => {
-    expect(screen.getByText(/Bienvenido a "El Switcher"/i)).toBeInTheDocument();
+    expect(screen.getByText(/¡Bienvenido a "El Switcher"!/i)).toBeInTheDocument();
   });
 
   it("Permite al usuario ingresar un nickname", () => {
@@ -44,9 +52,7 @@ describe("Login Component", () => {
   it("Muestra un mensaje de error si el nickname excede el máximo de caracteres", async () => {
     fireEvent.change(input, { target: { value: "a".repeat(65) } });
     fireEvent.click(button);
-    expect(
-      await screen.findByText(/Solo se permiten 64 caracteres./i)
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/Solo se permiten 64 caracteres./i)).toBeInTheDocument();
   });
 
   it("Redirige a la página de Opciones después de iniciar sesión", async () => {
@@ -60,14 +66,12 @@ describe("Login Component", () => {
   });
 
   it("Envía el JSON correcto al backend", async () => {
-    await act(async () => {
-      fireEvent.change(input, { target: { value: "Ely" } });
-      fireEvent.click(button);
-    });
+    fireEvent.change(input, { target: { value: "Ely" } });
+    fireEvent.click(button);
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
-        "http://127.0.0.1:8080/api/name",
+        "http://127.0.0.1:8000/api/name",
         expect.objectContaining({
           method: "POST",
           body: JSON.stringify({ name: "Ely" }),
@@ -78,19 +82,28 @@ describe("Login Component", () => {
 
   it("Muestra un mensaje de error si la solicitud al backend falla", async () => {
     fireEvent.change(input, { target: { value: "Ely" } });
-  
+
     // Simula una respuesta fallida
-    global.fetch.mockImplementationOnce(() => Promise.reject(new Error("Error en la solicitud")));
-  
+    global.fetch.mockImplementationOnce(() =>
+      Promise.resolve({
+        ok: false,
+        json: () => Promise.resolve({ detail: "Error en la solicitud" }),
+      })
+    );
+
     fireEvent.click(button);
-  
+
     await waitFor(() => {
-      // Utiliza una función para verificar que el mensaje de error esté en el documento
-      const errorMessageElement = screen.getByText((content, element) => {
-        return content.includes("Error en la solicitud");
-      });
-  
-      expect(errorMessageElement).toBeInTheDocument();
+      expect(screen.getByText(/Error en la solicitud/i)).toBeInTheDocument();
+    });
+  });
+
+  it("Muestra un mensaje de error si el nombre de usuario no cumple con los requisitos", async () => {
+    fireEvent.change(input, { target: { value: "" } }); // Nombre vacío
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(screen.getByText(/El campo no puede estar vacío./i)).toBeInTheDocument();
     });
   });
 });

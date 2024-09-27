@@ -3,9 +3,8 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-  background: radial-gradient(circle, rgba(231, 42, 42, 0.7), rgba(48, 2, 78, 0.8), rgba(54, 2, 52, 0.9), rgba(53, 2, 68, 1));
-  background-size: 200% 200%;
-  animation: neon-background 10s ease infinite;
+  background: radial-gradient(circle, #c084fc, #a21caf, #3b0764,#581c87);
+  background-size: 300% 300%; /* Mantiene el tamaño del gradiente */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -19,12 +18,6 @@
   .root {
     padding: 1rem;
   }
-}
-
-@keyframes neon-background {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
 }
 
 .title {
@@ -76,39 +69,18 @@
 .customButton {
   background: linear-gradient(135deg, #aaa, #777);
   color: #f3eeee;
-  padding: 10px 20px;
-  font-size: 1.5rem;
+  padding: 12px 24px;
+  font-size: 1.2rem;
   border-radius: 6px;
-  border: 4px solid transparent;
-  position: relative;
+  border: none;
   cursor: pointer;
-  margin-top: 20px;
-  transition: transform 0.4s ease, background 0.3s ease;
-}
-
-.customButton:before {
-  content: '';
-  position: absolute;
-  top: -6px;
-  left: -6px;
-  right: -6px;
-  bottom: -6px;
-  border-radius: 12px;
-  background: linear-gradient(45deg, #ff1eff, #00ffea, #0ff);
-  background-size: 400% 400%;
-  z-index: -1;
-  animation: border-flow 2.5s infinite;
-}
-
-@keyframes border-flow {
-  0% { background-position: 0%; }
-  100% { background-position: 300%; }
+  transition: background 0.3s ease, transform 0.3s ease;
 }
 
 .customButton:hover {
   background: linear-gradient(135deg, #ff1eff, #00ffea);
-  transform: scale(1.08); 
-  box-shadow: 0 0 15px #ff1eff, 0 0 20px #00ffea; 
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #ff1eff, 0 0 20px #00ffea;
 }
 
 .container {

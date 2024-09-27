@@ -10,37 +10,40 @@ const Login = () => {
 
   const manejarBotonInicioSesion = async (data) => {
     try {
-      const response = await fetch("http://127.0.0.1:8080/api/name", {
-        mode: "cors",
-        credentials: "include",
+      const response = await fetch("http://127.0.0.1:8000/api/name",
+      {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ name: data.nickname }),
       });
-
+  
+      // Verificar si hay respuesta y si es válida
       if (!response.ok) {
         const errorData = await response.json();
+        if (response.status === 400) {
+          throw new Error("El nombre de usuario no cumple con los requisitos.");
+        }
         throw new Error(errorData.detail || "Error en la respuesta del servidor");
       }
-
+  
       const result = await response.json();
-      return result;
+      console.log('Nombre agregado:',result)
+      localStorage.setItem("nickname", data.nickname);
+      localStorage.setItem("identifier", result.identifier);
+      navigate("/Opciones");
     } catch (error) {
       setErrorMessage(error.message || "Error en la solicitud");
-      throw error;
+      console.error("Error durante la solicitud:", error);
     }
   };
+  
 
   const onSubmit = async (data) => {
     setErrorMessage("");
     try {
-      const resultado = await manejarBotonInicioSesion(data);
-      console.log("Éxito:", resultado);
-
-      localStorage.setItem("nickname", data.nickname);
-      navigate("/Opciones");
+      await manejarBotonInicioSesion(data); // Llama a la función sin manejar navegación aquí
     } catch (error) {
       console.error("Error durante la solicitud:", error);
     }
