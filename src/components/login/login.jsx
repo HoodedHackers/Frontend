@@ -8,36 +8,42 @@ const Login = () => {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
 
-  const manejarBotonInicioSesion = async (data) => {
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/name",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name: data.nickname }),
-      });
-  
-      // Verificar si hay respuesta y si es válida
-      if (!response.ok) {
-        const errorData = await response.json();
-        if (response.status === 400) {
-          throw new Error("El nombre de usuario no cumple con los requisitos.");
+const manejarBotonInicioSesion = async (data) => {
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/name", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: data.nickname }),
+    });
+
+    // Verificar si hay respuesta y si es válida
+    if (!response.ok) {
+      const errorData = await response.json();
+
+      if (response.status === 400) {
+        if (errorData.error === "nickname_empty") {
+          throw new Error("El campo de nombre no puede estar vacío.");
+        } else if (errorData.error === "nickname_too_long") {
+          throw new Error("El nombre de usuario supera los 64 caracteres.");
         }
-        throw new Error(errorData.detail || "Error en la respuesta del servidor");
       }
-  
-      const result = await response.json();
-      console.log('Nombre agregado:',result)
-      localStorage.setItem("nickname", data.nickname);
-      localStorage.setItem("identifier", result.identifier);
-      navigate("/Opciones");
-    } catch (error) {
-      setErrorMessage(error.message || "Error en la solicitud");
-      console.error("Error durante la solicitud:", error);
+
+      throw new Error(errorData.detail || "Error en la respuesta del servidor");
     }
-  };
+
+    const result = await response.json();
+    console.log("Nombre agregado:", result);
+    localStorage.setItem("nickname", data.nickname);
+    localStorage.setItem("identifier", result.identifier);
+    navigate("/Opciones");
+  } catch (error) {
+    setErrorMessage(error.message || "Error en la solicitud");
+    console.error("Error durante la solicitud:", error);
+  }
+};
+
   
 
   const onSubmit = async (data) => {

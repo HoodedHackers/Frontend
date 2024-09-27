@@ -98,7 +98,7 @@ describe("Login Component", () => {
     });
   });
 
-  it("Muestra un mensaje de error si el nombre de usuario no cumple con los requisitos", async () => {
+  it("Muestra un mensaje de error si no se ingreso un nickname", async () => {
     fireEvent.change(input, { target: { value: "" } }); // Nombre vacío
     fireEvent.click(button);
 
