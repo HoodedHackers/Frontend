@@ -1,8 +1,21 @@
-# React + Vite
+# El Switcher
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Bla bla bla
 
-Currently, two official plugins are available:
+# Como levantar
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Para iniciar el front solo corra el comando:
+
+```sh
+make dev
+```
+
+Para correr un entorno "productivo" corra los comandos:
+
+```sh
+make docker-build
+make docker-start
+```
+
+En caso de ya tener armada la imagen de docker solo `make docker-start`
+levantara el front en modo de produccion.
