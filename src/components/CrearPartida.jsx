@@ -104,10 +104,9 @@ export default function CrearPartida() {
             </div>
             <div className="button-container">
                 <button
-                    variant="contained"
-                    type="submit"
-                    className="crear-partida-boton"
-                    onClick={manejarBotonCrearPartida}
+                variant="contained"
+                className="crear-partida-boton"
+                onClick={manejarBotonCrearPartida}
                 >
                     Crear Partida
                 </button>
