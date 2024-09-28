@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './Tablero.module.css';
 
 // Colores disponibles
@@ -10,8 +10,7 @@ function Square({ color, onClick, isSelected }) {
       className={`${styles.square} ${isSelected ? styles.selected : ''}`}
       style={{ backgroundColor: color }}
       onClick={onClick}
-    >
-    </button>
+    />
   );
 }
 
@@ -37,7 +36,7 @@ function Board({ squares, onSquareClick, selectedIndex }) {
 export default function Tablero({ jugadores }) {
   const [squares, setSquares] = useState(generateInitialColors());
   const [selectedIndex, setSelectedIndex] = useState(null);
-  const [turnoActual, setTurnoActual] = useState(0); // Índice del jugador actual
+  const [turnoActual, setTurnoActual] = useState(0);
 
   function generateInitialColors() {
     const colorDistribution = [
@@ -63,10 +62,7 @@ export default function Tablero({ jugadores }) {
       [newSquares[selectedIndex], newSquares[index]] = [newSquares[index], newSquares[selectedIndex]];
       setSquares(newSquares);
       setSelectedIndex(null);
-
-      // Cambiar el turno
       setTurnoActual((turnoActual + 1) % jugadores.length);
-      
       enviarDatosTablero(newSquares);
     }
   }
@@ -117,20 +113,15 @@ export default function Tablero({ jugadores }) {
   }, []);
 
   return (
-    <div className={styles.game}>
-      <div className={styles.turnLabel}>
-        {jugadores[turnoActual].nickname}'s Turn
-      </div>
-      <div className={styles.gameBoard}>
-        <Board squares={squares} onSquareClick={handleSquareClick} selectedIndex={selectedIndex} />
-      </div>
-      <div className={styles.nextPlayerLabels}>
-        {jugadores.map((jugador, index) => (
-          <div key={index} className={styles.label}>
-            {jugador.nickname}
-          </div>
-        ))}
-      </div>
+    <div className={styles.tableroContainer}>
+    {/* Mostrar los nombres de los jugadores */}
+    <div className={styles.playerNameTop}>{jugadores[0]}</div>
+    <div className={styles.playerNameLeft}>{jugadores[1]}</div>
+    <div className={styles.playerNameRight}>{jugadores[2]}</div>
+    <div className={styles.playerNameBottom}>{jugadores[3]}</div>
+    <div className={styles.boardContainer}>
+      <Board squares={squares} onSquareClick={handleSquareClick} selectedIndex={selectedIndex} />
     </div>
+  </div>
   );
 }

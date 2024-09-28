@@ -1,46 +1,98 @@
-.square {
-    background-color: #1b1515; 
-    width: 50px;
-    height: 50px;
-    border: 3px solid black; /* Borde negro más grueso */
-    border-radius: 10px; /* Bordes redondeados */
-    margin: 2px; /* Espaciado entre los cuadrados */
-    cursor: pointer; /* Cambia el cursor para indicar que es clickeable */
+.tableroContainer {
+  display: grid;
+  grid-template-areas:
+    "top top top"
+    "left board right"
+    "bottom bottom bottom";
+  grid-template-columns: 1fr auto 1fr; 
+  grid-template-rows: auto 1fr auto; 
+  justify-items: center;
+  align-items: center;
+  gap: 10px; 
+  width: 100%;
+  height: 100vh; 
+}
 
-  }
-  
-  .board-row {
-    display: flex;
-    background-image: url('https://media.istockphoto.com/id/1137996207/es/foto/textura-de-madera-marr%C3%B3n-fondo-abstracto-de-madera-oscura.webp?s=1024x1024&w=is&k=20&c=A5JSLeMeubQXq4j5ZIQAelNVKMceDcepnUlmBHMQgNo='); /* Cambia esta URL por la de tu textura */
-  }
-  
-  .game-board {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-image: url('https://media.istockphoto.com/id/1137996207/es/foto/textura-de-madera-marr%C3%B3n-fondo-abstracto-de-madera-oscura.webp?s=1024x1024&w=is&k=20&c=A5JSLeMeubQXq4j5ZIQAelNVKMceDcepnUlmBHMQgNo='); /* Cambia esta URL por la de tu textura */
-  }
-  
-  .playerLabels {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin: 10px 0; /* Espaciado entre el tablero y las etiquetas */
-  }
-  
-  .label {
-    font-size: 20px; /* Tamaño de la fuente */
-    font-weight: bold; /* Estilo de la fuente */
-    padding: 10px; /* Espaciado interno */
-  }
-  .square {
-    width: 50px;
-    height: 50px;
-    border: 1px solid #080808;
-    cursor: pointer;
-  }
-  
-  .square.selected {
-    border: 3px solid #fcf8f8; /* Color de borde para indicar selección */
-  }
-  
+
+.playerNameRight {
+  text-align: center;
+  font-size: 18px;
+  color: #000;
+  padding: 10px; 
+}
+
+.playerNameTop{
+
+  text-align: center;
+  font-size: 18px;
+  color: #000;
+  padding: 10px; 
+
+}
+
+
+.playerNameBottom{
+
+  text-align: center;
+  font-size: 18px;
+  color: #000;
+  padding: 10px; 
+
+}
+
+
+.playerNameLeft{
+
+  text-align: center;
+  font-size: 18px;
+  color: #000;
+  padding: 10px;
+}
+
+.playerNameTop {
+  grid-area: top; 
+}
+
+.playerNameBottom {
+  grid-area: bottom; 
+}
+
+.playerNameLeft, .playerNameRight {
+  font-size: 18px;
+  color: #000;
+  writing-mode: vertical-rl; 
+  text-orientation: mixed; 
+}
+
+.playerNameLeft {
+  grid-area: left; 
+}
+
+.playerNameRight {
+  grid-area: right; 
+}
+.boardContainer {
+  grid-area: board; 
+  width: 300px;
+  height: 300px;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  margin-top: 10px; 
+}
+
+.square {
+  width: 50px;
+  height: 50px;
+  border: 2px solid black;
+  cursor: pointer;
+  border-radius: 10px;
+  margin: 0; 
+}
+
+.square.selected {
+  border: 3px solid #fcf8f8; 
+}
+.boardRow {
+  display: flex;
+}

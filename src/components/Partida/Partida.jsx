@@ -74,11 +74,11 @@ const Partida = () => {
         jugadorActual={jugadorActual} 
         onFinTurno={manejarFinTurno} 
       />
-           <Tablero 
-        jugadores={jugadores} 
-        jugadorActualIndex={jugadorActualIndex} 
-        manejarFinTurno={manejarFinTurno} 
-      />
+      
+      <Tablero 
+      jugadores={jugadores} 
+    />
+    
     </div>
   );
 };
