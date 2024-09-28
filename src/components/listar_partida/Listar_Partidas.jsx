@@ -1,10 +1,11 @@
 import "./Listar_Partidas.css";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function Listar_Partidas({jugador_id}) {
   const [partidas, setPartidas] = useState([]);
   const navigate = useNavigate();
+  //const wsRef = useRef(null);
 
   const Unirse = async (partida_id) => {
     try {
@@ -48,8 +49,42 @@ function Listar_Partidas({jugador_id}) {
   useEffect(() => {
     // Fetch inicial
     fetchPartidas();
-
   }, []);
+
+  /* 
+  useEffect(() => {
+    wsRef.current = new WebSocket("http://127.0.0.1:8000/ws/api/lobby");
+
+    wsRef.current.onopen = () => {
+      console.log("WebSocket connected");
+    };
+
+    wsRef.current.onmessage = (event) => {
+      console.log("Received message:", event.data);
+      const updatedMessage = JSON.parse(event.data);
+      if (updatedMessage.message === "New lobbies available") {
+        fetchPartidas();
+      }
+    };
+
+    // Manejar errores
+    wsRef.current.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    // Manejar cierre de conexión
+    wsRef.current.onclose = function () {
+      console.log("WebSocket closed");
+    };
+
+    // Cleanup cuando el componente se desmonta
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+    };
+  }, []);
+  */
 
   return (
     <div className="contenedor-partidas">
@@ -62,7 +97,7 @@ function Listar_Partidas({jugador_id}) {
               <div className="list-item-izq">
                 <p className="item-partida-nombre">{partida.name}</p>
                 <p className="item-partida-jugadores">
-                  <b>Jugadores:</b> {partida.jugadores}/{partida.max_players}
+                  <b>Jugadores:</b> {partida.current_players}/{partida.max_players}
                 </p>
               </div>
               <div className="item-partida-der">
