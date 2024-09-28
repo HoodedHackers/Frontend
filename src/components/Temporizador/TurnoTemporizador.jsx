@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./TurnoTemporizador.module.css";
 
-const TurnoTemporizador = ({ tiempoLimite }) => {
+const TurnoTemporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
   const [timeLeft, setTimeLeft] = useState(
     () => Number(localStorage.getItem("timeLeft")) || tiempoLimite
   );
@@ -15,27 +15,32 @@ const TurnoTemporizador = ({ tiempoLimite }) => {
           return prevTime - 1;
         } else {
           if (!audioPlayed) {
-            audioRef.current.play().catch(error => {
+            audioRef.current.play().catch((error) => {
               console.error("Error al reproducir el audio:", error);
             });
             setAudioPlayed(true);
           }
+          // Establece un retraso antes de llamar a onFinTurno
+          setTimeout(() => {
+            onFinTurno(); // Llama a onFinTurno después de 2 segundos
+            setTimeLeft(tiempoLimite); // Reinicia el temporizador al valor original
+            setAudioPlayed(false); // Reinicia el estado de audio
+          }, 2000);
           return 0; // Evitar valores negativos
         }
       });
     }, 1000);
 
     return () => clearInterval(countdown);
-  }, [audioPlayed]);
+  }, [audioPlayed, onFinTurno, tiempoLimite]);
 
   useEffect(() => {
     const audioElement = audioRef.current;
 
     const handleAudioEnd = () => {
       setTimeout(() => {
-        setTimeLeft(tiempoLimite); 
-        setAudioPlayed(false); 
-      }, 1000); 
+        setAudioPlayed(false);
+      }, 1000);
     };
 
     if (audioElement) {
@@ -47,7 +52,7 @@ const TurnoTemporizador = ({ tiempoLimite }) => {
         audioElement.removeEventListener("ended", handleAudioEnd);
       }
     };
-  }, [tiempoLimite]);
+  }, []);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -71,7 +76,7 @@ const TurnoTemporizador = ({ tiempoLimite }) => {
     return "#ffffff"; // Blanco por defecto
   };
 
-  const timerClass = timeLeft <= 10 ? styles["timer-warning-active"] : '';
+  const timerClass = timeLeft <= 10 ? styles["timer-warning-active"] : "";
 
   return (
     <div className={styles["timer-container"]}>
@@ -80,6 +85,11 @@ const TurnoTemporizador = ({ tiempoLimite }) => {
           {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
         </span>
         <audio ref={audioRef} src="/dun-dun-dun.mp3" preload="auto" />
+        <div className={styles.turnIndicator}>
+          <p>
+            Turno: <strong>{jugadorActual}</strong>
+          </p>
+        </div>
       </div>
     </div>
   );
