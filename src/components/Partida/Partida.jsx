@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import TurnoTemporizador from "../Temporizador/TurnoTemporizador";
+import Tablero from "../Tablero/Tablero"; // Importar el componente Tablero
 import styles from "./Partida.module.css"; 
+
 
 const Partida = () => {
   const tiempoLimite = 120; // 2 minutos
@@ -71,6 +73,11 @@ const Partida = () => {
         tiempoLimite={tiempoLimite} 
         jugadorActual={jugadorActual} 
         onFinTurno={manejarFinTurno} 
+      />
+           <Tablero 
+        jugadores={jugadores} 
+        jugadorActualIndex={jugadorActualIndex} 
+        manejarFinTurno={manejarFinTurno} 
       />
     </div>
   );
