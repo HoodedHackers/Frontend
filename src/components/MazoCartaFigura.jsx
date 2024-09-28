@@ -22,7 +22,7 @@ const MazoCartaFigura = () => {
 
       setTimeout(() => {
         setMazo(data); // Actualiza el estado 'mazo' con las cartas obtenidas del backend
-      }, 5000); // Simula un retardo de 1 segundo (1000 ms)
+      }, 1000); // Simula un retardo de 1 segundo (1000 ms)
       
     } catch (error) {
       console.error('Error al obtener el mazo de cartas:', error); // Muestra el error en la consola
@@ -34,15 +34,12 @@ const MazoCartaFigura = () => {
     obtenerMazo(); // Llama a la función para obtener el mazo al montar el componente
   }, []);
 
-  // Función para manejar el clic en el contenedor del mazo
-  const mostrarCartas = () => {
-    console.log('Cartas en el mazo:', mazo); // Muestra las cartas en consola (puedes usarlas de otra forma)
-  };
-
   return (
-    <div className="mazo-container" onClick={mostrarCartas}>
-      <p>Mazo</p>
-    </div>
+      <div className="container-cartas-figura">
+        {mazo.slice(0, 3).map((carta) => ( // Mostramos solo las primeras tres cartas
+          <CartaFigura key={carta.id} id={carta.id} />
+        ))}
+      </div> 
   );
 };
 

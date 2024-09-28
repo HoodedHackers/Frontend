@@ -1,19 +1,12 @@
-/* src/components/MazoCartaFigura.css */
-.mazo-container {
-    display: flex;
-    justify-content: center; /* Centra el texto horizontalmente */
-    align-items: center; /* Centra el texto verticalmente */
-    width: 60px; /* Ancho del contenedor */
-    height: 100px; /* Alto del contenedor */
-    background-color: #474999; /* Fondo claro */
-    border: 2px solid #444; /* Borde oscuro */
-    border-radius: 8px; /* Bordes redondeados */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra */
-    font-size: 18px; /* Tamaño de la fuente */
-    font-weight: bold; /* Peso de la fuente */
-    cursor: pointer; /* Cursor de mano para indicar que es interactivo */
-  }
-  
-  .mazo-container:hover {
-    background-color: #e0e0e0; /* Cambia el color de fondo al pasar el mouse */
-  }
+/* Contenedor padre que agrupa todas las cartas */
+.container-cartas-figura {
+  display: flex; /* Flexbox para alinear las cartas en fila */
+  flex-direction: row; /* Alinea las cartas en fila horizontal */
+  justify-content: center; /* Centra las cartas horizontalmente */
+  align-items: center; /* Centra las cartas verticalmente */
+  gap: 10px; /* Espaciado entre cada carta */
+  padding: 10px; /* Espaciado interno */
+  background-color: #f5f5f5; /* Fondo claro para el contenedor */
+  border: 1px solid #ddd; /* Borde claro */
+  border-radius: 8px; /* Bordes redondeados */
+}
