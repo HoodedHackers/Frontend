@@ -15,9 +15,13 @@ app.add_middleware(
 @app.get("/api/lobby")
 def obtener_partidas():
     return [
-        {"id": 1, "nombre": "Partida Milo", "jugadores": 2, "max_jugadores": 4},
-        {"id": 2, "nombre": "Partida Ely", "jugadores": 2, "max_jugadores": 4},
-        {"id": 3, "nombre": "Partida Ema", "jugadores": 2, "max_jugadores": 4},
-        {"id": 4, "nombre": "Partida Andy", "jugadores": 2, "max_jugadores": 4},
-        {"id": 5, "nombre": "Partida Lou", "jugadores": 4, "max_jugadores": 4},
+        {"id": 1, "name": "Partida Milo", "jugadores": 2, "max_players": 4},
+        {"id": 2, "name": "Partida Ely", "jugadores": 2, "max_players": 4},
+        {"id": 3, "name": "Partida Ema", "jugadores": 2, "max_players": 4},
+        {"id": 4, "name": "Partida Andy", "jugadores": 2, "max_players": 4},
+        {"id": 5, "name": "Partida Lou", "jugadores": 4, "max_players": 4},
     ]
+
+@app.put("/api/lobby/{id_partida}")
+def unirse_partida(id_partida: int):
+    print(f"ID de partida: {id_partida}")
