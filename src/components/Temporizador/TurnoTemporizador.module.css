@@ -1,57 +1,61 @@
-.timerContainer {
+.timer-container {
   position: relative;
   display: flex;
-  justify-content: center; /* Centra el contenido horizontalmente */
-  align-items: center; /* Centra el contenido verticalmente */
-  margin-top: 40px; /* Espacio desde la parte superior de la pantalla */
-  margin-bottom: 20px; /* Espacio entre el temporizador y el título */
+  justify-content: center; 
+  align-items: center; 
+  margin-top: 40px; 
+  margin-bottom: 20px; 
+}
+
+.timer-warning-active {
+  animation: pulse 0.5s infinite; 
+  border-radius: 15px; 
+  padding: 10px;
+}
+
+/* Animación de pulso */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05); /* Escala un poco */
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .rectangulo {
-  width: 70px; /* Disminuir el ancho */
-  height: auto; /* Mantiene la altura automática */
-  padding: 8px; /* Ajusta el padding */
-  border-radius: 10px;
+  width: 90px; 
+  height: auto; 
+  padding: 10px;
+  border-radius: 15px; 
   background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
   display: flex;
-  flex-direction: column; /* Apila el temporizador y el turno */
   justify-content: center;
   align-items: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(8px);
-  border: 2px solid rgba(250, 247, 247, 0.5);
-  margin: 0 auto; /* Centra el rectángulo horizontalmente */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
+  backdrop-filter: blur(10px); 
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  transition: background 0.3s; 
 }
 
-.timerText {
-  font-size: 1.0rem;
+.timer-text {
+  font-size: 1.5rem; 
   font-weight: bold;
-  color: #ffeb3b; /* Color más brillante para el temporizador */
-  text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.3);
+  color: #ffeb3b; /* Color inicial */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); 
   font-family: 'Arial', sans-serif;
 }
 
-.playerTurn {
-  color: #ffca28; 
-  font-size: 0.6rem;
-  background-color: rgba(0, 0, 0, 0.6);
-  padding: 2px;
-  border-radius: 5px;
-  margin-top: 1px; 
-}
-
-/* Para pantallas de hasta 480px */
 @media (max-width: 480px) {
   .rectangulo {
-    width: 80px; /* Ajustar el ancho para pantallas pequeñas */
+    width: 65px; 
+    padding: 7.5px;
   }
 
-  .timerText {
-    font-size: 0.9rem;
-  }
-
-  .playerTurn {
-    font-size: 0.8rem;
-    padding: 4px;
+  .timer-text {
+    font-size: 1rem;
   }
 }

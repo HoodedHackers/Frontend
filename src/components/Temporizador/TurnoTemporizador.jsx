@@ -1,77 +1,86 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./TurnoTemporizador.module.css";
 
-const TurnoTemporizador = ({ tiempoLimite, jugadorActual, jugadoresEnPartida }) => {
-  const [timeLeft, setTimeLeft] = useState(tiempoLimite);
-  const [turnoFinalizado, setTurnoFinalizado] = useState(false);
-  const audioRef = useRef(new Audio("/dun-dun-dun.mp3"));
-  const [temporizadorIniciado, setTemporizadorIniciado] = useState(false);
+const TurnoTemporizador = ({ tiempoLimite }) => {
+  const [timeLeft, setTimeLeft] = useState(
+    () => Number(localStorage.getItem("timeLeft")) || tiempoLimite
+  );
+  const audioRef = useRef(null);
+  const [audioPlayed, setAudioPlayed] = useState(false);
 
   useEffect(() => {
-    if (jugadoresEnPartida >= 2) {
-      setTemporizadorIniciado(true);
-    }
-  }, [jugadoresEnPartida]);
-
-  useEffect(() => {
-    let countdown;
-
-    if (temporizadorIniciado && !turnoFinalizado) {
-      countdown = setInterval(() => {
-        setTimeLeft((prevTime) => {
-          if (prevTime > 0) return prevTime - 1;
-          else {
-            setTurnoFinalizado(true);
-            audioRef.current.play(); // Reproduce el audio
-            return 0; // Asegúrate de no ir por debajo de 0
+    const countdown = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime > 0) {
+          return prevTime - 1;
+        } else {
+          if (!audioPlayed) {
+            audioRef.current.play().catch(error => {
+              console.error("Error al reproducir el audio:", error);
+            });
+            setAudioPlayed(true);
           }
-        });
-      }, 1000);
+          return 0; // Evitar valores negativos
+        }
+      });
+    }, 1000);
+
+    return () => clearInterval(countdown);
+  }, [audioPlayed]);
+
+  useEffect(() => {
+    const audioElement = audioRef.current;
+
+    const handleAudioEnd = () => {
+      setTimeout(() => {
+        setTimeLeft(tiempoLimite); 
+        setAudioPlayed(false); 
+      }, 1000); 
+    };
+
+    if (audioElement) {
+      audioElement.addEventListener("ended", handleAudioEnd);
     }
 
     return () => {
-      clearInterval(countdown);
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
+      if (audioElement) {
+        audioElement.removeEventListener("ended", handleAudioEnd);
+      }
     };
-  }, [temporizadorIniciado, turnoFinalizado]);
+  }, [tiempoLimite]);
 
   useEffect(() => {
-    if (turnoFinalizado) {
-      const timeout = setTimeout(() => {
-        resetTimer(); // Reinicia el temporizador después de que termine el turno
-      }, 2000);
+    const handleBeforeUnload = () => {
+      localStorage.setItem("timeLeft", timeLeft);
+    };
 
-      return () => clearTimeout(timeout);
-    }
-  }, [turnoFinalizado]);
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
-  const resetTimer = () => {
-    setTimeLeft(tiempoLimite);
-    setTurnoFinalizado(false);
-  };
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [timeLeft]);
 
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
 
+  // Cambiar color del texto dependiendo del tiempo
+  const getColor = () => {
+    if (timeLeft <= 0) return "#ff0000"; // Rojo cuando el tiempo es 0
+    if (timeLeft <= 10) return "#ff7f00"; // Naranja para los últimos 10 segundos
+    return "#ffffff"; // Blanco por defecto
+  };
+
+  const timerClass = timeLeft <= 10 ? styles["timer-warning-active"] : '';
+
   return (
-    <div className={styles.timerContainer}>
+    <div className={styles["timer-container"]}>
       <div className={styles.rectangulo}>
-        <span className={styles.timerText}>
+        <span className={`${styles["timer-text"]} ${timerClass}`} style={{ color: getColor() }}>
           {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
         </span>
-        {temporizadorIniciado && (
-          <div className={styles.playerTurn}>
-            <p>{`Turno de ${jugadorActual}`}</p>
-          </div>
-        )}
+        <audio ref={audioRef} src="/dun-dun-dun.mp3" preload="auto" />
       </div>
-
-      {turnoFinalizado && (
-        <div className={styles.toast}>
-          <p className={styles.finalizadoTexto}>¡Tu turno finalizó!</p>
-        </div>
-      )}
     </div>
   );
 };
