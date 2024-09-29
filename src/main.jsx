@@ -1,10 +1,15 @@
+import "./index.css"
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import App from './App.jsx'
-import './index.css'
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import Partida from './components/Partida/Partida.jsx'
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <App />
-  </StrictMode>,
-)
+    <BrowserRouter>
+      <Routes>
+        <Route path="/Partida/:id" element={<Partida />} />
+      </Routes>
+    </BrowserRouter>
+  </StrictMode>
+);
