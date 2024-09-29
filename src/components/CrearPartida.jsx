@@ -24,7 +24,7 @@ export default function CrearPartida() {
         e.preventDefault(); // Prevenir comportamiento por defecto del formulario
 
         // Obtener el nombre del jugador desde localStorage
-        const id_jugador = 1234; //localStorage.getItem('identifier');
+        const id_jugador = localStorage.getItem('identifier');
 
         const solicitudJson = {
                 name: partidaDatos.nombre,
