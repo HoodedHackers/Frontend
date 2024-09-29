@@ -23,10 +23,14 @@ export default function CrearPartida() {
     const manejarBotonCrearPartida = async (e) => {
         e.preventDefault(); // Prevenir comportamiento por defecto del formulario
 
+        // Obtener el nombre del jugador desde localStorage
+        const id_jugador = 1234; //localStorage.getItem('identifier');
+
         const solicitudJson = {
                 name: partidaDatos.nombre,
                 min_players: partidaDatos.min_jugadores,
-                max_players: partidaDatos.max_jugadores
+                max_players: partidaDatos.max_jugadores,
+                identifier: id_jugador 
         };
 
         try {
