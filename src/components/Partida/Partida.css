@@ -1,0 +1,31 @@
+.jugador1 {
+    position: absolute; /* Posicionamiento absoluto */
+    bottom: 0; /* Al borde superior */
+    left: 50%; /* Centrado horizontalmente */
+    transform: translateX(-50%); /* Ajuste para centrar horizontalmente */
+    padding-bottom: 10px; /* Padding de 10 píxeles en la parte superior */
+  }
+
+.jugador2 {
+    position: absolute; /* Posicionamiento absoluto */
+    top: 0; /* Al borde superior */
+    left: 50%; /* Centrado horizontalmente */
+    transform: translateX(-50%); /* Ajuste para centrar horizontalmente */
+    padding-top: 10px; /* Padding de 10 píxeles en la parte superior */
+  }
+
+.jugador3 {
+  position: absolute; /* Posicionamiento absoluto */
+  top: 50%; /* Centrado verticalmente */
+  left: 0; /* A la izquierda */
+  transform: translateY(-50%); /* Ajusta la posición para centrar verticalmente */
+  padding-left: 10px; /* Padding de 10 píxeles en el borde izquierdo */
+}
+
+.jugador4 {
+    position: absolute; /* Posicionamiento absoluto */
+    top: 50%; /* Centrado verticalmente */
+    right: 0; /* A la izquierda */
+    transform: translateY(-50%); /* Ajusta la posición para centrar verticalmente */
+    padding-right: 10px; /* Padding de 10 píxeles en el borde izquierdo */
+  }
