@@ -1,8 +1,8 @@
 import "./index.css";
-import { StrictMode } from 'react'; // Importa StrictMode
-import { createRoot } from 'react-dom/client' // Importa createRoot desde react-dom/client
-import { BrowserRouter, Route , Routes } from 'react-router-dom'; // Importa BrowserRouter
-import CrearPartida from './components/CrearPartida'; // Importa el componente CrearPartida
+import { StrictMode } from 'react'; 
+import { createRoot } from 'react-dom/client' 
+import { BrowserRouter, Route , Routes } from 'react-router-dom'; 
+import CrearPartida from './components/CrearPartida'; 
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

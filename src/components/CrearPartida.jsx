@@ -21,9 +21,9 @@ export default function CrearPartida() {
     } 
 
     const manejarBotonCrearPartida = async (e) => {
-        e.preventDefault(); // Prevenir comportamiento por defecto del formulario
+        e.preventDefault(); 
 
-        // Obtener el nombre del jugador desde localStorage
+        
         const id_jugador = localStorage.getItem('identifier');
 
         const solicitudJson = {
@@ -37,20 +37,18 @@ export default function CrearPartida() {
             const response = await fetch('http://127.0.0.1:8000/api/lobby', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json', // Indicar que se envía JSON
+                    'Content-Type': 'application/json', 
                 },
-                body: JSON.stringify(solicitudJson) // Convertir el objeto a un string JSON
+                body: JSON.stringify(solicitudJson) 
             })
-            if (response.ok) { // Comprobar si la respuesta es exitosa (status 200-299)
+            if (response.ok) { 
                 const data = await response.json();
                 setError('');
                 console.log('Partida creada:', data);
                 
-                // Aquí podrías obtener el ID de la partida o cualquier dato necesario de 'data'
-                const partidaId = data.id; // Asumiendo que la respuesta incluye un 'partidaId'
+                const partidaId = data.id; 
                 
-                // Redirigir al usuario a la pantalla de espera, pasando el ID de la partida
-                navigate(`/partida/${partidaId}`); // Cambia la ruta según tu configuración
+                navigate(`/partida/${partidaId}`); 
 
             } else {
                 const errorData = await response.json();
