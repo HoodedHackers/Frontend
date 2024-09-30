@@ -1,11 +1,11 @@
 // src/components/CartaFigura.jsx
 import React from 'react';
 import PropTypes from 'prop-types';
-import './CartaFigura.css'; // Archivo de estilos para CartaFigura
+import './CartaFigura.css'; 
 
 const CartaFigura = ({ id }) => {
 
-  const imagenId = `/Imagenes/Figura/${id}.svg`; // Ruta de la imagen de la carta segun su id.
+  const imagenId = `/Imagenes/Figura/${id}.svg`; 
 
   return (
     <div className="carta-figura">

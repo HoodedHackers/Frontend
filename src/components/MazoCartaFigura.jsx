@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import CartaFigura from './CartaFigura'; // Importamos el componente CartaFigura
-import './MazoCartaFigura.css'; // Estilos para el contenedor de MazoCartaFigura
+import CartaFigura from './CartaFigura'; 
+import './MazoCartaFigura.css'; 
 
 const MazoCartaFigura = () => {
-  const [mazo, setMazo] = useState([]); // Estado para almacenar el array de cartas del mazo
+  const [mazo, setMazo] = useState([]); 
     
   const [partidaId, setPartidaId] = useState(null);
   const [jugadores, setJugadores] = useState([]);
@@ -20,34 +20,33 @@ const MazoCartaFigura = () => {
       console.log(JSON.parse(localStorage.getItem('jugadores')));
     }
 
-  }, []); // [] asegura que este efecto solo se ejecute una vez cuando el componente se monta
+  }, []); 
 
   // Función para obtener las cartas desde el backend
   const obtenerMazo = async () => {
-    //if (!partidaId || jugadores.length === 0) return; // No ejecutar si no hay partidaId o jugadores
 
     try {
       const solicitudJSON = {
-        game_id: partidaId,      // ID de la partida
-        players: jugadores.map(j => j.identifier) // Lista de jugadores
+        game_id: partidaId,      
+        players: jugadores.map(j => j.identifier) 
       };
 
-      const response = await fetch('http://127.0.0.1:8000/api/partida/en_curso', { // Cambia la URL por la del backend real
+      const response = await fetch('http://127.0.0.1:8000/api/partida/en_curso', { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(solicitudJSON), // Enviar el JSON al backend
+        body: JSON.stringify(solicitudJSON), 
       });
 
       if (response.ok) {
-        const data = await response.json(); // Convertir la respuesta a JSON
-        console.log('Mazo de cartas:', data); // Muestra el mazo de cartas en la consola
-        setMazo(data.all_cards); // Actualizar el estado con las cartas obtenidas
+        const data = await response.json(); 
+        console.log('Mazo de cartas:', data); 
+        setMazo(data.all_cards); 
       }
       
     } catch (error) {
-      console.error('Error al obtener el mazo de cartas:', error); // Muestra el error en la consola
+      console.error('Error al obtener el mazo de cartas:', error); 
     }
   };
 
