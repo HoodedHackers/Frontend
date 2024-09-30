@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import MazoCartaFigura from "../Cartas/MazoCartaFigura";
 import styles from './Tablero.module.css';
 
 // Colores disponibles
@@ -37,6 +38,8 @@ export default function Tablero({ jugadores }) {
   const [squares, setSquares] = useState(generateInitialColors());
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [turnoActual, setTurnoActual] = useState(0);
+  const [jugadoresActivos, setJugadoresActivos] = useState([true, true, true, true]);
+  const [socket, setSocket] = useState(null);
 
   function generateInitialColors() {
     const colorDistribution = [
@@ -45,15 +48,15 @@ export default function Tablero({ jugadores }) {
       ...Array(9).fill(colors[2]), // rojo
       ...Array(9).fill(colors[3]), // verde
     ];
-    
+  
     for (let i = colorDistribution.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [colorDistribution[i], colorDistribution[j]] = [colorDistribution[j], colorDistribution[i]];
     }
-
+  
     return colorDistribution.slice(0, 36);
   }
-
+  
   function handleSquareClick(index) {
     if (selectedIndex === null) {
       setSelectedIndex(index);
@@ -63,65 +66,45 @@ export default function Tablero({ jugadores }) {
       setSquares(newSquares);
       setSelectedIndex(null);
       setTurnoActual((turnoActual + 1) % jugadores.length);
-      enviarDatosTablero(newSquares);
-    }
-  }
-
-  async function enviarDatosTablero(updatedSquares) {
-    const data = {
-      squares: updatedSquares,
-      nickname: jugadores[turnoActual].nickname,
-    };
-
-    try {
-      const response = await fetch("https://ejemplo-api.com/tablero", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const resultado = await response.json();
-      console.log("Datos del tablero enviados con éxito:", resultado);
-    } catch (error) {
-      console.error("Error al enviar los datos del tablero:", error);
     }
   }
 
   useEffect(() => {
-    const socket = new WebSocket("ws://tu-servidor-websocket/ws/tablero");
+    const newSocket = new WebSocket("https://httpbin.org/post");
+    setSocket(newSocket);
 
-    socket.onopen = () => {
+    newSocket.onopen = () => {
       console.log("Conexión WebSocket abierta");
     };
 
-    socket.onmessage = (event) => {
+    newSocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.squares) {
         setSquares(data.squares);
       }
     };
 
-    socket.onerror = (error) => {
+    newSocket.onerror = (error) => {
       console.error("WebSocket error:", error);
     };
 
     return () => {
-      socket.close();
+      newSocket.close();
     };
   }, []);
 
   return (
     <div className={styles.tableroContainer}>
-    {/* Mostrar los nombres de los jugadores */}
-    <div className={styles.playerNameTop}>{jugadores[0]}</div>
-    <div className={styles.playerNameLeft}>{jugadores[1]}</div>
-    <div className={styles.playerNameRight}>{jugadores[2]}</div>
-    <div className={styles.playerNameBottom}>{jugadores[3]}</div>
-    <div className={styles.boardContainer}>
-      <Board squares={squares} onSquareClick={handleSquareClick} selectedIndex={selectedIndex} />
+      <div className={styles.mazoContainer}>
+        {jugadores.map((jugador, index) => (
+          <div key={index} className={styles.playerName}>
+            {jugadoresActivos[index] && <MazoCartaFigura className={styles.mazoPequeño} />}
+          </div>
+        ))}
+      </div>
+      <div className={styles.boardContainer}>
+        <Board squares={squares} onSquareClick={handleSquareClick} selectedIndex={selectedIndex} />
+      </div>
     </div>
-  </div>
   );
 }

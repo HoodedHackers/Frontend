@@ -8,7 +8,53 @@ const TurnoTemporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
   const audioRef = useRef(null);
   const [audioPlayed, setAudioPlayed] = useState(false);
 
+  // Inicializa la referencia del WebSocket
+  const socketRef = useRef(null);
   useEffect(() => {
+    // Conectar al WebSocket
+    socketRef.current = new WebSocket("ws://httpbin.org/post");
+
+    // Manejar la conexión abierta
+    socketRef.current.onopen = () => {
+      console.log("Conexión WebSocket abierta");
+
+      // Enviar mensaje para iniciar el temporizador
+      const startMessage = { action: "start" };
+      socketRef.current.send(JSON.stringify(startMessage));
+      console.log("Mensaje enviado al backend para iniciar el temporizador.");
+    };
+
+    // Manejar mensajes entrantes
+    socketRef.current.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+
+      // Si recibimos la información de tiempo restante
+      if (data.timeLeft !== undefined) {
+        setTimeLeft(data.timeLeft);
+      }
+
+      // Si se recibe un nuevo turno
+      if (data.jugadorActualIndex !== undefined) {
+        setJugadorActualIndex(data.jugadorActualIndex);
+      }
+    };
+
+    // Manejar errores
+    socketRef.current.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    // Cerrar la conexión al desmontar el componente
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.close();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    setTimeLeft(tiempoLimite); // Reiniciar el temporizador cuando cambie el jugador
+  
     const countdown = setInterval(() => {
       setTimeLeft((prevTime) => {
         if (prevTime > 0) {
@@ -22,7 +68,7 @@ const TurnoTemporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
           }
           // Establece un retraso antes de llamar a onFinTurno
           setTimeout(() => {
-            onFinTurno(); // Llama a onFinTurno después de 2 segundos
+            onFinTurno(); 
             setTimeLeft(tiempoLimite); // Reinicia el temporizador al valor original
             setAudioPlayed(false); // Reinicia el estado de audio
           }, 2000);
@@ -30,9 +76,10 @@ const TurnoTemporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
         }
       });
     }, 1000);
-
+  
     return () => clearInterval(countdown);
-  }, [audioPlayed, onFinTurno, tiempoLimite]);
+  }, [audioPlayed, onFinTurno, tiempoLimite, jugadorActual]); 
+  
 
   useEffect(() => {
     const audioElement = audioRef.current;
@@ -65,6 +112,8 @@ const TurnoTemporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [timeLeft]);
+
+ 
 
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
