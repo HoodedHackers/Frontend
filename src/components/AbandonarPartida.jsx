@@ -15,7 +15,7 @@ const AbandonarPartida = () => {
         setError(null);  
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/lobby/${partidaId}`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/lobby/salir/${partidaId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
