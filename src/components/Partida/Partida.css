@@ -29,3 +29,14 @@
     transform: translateY(-50%); /* Ajusta la posición para centrar verticalmente */
     padding-right: 10px; /* Padding de 10 píxeles en el borde izquierdo */
   }
+
+/* Fondo oscuro */
+.overlay {
+  position: fixed; /* Fijo para cubrir toda la pantalla */
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  background: rgba(0, 0, 0, 0.5); /* Color de fondo oscuro con opacidad */
+  z-index: 0; /* Detrás de otros elementos */
+}
