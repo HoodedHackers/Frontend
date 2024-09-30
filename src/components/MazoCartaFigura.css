@@ -1,12 +1,52 @@
 /* Contenedor padre que agrupa todas las cartas */
 .container-cartas-figura {
-  display: flex; /* Flexbox para alinear las cartas en fila */
-  flex-direction: row; /* Alinea las cartas en fila horizontal */
+  display: flex;
   justify-content: center; /* Centra las cartas horizontalmente */
   align-items: center; /* Centra las cartas verticalmente */
   gap: 10px; /* Espaciado entre cada carta */
   padding: 10px; /* Espaciado interno */
   background-color: #f5f5f5; /* Fondo claro para el contenedor */
-  border: 1px solid #ddd; /* Borde claro */
+  border: 1px solid #d8caca; /* Borde claro */
   border-radius: 8px; /* Bordes redondeados */
 }
+
+/* Grupo 0: Cartas en fila (horizontal) */
+.grupo-0 {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  top: 100px;
+  left: 500px;
+  position: absolute;
+}
+
+/* Grupo 1: Cartas en columna (vertical) */
+.grupo-1 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  top: 160px;
+  left: 200px;
+  position: absolute;
+}
+
+/* Grupo 2: Cartas en fila (horizontal) */
+.grupo-2 {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  top: 500px;
+  left: 50px;
+  position: absolute;
+}
+
+/* Grupo 3: Cartas en columna (vertical) */
+.grupo-3 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  top: 700px;
+  left: 50px;
+  position: absolute;
+}
+

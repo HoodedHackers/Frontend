@@ -5,7 +5,7 @@ import './CartaFigura.css'; // Archivo de estilos para CartaFigura
 
 const CartaFigura = ({ id }) => {
 
-  const imagenId = `/${id}.png`; // Ruta de la imagen de la carta segun su id.
+  const imagenId = `/Imagenes/Figura/${id}.svg`; // Ruta de la imagen de la carta segun su id.
 
   return (
     <div className="carta-figura">
