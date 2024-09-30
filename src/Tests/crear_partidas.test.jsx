@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import * as ReactRouter from "react-router";
-import CrearPartida from  "../components/CrearPartida";
+import CrearPartida from  "../components/Opciones/crear_partida/crear_partida.jsx";
 
 describe("CrearPartida Component", () => {
   let button = null;
@@ -94,7 +94,7 @@ describe("CrearPartida Component", () => {
             name: "Mi Partida",
             min_players: "2",  
             max_players: "4",  
-            identifier: 1234,  
+            identifier: "1234",  
           }),
         })
       );
