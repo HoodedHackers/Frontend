@@ -46,7 +46,14 @@ export default function CrearPartida() {
                 setError('');
                 console.log('Partida creada:', data);
                 
-                const partidaId = data.id; 
+                const partidaId = data.id;
+                localStorage.setItem('partidaId', partidaId);
+                
+                // Crear un arreglo que contenga solo a este jugador
+                let jugadores = [id_jugador];
+
+                // Guardar el arreglo en localStorage bajo la clave 'jugadores'
+                localStorage.setItem('jugadores', JSON.stringify(jugadores));
                 
                 navigate(`/partida/${partidaId}`); 
 
