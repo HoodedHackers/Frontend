@@ -1,6 +1,6 @@
 import { render, screen, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import TurnoTemporizador from "../components/Partida/temporizador/temporizador";
+import TurnoTemporizador from "../components/Partida/temporizador/temporizador.jsx";
 
 // Mocks de localStorage y audio
 beforeEach(() => {
@@ -36,7 +36,6 @@ describe("TurnoTemporizador", () => {
   it("debe decrementar el tiempo cada segundo", () => {
     vi.useFakeTimers(); // Habilitamos el uso de timers falsos
     render(<TurnoTemporizador tiempoLimite={60} />); // 1 minuto
-    const timer = screen.getByText("01:00");
 
     act(() => {
       vi.advanceTimersByTime(1000); // Avanza 1 segundo
@@ -58,6 +57,6 @@ describe("TurnoTemporizador", () => {
     window.dispatchEvent(event);
 
     // Verificamos que localStorage se actualizó correctamente
-    expect(localStorage.setItem).toHaveBeenCalledWith("timeLeft", 115); // Comparamos con número, no cadena
+    expect(localStorage.setItem).toHaveBeenCalledWith("timeLeft", 115);
   });
 });
