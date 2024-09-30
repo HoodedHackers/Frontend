@@ -15,7 +15,7 @@ const AbandonarPartida = () => {
         setError(null);  
 
         try {
-            const response = await fetch(`/api/lobby/${partidaId}`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/lobby/${partidaId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -29,7 +29,7 @@ const AbandonarPartida = () => {
                     alert(`¡Felicidades ${data.players[0].name}, ganaste la partida!`); 
                 }
                 
-                const Jugadores = JSON.parse(localStorage.getItem('jugadores'));
+                const Jugadores = JSON.parse(localStorage.getItem('jugadores')) || [];
                 const jugadoresActualizados = Jugadores.filter(j => j.identifier !== ident);
 
                 localStorage.setItem('jugadores', JSON.stringify(jugadoresActualizados));

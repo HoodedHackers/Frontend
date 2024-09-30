@@ -8,6 +8,7 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
+        <Route path='/opciones' />
         <Route path='/Partida/:id' element={<AbandonarPartida />}/>
       </Routes>
     </BrowserRouter>
