@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import MazoCartaFigura from "../Cartas/MazoCartaFigura";
 import styles from './Tablero.module.css';
 
 // Colores disponibles
@@ -95,13 +94,6 @@ export default function Tablero({ jugadores }) {
 
   return (
     <div className={styles.tableroContainer}>
-      <div className={styles.mazoContainer}>
-        {jugadores.map((jugador, index) => (
-          <div key={index} className={styles.playerName}>
-            {jugadoresActivos[index] && <MazoCartaFigura className={styles.mazoPequeño} />}
-          </div>
-        ))}
-      </div>
       <div className={styles.boardContainer}>
         <Board squares={squares} onSquareClick={handleSquareClick} selectedIndex={selectedIndex} />
       </div>
