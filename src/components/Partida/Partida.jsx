@@ -1,8 +1,8 @@
 import React from "react";
 import Jugador from "./jugador/jugador.jsx";
 import ContainerCartasMovimiento from "./carta_movimiento/container_cartas_movimiento.jsx";
-import TurnoTemporizador from "./Temporizador/TurnoTemporizador";
-import styles from "./Partida.module.css"; 
+import TurnoTemporizador from "./temporizador/temporizador.jsx";
+import "./Partida.css"; 
 
 function Partida() {
   const tiempoLimite = 120; // 2 minutos
@@ -36,7 +36,7 @@ function Partida() {
             onMouseLeave={handleMouseLeave} />
         </div>
       ))}
-      <div className={styles.partidaContainer}>
+      <div className="container-partida">
         <TurnoTemporizador 
           tiempoLimite={tiempoLimite} 
           jugadorActual={jugadores[0].name} 

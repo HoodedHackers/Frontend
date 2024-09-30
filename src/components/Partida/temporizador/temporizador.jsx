@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import styles from "./TurnoTemporizador.module.css";
+import styles from "./temporizador.module.css";
 
 const TurnoTemporizador = ({ tiempoLimite }) => {
   const [timeLeft, setTimeLeft] = useState(

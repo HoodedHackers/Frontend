@@ -1,6 +1,6 @@
 import { render, screen, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import TurnoTemporizador from "./TurnoTemporizador";
+import TurnoTemporizador from "../components/Partida/temporizador/temporizador";
 
 // Mocks de localStorage y audio
 beforeEach(() => {
