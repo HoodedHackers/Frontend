@@ -25,7 +25,23 @@ const MazoCartaFigura = () => {
             { card_id: 5, card_name: 'Carta E' },
             { card_id: 6, card_name: 'Carta F' }
           ]
-        }
+        },
+        {
+          player: '0123456789abcdeh',
+          cards_out: [
+            { card_id: 7, card_name: 'Carta A' },
+            { card_id: 8, card_name: 'Carta B' },
+            { card_id: 9, card_name: 'Carta C' }
+          ]
+        },
+        {
+          player: '0123456789abcded',
+          cards_out: [
+            { card_id: 10, card_name: 'Carta A' },
+            { card_id: 11, card_name: 'Carta B' },
+            { card_id: 12, card_name: 'Carta C' }
+          ]
+        },
       ]
     };
 
