@@ -1,0 +1,13 @@
+.partidaContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%; /* Para ocupar todo el ancho */
+    height: 100vh; /* Para ocupar toda la altura de la ventana */
+    background: linear-gradient(45deg, #9c27b0, #271018, #e6165b); /* Tonos morados y rosas */
+    background-size: 200% 200%;
+    animation: gradientAnimation 15s ease infinite; /* Animación con colores vibrantes */
+    position: relative; /* Necesario para el posicionamiento absoluto de los elementos hijos */
+  }
+
+  

@@ -1,14 +1,16 @@
 import React from "react";
 import Jugador from "./jugador/jugador.jsx";
 import ContainerCartasMovimiento from "./carta_movimiento/container_cartas_movimiento.jsx";
-import "./Partida.css";
+import TurnoTemporizador from "./Temporizador/TurnoTemporizador";
+import styles from "./Partida.module.css"; 
 
 function Partida() {
+  const tiempoLimite = 120; // 2 minutos
   const [jugadores, setJugadores] = React.useState([
-    // { id: 1, name: "Jugador1" },
-    // { id: 2, name: "Jugador2" },
-    // { id: 3, name: "Jugador3" },
-    // { id: 4, name: "Jugador4" }
+     { id: 1, name: "Jugador1" },
+     { id: 2, name: "Jugador2" },
+     { id: 3, name: "Jugador3" },
+     { id: 4, name: "Jugador4" }
   ]);
 
   // Estado para manejar si el overlay debe mostrarse
@@ -34,6 +36,13 @@ function Partida() {
             onMouseLeave={handleMouseLeave} />
         </div>
       ))}
+      <div className={styles.partidaContainer}>
+        <TurnoTemporizador 
+          tiempoLimite={tiempoLimite} 
+          jugadorActual={jugadores[0].name} 
+          jugadoresEnPartida={jugadores.length} 
+        />
+      </div>
       {isOverlayVisible && <div className="overlay"></div>}
     </div>
   );
