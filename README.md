@@ -1,8 +1,50 @@
-# React + Vite
+# El Switcher
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+El Switcher es un juego de mesa de estrategia e ingenio, en el que los jugadores deberán
+formar figuras determinadas, moviendo las fichas en el tablero, según las tarjetas
+de movimiento. Cada jugador tendrá un mazo con figuras para ir descartando a medida
+que se formen en el tablero y evitando que otros jugadores completen sus figuras.
+Quién primero lo termine sus cartas de figura será el ganador.
 
-Currently, two official plugins are available:
+# Como levantar
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Para iniciar el front solo corra el comando:
+
+```sh
+make dev
+```
+
+Para correr un entorno "productivo" corra los comandos:
+
+```sh
+make docker-build
+make docker-start
+```
+
+En caso de ya tener armada la imagen de docker solo `make docker-start`
+levantara el front en modo de produccion.
+# El Switcher
+
+El Switcher es un juego de mesa de estrategia e ingenio, en el que los jugadores deberán
+formar figuras determinadas, moviendo las fichas en el tablero, según las tarjetas
+de movimiento. Cada jugador tendrá un mazo con figuras para ir descartando a medida
+que se formen en el tablero y evitando que otros jugadores completen sus figuras.
+Quién primero lo termine sus cartas de figura será el ganador.
+
+# Como levantar
+
+Para iniciar el front solo corra el comando:
+
+```sh
+make dev
+```
+
+Para correr un entorno "productivo" corra los comandos:
+
+```sh
+make docker-build
+make docker-start
+```
+
+En caso de ya tener armada la imagen de docker solo `make docker-start`
+levantara el front en modo de produccion.
