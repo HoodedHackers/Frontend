@@ -1,0 +1,136 @@
+  /* Agrupación de los campos del formulario */
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px; 
+  }
+  
+  /* Campo individual del formulario */
+  .form-field {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /*Titulo de ambos componentes*/
+.crear-partidas-titulo {
+    font-size: 2.5rem; 
+    font-weight: bold;
+    color: #00d9ff; 
+    text-shadow: 0 0 5px #e00000, 0 0 10px #e00000; 
+    text-align: center; 
+    margin-bottom: 20px; 
+  }
+  
+  /* Estilo del label */
+  label {
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #00d9ff; 
+    text-shadow: 0 0 5px #e00000, 0 0 10px #e00000; 
+  }
+  
+  /* Estilo de los inputs */
+  input {
+    padding: 10px;
+    border: 1px solid #00d9ff; 
+    border-radius: 4px;
+    font-size: 14px;
+    color: #ffffff; 
+    background-color: #444; 
+    outline: none;
+    box-shadow: 0 0 10px #00d9ff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  input:focus {
+    border-color: #e00000; 
+    box-shadow: 0 0 15px #e00000; 
+  }
+  
+  /* Estilo del botón de crear partida */
+.button-container {
+    margin-top: 10px;
+    text-align: center;
+  }
+  
+  .crear-partida-boton {
+    padding: 10px 20px; 
+    font-size: 1rem; 
+    color: #00d9ff;
+    background-color: #444; 
+    border: 2px solid #00d9ff; 
+    border-radius: 5px; 
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 10px #00d9ff, 0 0 20px #e00000; 
+  }
+  
+  .crear-partida-boton:hover {
+    color: #e00000; 
+    border-color: #00d9ff;
+  }
+  
+  .crear-partida-boton:active {
+    transform: scale(0.95);
+  }
+
+  /* Estilo de la notificación */
+.notification {
+    margin: 20px auto;
+    padding: 15px;
+    max-width: 400px;
+    border: 1px solid #e00000;
+    border-radius: 8px;
+    background-color: #1c1c1c;
+    color: #ffffff;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 0 15px #00d9ff, 0 0 25px #e00000, 0 0 35px #00d9ff;
+    transition: opacity 0.3s ease;
+  }
+  
+  .notification p {
+    margin: 0;
+  }
+  
+  .notification.error {
+    border-color: #e00000;
+    box-shadow: 0 0 15px #e00000, 0 0 25px #e00000;
+  }
+  
+  /* Estilo para el botón de cierre */
+  .notification-close {
+    position: relative;
+    top: 8px;
+    right: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 8px;
+    background-color: #00d9ff; 
+    border: none; 
+    outline: none; 
+  }
+
+  /* Estilo del botón de crear partida */
+.button-container {
+    margin-top: 10px;
+    text-align: center;
+  }
+  
+  .crear-partida-boton {
+    font-size: 0.875rem;
+    color: #00d9ff;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  
+  .crear-partida-boton:hover {
+    color: #e00000; 
+    border-color: #00d9ff;
+  }
+
+  .crear-partida-boton:active {
+    transform: scale(0.95);
+  }
+  
