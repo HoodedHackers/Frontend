@@ -1,0 +1,15 @@
+.abandonar-partida-boton {
+    font-size: 0.875rem;
+    color: #00d9ff;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  
+  .abandonar-partida-boton:hover {
+    color: #e00000; /* Cambio de color al pasar el cursor */
+    border-color: #00d9ff;
+  }
+
+  .abandonar-partida-boton:active {
+    transform: scale(0.95);
+  }
