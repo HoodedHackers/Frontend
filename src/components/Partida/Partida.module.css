@@ -1,4 +1,3 @@
-
 .partidaContainer {
   position: relative;
   display: flex;
@@ -6,9 +5,18 @@
   align-items: center;
   width: 100%; 
   height: 120vh; 
- background: radial-gradient(circle, #121213, #3a3a3b, #8a878b, #474647); 
+  background: radial-gradient(circle, #121213, #3a3a3b, #8a878b, #474647); 
   background-size: 200% 200%;
   animation: gradientAnimation 15s ease infinite;
+}
+
+.contenidoOculto {
+  opacity: 0.2; /* Reducir la opacidad antes de que la partida inicie */
+  pointer-events: none; /* Deshabilitar la interacción */
+}
+
+.contenidoVisible {
+  opacity: 1; /* Opacidad completa cuando la partida está activa */
 }
 
 .overlay {
@@ -17,25 +25,25 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5); /* Color de sombra con opacidad */
+  background: rgba(0, 0, 0, 0.7); /* Opacidad para oscurecer */
   z-index: 10;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
 .startButton {
-  z-index: 20; /* Asegúrate de que el botón esté encima de la superposición */
-  padding: 10px 20px;
-  font-size: 18px;
-  cursor: pointer;
-  background-color: #4CAF50; /* Color de fondo */
-  color: white; /* Color del texto */
+  z-index: 20;
+  padding: 15px 30px;
+  font-size: 20px;
+  background-color: #4CAF50;
+  color: white;
   border: none;
   border-radius: 5px;
+  cursor: pointer;
 }
 
-button:disabled {
-  opacity: 0.5; /* Estilo para botones deshabilitados */
-  cursor: not-allowed; /* Cambiar el cursor para botones deshabilitados */
+.startButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
