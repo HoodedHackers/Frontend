@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import styles from './Tablero.module.css';
+import styles from './tablero_container.module.css';
 
 // Colores disponibles
-const colors = ['#f3e84c', '#1d53b6', '#f52020', '#27f178'];
+const COLORES = ['#f3e84c', '#1d53b6', '#f52020', '#27f178'];
 
 function Square({ color, onClick, isSelected }) {
   return (
@@ -14,7 +14,7 @@ function Square({ color, onClick, isSelected }) {
   );
 }
 
-function Board({ squares, onSquareClick, selectedIndex }) {
+function Tablero({ squares, onSquareClick, selectedIndex }) {
   return (
     <>
       {[0, 6, 12, 18, 24, 30].map(rowStart => (
@@ -33,7 +33,7 @@ function Board({ squares, onSquareClick, selectedIndex }) {
   );
 }
 
-export default function Tablero({ jugadores }) {
+export default function Tablero_Container({ jugadores }) {
   const [squares, setSquares] = useState(generateInitialColors());
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [turnoActual, setTurnoActual] = useState(0);
@@ -42,10 +42,10 @@ export default function Tablero({ jugadores }) {
 
   function generateInitialColors() {
     const colorDistribution = [
-      ...Array(9).fill(colors[0]), // amarillo
-      ...Array(9).fill(colors[1]), // azul
-      ...Array(9).fill(colors[2]), // rojo
-      ...Array(9).fill(colors[3]), // verde
+      ...Array(9).fill(COLORES[0]), // amarillo
+      ...Array(9).fill(COLORES[1]), // azul
+      ...Array(9).fill(COLORES[2]), // rojo
+      ...Array(9).fill(COLORES[3]), // verde
     ];
   
     for (let i = colorDistribution.length - 1; i > 0; i--) {
@@ -95,7 +95,7 @@ export default function Tablero({ jugadores }) {
   return (
     <div className={styles.tableroContainer}>
       <div className={styles.boardContainer}>
-        <Board squares={squares} onSquareClick={handleSquareClick} selectedIndex={selectedIndex} />
+        <Tablero squares={squares} onSquareClick={handleSquareClick} selectedIndex={selectedIndex} />
       </div>
     </div>
   );

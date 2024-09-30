@@ -1,32 +1,30 @@
-// src/Tests/Tablero.test.jsx
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
-import { beforeEach, afterEach, describe, it, expect, vi } from 'vitest';
-import Tablero from '../components/Tablero/Tablero';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import Tablero_Container from '../components/Partida/tablero/tablero_container';
 
-describe('Componente Tablero', () => {
-  let mockWebSocket;
+// Mock de WebSocket
+global.WebSocket = class {
+  constructor(url) {
+    this.url = url;
+    this.onopen = null;
+    this.onmessage = null;
+    this.onerror = null;
+    this.readyState = 1; // OPEN
+  }
+  
+  close() {
+    this.readyState = 3; // CLOSED
+  }
+};
 
+describe('Tablero', () => {
   beforeEach(() => {
-    mockWebSocket = {
-      send: vi.fn(),
-      onopen: null,
-      onmessage: null,
-      onerror: null,
-      close: vi.fn(),
-    };
-
-    global.WebSocket = vi.fn(() => mockWebSocket);
-
-    render(<Tablero jugadores={['Jugador 1', 'Jugador 2', 'Jugador 3', 'Jugador 4']} />);
+    render(<Tablero_Container jugadores={[]} />); // Renderizamos el componente sin jugadores
   });
 
-  afterEach(() => {
-    cleanup();
-    vi.restoreAllMocks();
-  });
-
-  it('se renderiza sin fallos', () => {
-    expect(screen.getByText('Jugador 1')).toBeInTheDocument();
+  it('se renderiza correctamente con 36 cuadrados', () => {
+    const squares = screen.getAllByRole('button'); // Asumiendo que los cuadrados son botones
+    expect(squares).toHaveLength(36);
   });
 
 });
