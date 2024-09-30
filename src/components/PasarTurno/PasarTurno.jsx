@@ -9,18 +9,16 @@ const BotonPasarTurno = ({
   setTimeLeft,
 }) => {
   const [jugadorActivo, setJugadorActivo] = useState(jugadorActual);
-
   const pasarTurno = async () => {
-    // Reiniciar el temporizador antes de cambiar el turno
-    setTimeLeft(tiempoLimite);
-  
-    // Determinar el siguiente jugador en la lista
-    const indiceSiguienteJugador =
-      (jugadores.indexOf(jugadorActivo) + 1) % jugadores.length;
+    const indiceSiguienteJugador = (jugadores.indexOf(jugadorActivo) + 1) % jugadores.length;
     const siguienteJugador = jugadores[indiceSiguienteJugador];
   
     // Actualizar el estado local del jugador activo
     setJugadorActivo(siguienteJugador);
+  
+    // Reiniciar el temporizador antes de enviar al servidor
+    setTimeLeft(tiempoLimite); // Reiniciar el temporizador a su valor original
+    localStorage.setItem("timeLeft", tiempoLimite); // Actualiza el localStorage
   
     // Enviar actualización del turno al backend
     try {
@@ -31,17 +29,19 @@ const BotonPasarTurno = ({
         },
         body: JSON.stringify({ jugadorActualIndex: indiceSiguienteJugador }),
       });
-
+  
       if (!response.ok) {
         throw new Error("Error al pasar el turno");
       }
-
+  
       // Llamar a la función para actualizar el turno en la UI principal
-      onTurnoCambiado();
+      onTurnoCambiado(); // Esto debe llamar a la función de cambio de turno en Partida
     } catch (error) {
       console.error("Error en la conexión al servidor:", error);
     }
   };
+  
+  
 
   useEffect(() => {
     // Actualizar el estado cuando cambie el jugador actual desde fuera

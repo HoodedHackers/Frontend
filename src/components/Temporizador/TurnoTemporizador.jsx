@@ -2,23 +2,24 @@ import React, { useState, useEffect, useRef } from "react";
 import styles from "./TurnoTemporizador.module.css";
 
 const TurnoTemporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
-  const [timeLeft, setTimeLeft] = useState(
-    () => Number(localStorage.getItem("timeLeft")) || tiempoLimite
-  );
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const storedTime = Number(localStorage.getItem("timeLeft"));
+    return storedTime || tiempoLimite; // Carga el tiempo desde localStorage o establece el tiempo límite
+  });
+  
   const audioRef = useRef(null);
   const [audioPlayed, setAudioPlayed] = useState(false);
 
   // Inicializa la referencia del WebSocket
   const socketRef = useRef(null);
+  
   useEffect(() => {
     // Conectar al WebSocket
-    socketRef.current = new WebSocket("ws://httpbin.org/post");
+    socketRef.current = new WebSocket("ws:127.0.0.1:8000/ws/timer");
 
     // Manejar la conexión abierta
     socketRef.current.onopen = () => {
       console.log("Conexión WebSocket abierta");
-
-      // Enviar mensaje para iniciar el temporizador
       const startMessage = { action: "start" };
       socketRef.current.send(JSON.stringify(startMessage));
       console.log("Mensaje enviado al backend para iniciar el temporizador.");
@@ -27,24 +28,19 @@ const TurnoTemporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
     // Manejar mensajes entrantes
     socketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
-
-      // Si recibimos la información de tiempo restante
       if (data.timeLeft !== undefined) {
         setTimeLeft(data.timeLeft);
+        localStorage.setItem("timeLeft", data.timeLeft); // Actualiza el tiempo en localStorage
       }
-
-      // Si se recibe un nuevo turno
       if (data.jugadorActualIndex !== undefined) {
         setJugadorActualIndex(data.jugadorActualIndex);
       }
     };
 
-    // Manejar errores
     socketRef.current.onerror = (error) => {
       console.error("WebSocket error:", error);
     };
 
-    // Cerrar la conexión al desmontar el componente
     return () => {
       if (socketRef.current) {
         socketRef.current.close();
@@ -52,9 +48,8 @@ const TurnoTemporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
     };
   }, []);
 
-  useEffect(() => {
-    setTimeLeft(tiempoLimite); // Reiniciar el temporizador cuando cambie el jugador
   
+  useEffect(() => {
     const countdown = setInterval(() => {
       setTimeLeft((prevTime) => {
         if (prevTime > 0) {
@@ -66,10 +61,10 @@ const TurnoTemporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
             });
             setAudioPlayed(true);
           }
-          // Establece un retraso antes de llamar a onFinTurno
           setTimeout(() => {
             onFinTurno(); 
             setTimeLeft(tiempoLimite); // Reinicia el temporizador al valor original
+            localStorage.setItem("timeLeft", tiempoLimite); // Reinicia el tiempo en localStorage
             setAudioPlayed(false); // Reinicia el estado de audio
           }, 2000);
           return 0; // Evitar valores negativos
@@ -78,28 +73,7 @@ const TurnoTemporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
     }, 1000);
   
     return () => clearInterval(countdown);
-  }, [audioPlayed, onFinTurno, tiempoLimite, jugadorActual]); 
-  
-
-  useEffect(() => {
-    const audioElement = audioRef.current;
-
-    const handleAudioEnd = () => {
-      setTimeout(() => {
-        setAudioPlayed(false);
-      }, 1000);
-    };
-
-    if (audioElement) {
-      audioElement.addEventListener("ended", handleAudioEnd);
-    }
-
-    return () => {
-      if (audioElement) {
-        audioElement.removeEventListener("ended", handleAudioEnd);
-      }
-    };
-  }, []);
+  }, [audioPlayed, onFinTurno, tiempoLimite]); 
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -113,12 +87,9 @@ const TurnoTemporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
     };
   }, [timeLeft]);
 
- 
-
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
 
-  // Cambiar color del texto dependiendo del tiempo
   const getColor = () => {
     if (timeLeft <= 0) return "#ff0000"; // Rojo cuando el tiempo es 0
     if (timeLeft <= 10) return "#ff7f00"; // Naranja para los últimos 10 segundos
