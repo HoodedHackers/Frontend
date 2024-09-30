@@ -1,0 +1,140 @@
+.root {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+    background: radial-gradient(circle, #c084fc, #a21caf, #3b0764,#581c87);
+    background-size: 300% 300%; /* Mantiene el tamaño del gradiente */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  @media (max-width: 768px) {
+    .root {
+      padding: 1rem;
+    }
+  }
+  
+  .title {
+    color: #fff;
+    font-family: 'Georgia', serif;
+    font-size: 3rem;
+    text-shadow: 0 0 15px #ff1eff, 0 0 20px #00ffea;
+    margin-bottom: 2rem;
+    font-weight: 700;
+    transition: text-shadow 0.3s ease;
+  }
+  
+  .title:hover {
+    text-shadow: 0 0 20px #0ff, 0 0 30px #ff1eff, 0 0 40px #00ffea;
+  }
+  
+  .form {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 3rem;
+    border-radius: 8px;
+    box-shadow: 0 0 35px #0ff;
+    max-width: 500px;
+    width: 100%;
+    transition: box-shadow 0.4s ease;
+  }
+  
+  .formGroup {
+    margin-bottom: 1.5rem;
+  }
+  
+  .input {
+    padding: 14px;
+    width: 100%;
+    border-radius: 8px;
+    border: 2px solid #0ff;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 18px;
+    box-shadow: 0 0 15px #0ff;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  
+  .input:focus {
+    outline: none;
+    border-color: #ff1eff;
+    box-shadow: 0 0 25px #ff1eff; 
+  }
+  
+  .customButton {
+    background: linear-gradient(135deg, #aaa, #777);
+    color: #f3eeee;
+    padding: 12px 24px;
+    font-size: 1.2rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
+  }
+  
+  .customButton:hover {
+    background: linear-gradient(135deg, #ff1eff, #00ffea);
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #ff1eff, 0 0 20px #00ffea;
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .card {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    max-width: 400px;
+    width: 100%;
+    transition: transform 0.3s ease;
+  }
+  
+  .card-title {
+    color: #fff;
+    font-family: 'Georgia', serif;
+    font-size: 1.8rem;
+    text-shadow: 0 0 10px #ff1eff, 0 0 15px #00ffea;
+    margin-bottom: 1rem;
+  }
+  
+  .card-text {
+    color: #fff;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  .custom-button {
+    background: linear-gradient(135deg, #aaa, #777);
+    color: #f3eeee;
+    padding: 12px 24px;
+    font-size: 1.2rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
+  }
+  
+  .custom-button:hover {
+    background: linear-gradient(135deg, #ff1eff, #00ffea);
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #ff1eff, 0 0 20px #00ffea;
+  }
+  
+  .error {
+    color: #fd0d0d; 
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+  }

@@ -1,7 +1,7 @@
 import { describe, it, vi, afterEach, expect } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter, BrowserRouter } from "react-router-dom";
-import Listar_Partidas from '../components/listar_partida/Listar_Partidas.jsx';
+import Listar_Partidas from '../components/Opciones/listar_partidas/listar_partidas.jsx';
 
 const navigateMock = vi.fn();
 
