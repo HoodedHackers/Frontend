@@ -4,50 +4,8 @@ import './MazoCartaFigura.css'; // Estilos para el contenedor de MazoCartaFigura
 
 const MazoCartaFigura = () => {
   const [mazo, setMazo] = useState([]); // Estado para almacenar el array de cartas del mazo
-
-  // Función para simular la respuesta del backend
-  const obtenerMazo = async () => {
     
-    const simulatedResponse = {
-      all_cards: [
-        {
-          player: '0123456789abcdef',
-          cards_out: [
-            { card_id: 1, card_name: 'Carta A' },
-            { card_id: 2, card_name: 'Carta B' },
-            { card_id: 3, card_name: 'Carta C' }
-          ]
-        },
-        {
-          player: 'abcdef0123456789',
-          cards_out: [
-            { card_id: 4, card_name: 'Carta D' },
-            { card_id: 5, card_name: 'Carta E' },
-            { card_id: 6, card_name: 'Carta F' }
-          ]
-        },
-        {
-          player: '0123456789abcdeh',
-          cards_out: [
-            { card_id: 7, card_name: 'Carta A' },
-            { card_id: 8, card_name: 'Carta B' },
-            { card_id: 9, card_name: 'Carta C' }
-          ]
-        },
-        {
-          player: '0123456789abcded',
-          cards_out: [
-            { card_id: 10, card_name: 'Carta A' },
-            { card_id: 11, card_name: 'Carta B' },
-            { card_id: 12, card_name: 'Carta C' }
-          ]
-        },
-      ]
-    };
-
-    setMazo(simulatedResponse.all_cards); // Actualiza el estado con las cartas simuladas
-  };
-  /*const [partidaId, setPartidaId] = useState(null);
+  const [partidaId, setPartidaId] = useState(null);
   const [jugadores, setJugadores] = useState([]);
 
   // Efecto para obtener partidaId y jugadores desde localStorage solo cuando el componente se monta
@@ -58,21 +16,23 @@ const MazoCartaFigura = () => {
     if (PartidaId && Jugadores) {
       setPartidaId(PartidaId);
       setJugadores(Jugadores);
+      console.log(localStorage.getItem('partidaId'));
+      console.log(JSON.parse(localStorage.getItem('jugadores')));
     }
+
   }, []); // [] asegura que este efecto solo se ejecute una vez cuando el componente se monta
-*/
-/*
+
   // Función para obtener las cartas desde el backend
   const obtenerMazo = async () => {
-    if (!partidaId || jugadores.length === 0) return; // No ejecutar si no hay partidaId o jugadores
+    //if (!partidaId || jugadores.length === 0) return; // No ejecutar si no hay partidaId o jugadores
 
     try {
       const solicitudJSON = {
-        match_id: partidaId,      // ID de la partida
+        game_id: partidaId,      // ID de la partida
         players: jugadores.map(j => j.identifier) // Lista de jugadores
       };
 
-      const response = await fetch('https://api.backend/mazo', { // Cambia la URL por la del backend real
+      const response = await fetch('http://127.0.0.1:8000/api/partida/en_curso', { // Cambia la URL por la del backend real
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -90,13 +50,15 @@ const MazoCartaFigura = () => {
       console.error('Error al obtener el mazo de cartas:', error); // Muestra el error en la consola
     }
   };
-*/
+
   // Efecto para obtener las cartas una vez que tengamos partidaId y jugadores
   useEffect(() => {
-    //if (partidaId && jugadores.length > 0) {
+    if (partidaId && jugadores.length > 0) {
+      console.log('PartidaId actualizado:', partidaId);
+      console.log('Jugadores actualizados:', jugadores);
       obtenerMazo(); 
-    //}
-  }, []);
+    }
+  }, [partidaId, jugadores]);
 
   return (
     <div>

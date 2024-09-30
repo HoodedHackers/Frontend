@@ -16,7 +16,7 @@ const CartaFigura = ({ id }) => {
 
 // Definición de los tipos de props para validación
 CartaFigura.propTypes = {
-  id: PropTypes.string.isRequired,
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 
 export default CartaFigura;
