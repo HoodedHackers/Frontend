@@ -1,58 +1,108 @@
-.timerContainer {
-  position: relative;
+.timer-container {
+  position: absolute;
+  top: 70px; 
+  left: 70%; 
+  transform: translateX(-50%);
   display: flex;
-  justify-content: center; 
-  align-items: center; 
-  margin-top: 40px; 
-  margin-bottom: 20px; 
-  gap: 10px; 
+  justify-content: center; /* Centrar contenido */
+  align-items: center; /* Alinear verticalmente el contenido */
+  flex-direction: row; /* Cambiar a fila para alinear el botón al lado del temporizador */
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+
+/* Animación de advertencia del temporizador */
+.timer-warning-active {
+  animation: pulse 0.5s infinite;
+  border-radius: 10px;
+}
+
+/* Animación de pulso */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .rectangulo {
-  width: 70px; 
-  height: auto; 
-  padding: 8px; 
+  width: 60px; 
+  height: auto;
+  padding: 7px;
   border-radius: 10px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 100%);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(8px);
-  border: 2px solid rgba(250, 247, 247, 0.5);
-  margin: 0 auto; 
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  border: 5px solid rgba(0, 0, 0, 0.4);
+  transition: background 0.3s;
+  text-align: center;
 }
 
-.timerText {
-  font-size: 1.0rem;
+/* Estilo del texto del temporizador */
+.timer-text {
+  font-size: 1rem;
   font-weight: bold;
-  color: #ffeb3b; 
-  text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.3);
+  color: #ffeb3b;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
   font-family: 'Arial', sans-serif;
 }
 
-.playerTurn {
-  color: #ffca28; 
-  font-size: 0.6rem;
-  background-color: rgba(0, 0, 0, 0.6);
-  padding: 2px;
-  border-radius: 5px;
-  margin-top: 1px; 
+/* Indicador del turno actual */
+.turnIndicator {
+  margin-top: 5px;
+  font-size: 1rem;
+  color: #ffffff;
 }
 
-/* Para pantallas de hasta 480px */
+/* Media query para pantallas pequeñas (menos de 480px) */
 @media (max-width: 480px) {
   .rectangulo {
-    width: 80px; 
+    width: 40px; 
+    padding: 5px;
   }
 
-  .timerText {
+  .timer-text {
     font-size: 0.9rem;
   }
 
-  .playerTurn {
-    font-size: 0.8rem;
-    padding: 4px;
+  .turnIndicator {
+    font-size: 0.9rem; 
+  }
+
+  .timer-container {
+    top: 40px; 
+    left: 50%; 
+    transform: translateX(-50%);
+  }
+}
+
+/* Media query para pantallas medianas (entre 480px y 768px) */
+@media (min-width: 480px) and (max-width: 768px) {
+  .rectangulo {
+    width: 50px; 
+    padding: 6px; 
+  }
+
+  .timer-text {
+    font-size: 1rem; 
+  }
+
+  .turnIndicator {
+    font-size: 1rem; 
+  }
+
+  .timer-container {
+    top: 50px; 
+    left: 65%; 
   }
 }

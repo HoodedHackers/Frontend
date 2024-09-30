@@ -1,70 +1,67 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import TurnoTemporizador from "../Temporizador/TurnoTemporizador";
-import PasarTurno from "../PasarTurno/PasarTurno";
+import Tablero from "../Tablero/Tablero"; // Importar el componente Tablero
+import PasarTurno from "../PasarTurno/PasarTurno"; 
 import styles from "./Partida.module.css";
 
 const Partida = () => {
   const tiempoLimite = 120; // 2 minutos
-  const [jugadores, setJugadores] = useState(() => {
-    const storedJugadores = JSON.parse(localStorage.getItem("jugadores")) || [];
-    return storedJugadores.length > 0 ? storedJugadores : ["Jugador1", "Jugador2", "Jugador3", "Jugador4"]; // Default names
-  });
-
+  const [jugadores] = useState(["ely", "max", "jane", "ema"]); // Array de jugadores
   const [jugadorActualIndex, setJugadorActualIndex] = useState(() => {
     const storedIndex = localStorage.getItem("jugadorActualIndex");
-    return storedIndex !== null ? parseInt(storedIndex) : 0;
+    return storedIndex !== null ? Number(storedIndex) : 0;
   });
 
-  const [tiempoRestante, setTiempoRestante] = useState(() => {
-    const storedTiempo = localStorage.getItem("tiempoRestante");
-    return storedTiempo !== null ? parseInt(storedTiempo) : tiempoLimite;
-  });
+  const jugadorActual = jugadores[jugadorActualIndex]; // Obtener el jugador actual
+  const [timeLeft, setTimeLeft] = useState(tiempoLimite); // Estado del temporizador
+  
+  const manejarFinTurno = async () => {
+    const nuevoIndex = (jugadorActualIndex + 1) % jugadores.length;
+    setJugadorActualIndex(nuevoIndex);
+    localStorage.setItem("jugadorActualIndex", nuevoIndex); // Guarda el nuevo índice en localStorage
+    setTimeLeft(tiempoLimite); // Reiniciar el temporizador
 
-   // Recuperar el nickname del localStorage
-   const nickname = localStorage.getItem("nickname") || "Jugador1";
-
-  // Guardar el estado en localStorage
-  useEffect(() => {
-    localStorage.setItem("jugadorActualIndex", jugadorActualIndex);
-    localStorage.setItem("jugadores", JSON.stringify(jugadores));
-    localStorage.setItem("tiempoRestante", tiempoRestante);
-  }, [jugadorActualIndex, jugadores, tiempoRestante]);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTiempoRestante((prevTiempo) => {
-        if (prevTiempo > 0) {
-          return prevTiempo - 1;
-        } else {
-          clearInterval(timer);
-          return 0;
-        }
+    // Enviar actualización del turno al backend
+    try {
+      const response = await fetch("https://httpbin.org/post", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ jugadorActualIndex: nuevoIndex }),
       });
-    }, 1000);
 
-    return () => clearInterval(timer);
-  }, []);
-
-  const pasarTurno = () => {
-    setJugadorActualIndex((prevIndex) => (prevIndex + 1) % jugadores.length); // Cambia de jugador circularmente
-    setTiempoRestante(tiempoLimite); // Reinicia el temporizador
+      if (!response.ok) {
+        throw new Error("Error al actualizar el turno en el servidor");
+      }
+    } catch (error) {
+      console.error("Error en la conexión al servidor:", error);
+    }
   };
-
-  const jugadorActual = jugadores[jugadorActualIndex]; // Obtiene el nombre del jugador actual
 
   return (
     <div className={styles.partidaContainer}>
       <TurnoTemporizador
-        tiempoLimite={tiempoRestante}
-        jugadorActual={nickname} // Muestra el nombre del jugador actual
-        jugadoresEnPartida={jugadores.length} // Pasa la cantidad de jugadores
-        resetTimer={pasarTurno} // Pasa la función para reiniciar el temporizador
+        tiempoLimite={tiempoLimite}
+        jugadorActual={jugadorActual}
+        onFinTurno={manejarFinTurno}
       />
-      <PasarTurno onPasarTurno={pasarTurno} />
+
+      <div className={styles.tableroContainer}>
+        <Tablero jugadores={jugadores} />
+      </div>
+
+      <div className={styles.botonContainer}>
+        <PasarTurno
+          jugadorActual={jugadorActual}
+          jugadores={jugadores}
+          onTurnoCambiado={manejarFinTurno}
+          tiempoLimite={tiempoLimite}
+          setTimeLeft={setTimeLeft} 
+        />
+      </div>
     </div>
   );
 };
 
 export default Partida;
-
-

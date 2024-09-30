@@ -1,0 +1,14 @@
+.carta-figura {
+  display: flex;
+  justify-content: center; /* Centra el contenido horizontalmente */
+  align-items: center; /* Centra el contenido verticalmente */
+  width: 60px; /* Ancho de cada carta */
+  height: 100px; /* Alto de cada carta */
+  background-color: #474999; /* Fondo oscuro de la carta */
+  border: 2px solid #444; /* Borde oscuro */
+  border-radius: 8px; /* Bordes redondeados */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra */
+  font-size: 18px; /* Tamaño de la fuente */
+  font-weight: bold; /* Peso de la fuente */
+  margin: 5px; /* Espacio entre cartas */
+}
