@@ -7,6 +7,7 @@ import Opciones from './components/Opciones/Opciones.jsx';
 import Partida from './components/Partida/Partida.jsx';
 
 createRoot(document.getElementById("root")).render(
+createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
