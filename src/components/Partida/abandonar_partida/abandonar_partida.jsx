@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './AbandonarPartida.css';
+import './abandonar_partida.css';
 
-const AbandonarPartida = () => {
+const Abandonar_Partida = () => {
     const [error, setError] = useState(null); 
     const [loading, setLoading] = useState(false);  
     const navigate = useNavigate(); 
@@ -65,4 +65,4 @@ const AbandonarPartida = () => {
     );
 };
 
-export default AbandonarPartida;
+export default Abandonar_Partida;
