@@ -11,7 +11,7 @@
 
 /* Efecto hover */
 .boton:hover {
-  background-color: #136d18; 
+  background-color: #bd0909; 
   border: 2px solid #ffffff; 
   transform: scale(1.05); 
 }

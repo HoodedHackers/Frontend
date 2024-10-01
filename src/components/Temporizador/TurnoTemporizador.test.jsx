@@ -24,7 +24,6 @@ describe("TurnoTemporizador Component", () => {
     expect(timerText).toBeInTheDocument();
   });
 
-
 });
 
   

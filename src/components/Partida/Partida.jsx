@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import TurnoTemporizador from "../Temporizador/TurnoTemporizador";
 import PasarTurno from "../PasarTurno/PasarTurno"; 
+import IniciarPartida from "./IniciarPartida";  
 import styles from "./Partida.module.css";
 
 const Partida = () => {
@@ -14,22 +15,23 @@ const Partida = () => {
   const jugadorActual = jugadores[jugadorActualIndex]; // Obtener el jugador actual
   const [timeLeft, setTimeLeft] = useState(() => {
     const storedTime = localStorage.getItem("timeLeft");
-    return storedTime !== null ? Number(storedTime) : tiempoLimite;
-  }); // Estado del temporizador
-  const [partidaIniciada, setPartidaIniciada] = useState(false); // Estado para el inicio de la partida
+    return storedTime !== null ? Number(storedTime) : tiempoLimite; // Usar el tiempo almacenado o el límite inicial
+  }); 
 
-  useEffect(() => {
-    localStorage.setItem("timeLeft", timeLeft); // Guardar el tiempo restante en localStorage
-  }, [timeLeft]);
+  const [partidaIniciada, setPartidaIniciada] = useState(() => {
+    const storedPartidaIniciada = localStorage.getItem("partidaIniciada");
+    return storedPartidaIniciada === "true"; // Convertir a booleano
+  }); // Estado para el inicio de la partida
+
   const manejarFinTurno = async () => {
     const nuevoIndex = (jugadorActualIndex + 1) % jugadores.length;
     setJugadorActualIndex(nuevoIndex);
-    localStorage.setItem("jugadorActualIndex", nuevoIndex);
-  
-    // Reiniciar el temporizador a 2 minutos
-    setTimeLeft(tiempoLimite); // Reiniciar el temporizador
-    localStorage.setItem("timeLeft", tiempoLimite); // Reiniciar el tiempo en localStorage
-  
+    localStorage.setItem("jugadorActualIndex", nuevoIndex); // Guarda el nuevo índice en localStorage
+
+    // Reiniciar el temporizador y guardarlo en localStorage
+    setTimeLeft(tiempoLimite);
+    localStorage.setItem("timeLeft", tiempoLimite); // Guardar el tiempo inicial
+
     // Enviar actualización del turno al backend
     try {
       const response = await fetch("https://httpbin.org/post", {
@@ -39,7 +41,7 @@ const Partida = () => {
         },
         body: JSON.stringify({ jugadorActualIndex: nuevoIndex }),
       });
-  
+
       if (!response.ok) {
         throw new Error("Error al actualizar el turno en el servidor");
       }
@@ -47,12 +49,17 @@ const Partida = () => {
       console.error("Error en la conexión al servidor:", error);
     }
   };
-  
 
   // Callback para iniciar la partida
   const manejarInicioPartida = () => {
     setPartidaIniciada(true);
+    localStorage.setItem("partidaIniciada", "true"); // Guardar el estado en localStorage
   };
+
+  useEffect(() => {
+    // Guardar el tiempo restante en localStorage cada vez que cambie
+    localStorage.setItem("timeLeft", timeLeft);
+  }, [timeLeft]);
 
   return (
     <div className={styles.partidaContainer}>
@@ -61,9 +68,12 @@ const Partida = () => {
         <TurnoTemporizador
           tiempoLimite={tiempoLimite}
           jugadorActual={jugadorActual}
-          onFinTurno={manejarFinTurno}
           timeLeft={timeLeft} // Pasar el tiempo restante al temporizador
+          setTimeLeft={setTimeLeft} // Pasar la función para actualizar el tiempo
+          onFinTurno={manejarFinTurno}
         />
+
+
 
         <div className={styles.botonContainer}>
           <PasarTurno
@@ -75,6 +85,9 @@ const Partida = () => {
           />
         </div>
       </div>
+
+      {/* Mostrar el overlay del botón de inicio hasta que la partida comience */}
+      {!partidaIniciada && <IniciarPartida onIniciar={manejarInicioPartida} />}
     </div>
   );
 };

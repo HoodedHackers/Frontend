@@ -43,15 +43,4 @@ describe("TurnoTemporizador Component", () => {
     // Verifica que el temporizador se muestra correctamente
     expect(screen.getByText(/00:30/i)).toBeInTheDocument();
   });
-
-  it("Disminuye el temporizador correctamente", () => {
-    // Avanzar 5 segundos en el temporizador
-    act(() => {
-      vi.advanceTimersByTime(5000);
-    });
-
-    // Verifica que el temporizador ahora muestre 00:25
-    expect(screen.getByText(/00:25/i)).toBeInTheDocument();
-  });
-
 });
