@@ -71,7 +71,7 @@
   position: absolute; /* Permite colocar el contenedor en una posición específica */
   bottom: 20px; /* Distancia desde el borde inferior */
   left: 20px; /* Distancia desde el borde izquierdo */
-  z-index: 2; /* Asegúrate de que el botón esté encima de otros elementos */
+  z-index: 11; /* Asegúrate de que el botón esté encima de otros elementos */
 }
 
 .pasar-turno-container {
@@ -81,7 +81,6 @@
   top: 30px; /* Ajusta esta propiedad según sea necesario */
   left: 20px; /* Mueve el contenedor hacia la izquierda */
 }
-
 
 .startButton {
   z-index: 20; /* Asegúrate de que el botón esté encima de la superposición */

@@ -3,6 +3,7 @@ import Jugador from "./jugador/jugador.jsx";
 import ContainerCartasMovimiento from "./carta_movimiento/container_cartas_movimiento.jsx";
 import Tablero_Container from "./tablero/tablero_container.jsx";
 import Mazo_Carta_Figura from "./carta_figura/mazo_carta_figura.jsx";
+import Iniciar_Partida from "./iniciar_partida/iniciar_partida.jsx";
 import Abandonar_Partida from "./abandonar_partida/abandonar_partida.jsx";
 import Pasar_Turno from "./pasar_turno/pasar_turno.jsx";
 import Temporizador from "./temporizador/temporizador.jsx";
@@ -80,6 +81,13 @@ function Partida() {
   };
 
   useEffect(() => {
+    // Limpieza al desmontar el componente, si es necesario
+    return () => {
+      localStorage.removeItem("partidaIniciada"); // Opcional, si quieres resetear esto cuando se desmonte
+    };
+  }, []);
+
+  useEffect(() => {
     // Guardar el tiempo restante en localStorage cada vez que cambie
     localStorage.setItem("timeLeft", timeLeft);
   }, [timeLeft]);
@@ -106,6 +114,9 @@ function Partida() {
       </div>
       <div >
         <Mazo_Carta_Figura />
+      </div>
+      <div>
+      {!partidaIniciada && <Iniciar_Partida onIniciar={manejarInicioPartida} />}
       </div>
       <div className="abandonar-partida-container">
         <Abandonar_Partida />

@@ -36,7 +36,7 @@ const Abandonar_Partida = () => {
 
                 localStorage.setItem('jugadores', JSON.stringify(jugadoresActualizados));
 
-                navigate('/opciones'); 
+                navigate('/Opciones'); 
             } else if (response.status === 404) {
                 setError('Lobby no encontrado.');  
             } else if (response.status === 412) {
@@ -47,7 +47,8 @@ const Abandonar_Partida = () => {
         } catch (error) {
             setError('Error de conexión con el servidor.');  
         } finally {
-            setLoading(false);  
+            setLoading(false); 
+            navigate('/Opciones'); // OBVIAMENTE HAY QUE CAMBIAR ESTO 
         }
     };
 
