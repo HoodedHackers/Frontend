@@ -15,7 +15,7 @@ const CartaMovimiento = ({tipo}) => {
 
   return (
     <div className='carta-movimiento'>
-        <img src={Images[tipo]} alt={`Carta_Movimiento${tipo}`} className='carta-movimiento-img'/>
+      <img src={Images[tipo]} alt={`Carta de Movimiento ${tipo}`} className='carta-movimiento-img'/>
     </div>
   );
 };

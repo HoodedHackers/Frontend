@@ -3,12 +3,22 @@ import styles from './tablero_container.module.css';
 
 // Colores disponibles
 const COLORES = ['#f3e84c', '#1d53b6', '#f52020', '#27f178'];
+const colorToImageMap = {
+  '#f3e84c': '/Imagenes/Tablero/A.svg',
+  '#1d53b6': '/Imagenes/Tablero/B.svg',
+  '#f52020': '/Imagenes/Tablero/C.svg',
+  '#27f178': '/Imagenes/Tablero/D.svg',
+};
 
 function Square({ color, onClick, isSelected }) {
   return (
     <button
       className={`${styles.square} ${isSelected ? styles.selected : ''}`}
-      style={{ backgroundColor: color }}
+      style={{
+        backgroundImage: `url(${colorToImageMap[color]})`,
+        backgroundSize: 'cover', // Ajusta la imagen para cubrir todo el botón
+        backgroundPosition: 'center', // Centra la imagen
+      }}
       onClick={onClick}
     />
   );
@@ -93,10 +103,8 @@ export default function Tablero_Container({ jugadores }) {
   }, []);
 
   return (
-    <div className={styles.tableroContainer}>
-      <div className={styles.boardContainer}>
-        <Tablero squares={squares} onSquareClick={handleSquareClick} selectedIndex={selectedIndex} />
-      </div>
+    <div className={styles.boardContainer}>
+      <Tablero squares={squares} onSquareClick={handleSquareClick} selectedIndex={selectedIndex} />
     </div>
   );
 }

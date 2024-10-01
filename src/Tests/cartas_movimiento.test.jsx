@@ -35,9 +35,9 @@ describe('Cartas_Movimiento', () => {
     render(<ContainerCartasMovimiento ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />);
 
     // Verifica que las cartas están presentes
-    expect(screen.getByAltText("Carta_Movimiento3")).toBeInTheDocument();
-    expect(screen.getByAltText("Carta_Movimiento1")).toBeInTheDocument();
-    expect(screen.getByAltText("Carta_Movimiento2")).toBeInTheDocument();
+    expect(screen.getByAltText("Carta de Movimiento 3")).toBeInTheDocument();
+    expect(screen.getByAltText("Carta de Movimiento 1")).toBeInTheDocument();
+    expect(screen.getByAltText("Carta de Movimiento 2")).toBeInTheDocument();
   });
 
   it('Se renderizan todos los tipos de cartas de movimiento', () => {
@@ -46,7 +46,7 @@ describe('Cartas_Movimiento', () => {
     // Renderiza una carta por cada tipo
     tipos.forEach((tipo) => {
       render(<CartaMovimiento tipo={tipo} />);
-      const imagen = screen.getByAltText(`Carta_Movimiento${tipo}`);
+      const imagen = screen.getByAltText(`Carta de Movimiento ${tipo}`);
       
       // Verifica que la imagen esté en el documento
       expect(imagen).toBeInTheDocument();
@@ -72,9 +72,9 @@ describe('Cartas_Movimiento', () => {
     const { rerender } = render(<ContainerCartasMovimiento ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />);
 
     // Verifica que las cartas están presentes
-    expect(screen.getByAltText("Carta_Movimiento3")).toBeInTheDocument();
-    expect(screen.getByAltText("Carta_Movimiento1")).toBeInTheDocument();
-    expect(screen.getByAltText("Carta_Movimiento2")).toBeInTheDocument();
+    expect(screen.getByAltText("Carta de Movimiento 3")).toBeInTheDocument();
+    expect(screen.getByAltText("Carta de Movimiento 1")).toBeInTheDocument();
+    expect(screen.getByAltText("Carta de Movimiento 2")).toBeInTheDocument();
 
     // Simula haber quitado 1 carta
     let cartaMovimientos1 = [
@@ -87,8 +87,8 @@ describe('Cartas_Movimiento', () => {
     setState(cartaMovimientos1);
     
     // Verifica que las cartas están presentes
-    expect(screen.getByAltText("Carta_Movimiento3")).toBeInTheDocument();
-    expect(screen.getByAltText("Carta_Movimiento1")).toBeInTheDocument();
+    expect(screen.getByAltText("Carta de Movimiento 3")).toBeInTheDocument();
+    expect(screen.getByAltText("Carta de Movimiento 1")).toBeInTheDocument();
 
     // Simula haber quitado 2 cartas
     let cartaMovimientos2 = [
@@ -100,7 +100,7 @@ describe('Cartas_Movimiento', () => {
     setState(cartaMovimientos2);
     
     // Verifica que las cartas están presentes
-    expect(screen.getByAltText("Carta_Movimiento3")).toBeInTheDocument();
+    expect(screen.getByAltText("Carta de Movimiento 3")).toBeInTheDocument();
 
     // Simula haber quitado todas las cartas
     let cartaMovimientos3 = [
@@ -111,6 +111,6 @@ describe('Cartas_Movimiento', () => {
     setState(cartaMovimientos3);
 
     // Verifica que no hay cartas
-    expect(screen.queryByAltText("Carta_Movimiento3")).toBeNull();
+    expect(screen.queryByAltText("Carta de Movimiento 3")).toBeNull();
   });
 });

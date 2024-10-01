@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import AbandonarPartida from '../components/AbandonarPartida';
+import Abandonar_Partida from '../components/Partida/abandonar_partida/abandonar_partida.jsx';
 import { useNavigate } from 'react-router-dom';
 
 // Mockear el useNavigate para verificar si se llama correctamente
@@ -10,15 +10,15 @@ vi.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate, // Aquí aseguramos que useNavigate sea una función mockeada
 }));
 
-describe('AbandonarPartida Component', () => {
+describe('Abandonar_Partida', () => {
   it('Renderiza correctamente el botón de abandonar partida', () => {
-    render(<AbandonarPartida />);
+    render(<Abandonar_Partida />);
     
     const abandonarButton = screen.getByText(/Abandonar Partida/i);
     expect(abandonarButton).toBeInTheDocument();  // Comprueba que el botón se renderiza
   });
 
-  it('Redirige a /opciones cuando la respuesta es exitosa', async () => {
+  it('Redirige a /Opciones cuando la respuesta es exitosa', async () => {
     // Mockear fetch para devolver una respuesta exitosa
     global.fetch = vi.fn(() =>
       Promise.resolve({
@@ -30,7 +30,7 @@ describe('AbandonarPartida Component', () => {
       })
     );
 
-    render(<AbandonarPartida />);
+    render(<Abandonar_Partida />);
     
     const abandonarButton = screen.getByText(/Abandonar Partida/i);
     fireEvent.click(abandonarButton);

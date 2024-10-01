@@ -1,35 +1,15 @@
-.tableroContainer {
-  display: grid;
-  grid-template-areas:
-    "top top top"
-    "left board right"
-    "bottom bottom bottom";
-  grid-template-columns: 1fr auto 1fr;
-  grid-template-rows: auto 2fr auto;
-  place-items: center;
-  gap: 5px;
-  width: 80vh;
-  height: 80vh;
-  margin-top: 5vh; 
-}
-
 .boardContainer {
   grid-area: board;
-  width: 280px; 
-  height: 300px; 
   display: grid;
   place-items: center;
   border: 6px solid; 
   border-image: linear-gradient(to bottom right, #cccccc, #999999, #ffffff) 1;
-  padding: 6px; 
-  gap: 4px; 
   box-sizing: border-box;
 }
 
 .square {
   width: 40px; 
-  height: 40px; 
-  border: 2px solid black;
+  height: 40px;
   cursor: pointer;
   border-radius: 8px; 
   margin: 0;

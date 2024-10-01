@@ -1,4 +1,30 @@
 /* Contenedor que envuelve el formulario y la lista */
+
+.titulo-container {
+    position: absolute;
+    top: 20px; /* Espacio desde el borde superior */
+    left: 50%;
+    transform: translateX(-50%); /* Centra el título horizontalmente */
+    width: 100%; /* Abarca todo el ancho */
+    text-align: center; /* Alinea el texto al centro */
+}
+
+/* Estilo del título */
+.titulo-opciones {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 30px;
+    font-weight: bold;
+    color: #fff;
+    text-decoration: underline; 
+    margin-bottom: 20px; 
+}
+
+.titulo-opciones:hover {
+    color: #070707; /* Cambia el color al pasar el ratón */
+    transform: scale(1.1); /* Agranda ligeramente el título */
+}
+
+
 .opciones-container {
     display: flex;
     align-items: center; /* Centrado vertical */
@@ -14,7 +40,7 @@
     max-width: 30%; /* Máximo 30% de la pantalla */
     height: 100%; /* Ocupa todo el alto disponible */
     max-height: 80vh;
-    background-color: #2c2c2c;
+    background-color: #494848;
     padding: 20px;
     border: 1px solid #444; 
     border-radius: 12px; 

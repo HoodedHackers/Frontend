@@ -2,7 +2,7 @@
     display: flex; /* Usar flexbox para alinear las cartas horizontalmente */
     justify-content: center; /* Centrar las cartas en el contenedor */
     position: absolute; /* Posicionamiento absoluto para que se superpongan al jugador 1 */
-    bottom: 60px; /* Ajusta esto para que estén sobre el jugador 1 */
+    bottom: 40px; /* Ajusta esto para que estén sobre el jugador 1 */
     left: 50%; /* Centrado horizontalmente */
     transform: translateX(-50%); /* Ajuste para centrar horizontalmente */
     z-index: 1; /* Asegúrate de que las cartas estén sobre otros elementos */
@@ -12,7 +12,7 @@
     display: flex; /* Usar flexbox para alinear las cartas horizontalmente */
     justify-content: center; /* Centrar las cartas en el contenedor */
     position: absolute; /* Posicionamiento absoluto para que se superpongan al jugador 2 */
-    top: 60px; /* Ajusta esto para que estén sobre el jugador 2 */
+    top: 40px; /* Ajusta esto para que estén sobre el jugador 2 */
     left: 50%; /* Centrado horizontalmente */
     transform: translateX(-50%); /* Ajuste para centrar horizontalmente */
     z-index: 1; /* Asegúrate de que las cartas estén sobre otros elementos */
