@@ -3,13 +3,6 @@
     color: #00d9ff;
     cursor: pointer;
     transition: color 0.2s ease;
-  }
-
-  .abandonar-partida-boton:active {
-    transform: scale(0.95);
-  }
-
-  .abandonar-partida-boton {
     background-color: #51f311; /* Color de fondo rojo */
     color: white; /* Color del texto blanco */
     border: none;
@@ -19,6 +12,10 @@
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+  }
+
+.abandonar-partida-boton:active {
+  transform: scale(0.95);
 }
 
 .abandonar-partida-boton:hover {
@@ -28,4 +25,14 @@
 .abandonar-partida-boton:disabled {
     background-color: #cccccc; /* Color gris cuando está deshabilitado */
     cursor: not-allowed;
+}
+
+/* abandonar_partida.css */
+.error-message {
+  opacity: 1; /* Comienza completamente visible */
+  transition: opacity 0.5s ease; /* Efecto de transición */
+}
+
+.error-message.fade-out {
+  opacity: 0; /* Se desvanece */
 }

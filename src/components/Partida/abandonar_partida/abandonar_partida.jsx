@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './abandonar_partida.css';
 
 const Abandonar_Partida = () => {
     const [error, setError] = useState(null); 
     const [loading, setLoading] = useState(false);  
+    const [fadeOut, setFadeOut] = useState(false); // Estado para manejar el desvanecimiento
     const navigate = useNavigate(); 
 
     const ident = localStorage.getItem('identifier');
@@ -13,6 +14,7 @@ const Abandonar_Partida = () => {
     const manejadorAbandonarPartida = async () => {
         setLoading(true);  
         setError(null);  
+        setFadeOut(false);
 
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/lobby/salir/${partidaId}`, {
@@ -48,10 +50,27 @@ const Abandonar_Partida = () => {
             setLoading(false);  
         }
     };
-  
+
+    useEffect(() => {
+        if (error) {
+            const timer = setTimeout(() => {
+                setFadeOut(true); // Activa el desvanecimiento
+                setTimeout(() => {
+                    setError(null); // Limpia el mensaje de error después del desvanecimiento
+                }, 5000); // Tiempo de desvanecimiento
+            }, 5000); // Tiempo que el mensaje es visible
+
+            return () => clearTimeout(timer); // Limpiar temporizador
+        }
+    }, [error]); // Ejecutar efecto cada vez que 'error' cambie
+
     return (
         <div className="abandonar-partida-container">
-            {error && <p className="error-message">{error}</p>}
+            {error && (
+                <p className={`error-message ${fadeOut ? 'fade-out' : ''}`}>
+                    {error}
+                </p>
+            )}
             
             <button 
                 variant='contained'

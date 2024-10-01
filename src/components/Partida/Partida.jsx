@@ -4,6 +4,7 @@ import ContainerCartasMovimiento from "./carta_movimiento/container_cartas_movim
 import TurnoTemporizador from "./temporizador/temporizador.jsx";
 import Tablero_Container from "./tablero/tablero_container.jsx";
 import Mazo_Carta_Figura from "./carta_figura/mazo_carta_figura.jsx";
+import Abandonar_Partida from "./abandonar_partida/abandonar_partida.jsx";
 import "./Partida.css"; 
 
 function Partida() {
@@ -89,6 +90,9 @@ function Partida() {
       </div>
       <div >
         <Mazo_Carta_Figura />
+      </div>
+      <div className="abandonar-partida-container">
+        <Abandonar_Partida />
       </div>
       {isOverlayVisible && <div className="overlay"></div>}
     </div>
