@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 function Listar_Partidas({jugador_id}) {
   const [partidas, setPartidas] = useState([]);
   const navigate = useNavigate();
-  //const wsRef = useRef(null);
+  const wsRef = useRef(null);
 
   const Unirse = async (partida_id) => {
     try {
@@ -51,7 +51,7 @@ function Listar_Partidas({jugador_id}) {
     fetchPartidas();
   }, []);
 
-  /* 
+  
   useEffect(() => {
     wsRef.current = new WebSocket("http://127.0.0.1:8000/ws/api/lobby");
 
@@ -62,7 +62,7 @@ function Listar_Partidas({jugador_id}) {
     wsRef.current.onmessage = (event) => {
       console.log("Received message:", event.data);
       const updatedMessage = JSON.parse(event.data);
-      if (updatedMessage.message === "New lobbies available") {
+      if (updatedMessage.message === "update") {
         fetchPartidas();
       }
     };
@@ -84,7 +84,7 @@ function Listar_Partidas({jugador_id}) {
       }
     };
   }, []);
-  */
+
 
   return (
     <div>

@@ -74,6 +74,15 @@
   z-index: 2; /* Asegúrate de que el botón esté encima de otros elementos */
 }
 
+.pasar-turno-container {
+  display: flex;
+  align-items: center;
+  position: absolute; 
+  top: 30px; /* Ajusta esta propiedad según sea necesario */
+  left: 20px; /* Mueve el contenedor hacia la izquierda */
+}
+
+
 .startButton {
   z-index: 20; /* Asegúrate de que el botón esté encima de la superposición */
   padding: 10px 20px;
@@ -99,4 +108,17 @@ button:disabled {
   height: 100%; 
   background: rgba(0, 0, 0, 0.5); /* Color de fondo oscuro con opacidad */
   z-index: 0; /* Detrás de otros elementos */
+}
+
+.timer-container {
+  position: absolute;
+  top: 70px; 
+  left: 70%; 
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center; /* Centrar contenido */
+  align-items: center; /* Alinear verticalmente el contenido */
+  flex-direction: row; /* Cambiar a fila para alinear el botón al lado del temporizador */
+  margin-top: 0;
+  margin-bottom: 0;
 }

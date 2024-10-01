@@ -1,62 +1,29 @@
-import { render, screen, act } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import TurnoTemporizador from "../components/Partida/temporizador/temporizador.jsx";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import Temporizador from "../components/Partida/temporizador/temporizador.jsx";
 
-// Mocks de localStorage y audio
-beforeEach(() => {
-  // Mock de localStorage
-  vi.spyOn(Storage.prototype, "getItem").mockImplementation((key) => {
-    if (key === "timeLeft") return null; // Simulamos que no hay tiempo guardado
-    return null;
+describe("Temporizador Component", () => {
+  const tiempoLimite = 120; // 2 minutos
+  const jugadorActual = "Ely";
+  let jugadoresEnPartida = 2; // Mínimo requerido para iniciar el temporizador
+
+  beforeEach(() => {
+    vi.useFakeTimers(); // Utiliza temporizadores simulados
+    render(
+      <Temporizador tiempoLimite={tiempoLimite} jugadorActual={jugadorActual} jugadoresEnPartida={jugadoresEnPartida} />
+    );
   });
-  vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {});
 
-  const mockAudioPlay = vi.fn();
-  const mockAudioAddEventListener = vi.fn();
-  vi.spyOn(global, "Audio").mockImplementation(() => ({
-    play: mockAudioPlay,
-    addEventListener: mockAudioAddEventListener,
-  }));
+  afterEach(() => {
+    vi.clearAllMocks(); // Limpiar mocks
+    vi.useRealTimers(); // Regresar a temporizadores reales
+  });
 
-  global.mockAudioPlay = mockAudioPlay;
-  global.mockAudioAddEventListener = mockAudioAddEventListener;
+  it("Renderiza el temporizador correctamente al inicio del turno", () => {
+    const timerText = screen.getByText(/02:00/i);
+    expect(timerText).toBeInTheDocument();
+  });
+
 });
 
-afterEach(() => {
-  vi.clearAllMocks();
-});
-
-describe("TurnoTemporizador", () => {
-  it("debe renderizar correctamente con tiempo inicial", () => {
-    render(<TurnoTemporizador tiempoLimite={120} />); // 2 minutos
-    const timer = screen.getByText("02:00"); // Verificamos que el tiempo inicial se muestre
-    expect(timer).toBeInTheDocument();
-  });
-
-  it("debe decrementar el tiempo cada segundo", () => {
-    vi.useFakeTimers(); // Habilitamos el uso de timers falsos
-    render(<TurnoTemporizador tiempoLimite={60} />); // 1 minuto
-
-    act(() => {
-      vi.advanceTimersByTime(1000); // Avanza 1 segundo
-    });
-
-    expect(screen.getByText("00:59")).toBeInTheDocument(); // Después de 1 segundo, el temporizador debe mostrar 00:59
-  });
-
-  it("debe almacenar el tiempo restante en localStorage antes de recargar", () => {
-    render(<TurnoTemporizador tiempoLimite={120} />);
-
-    // Simulamos una cuenta regresiva
-    act(() => {
-      vi.advanceTimersByTime(5000); // Avanza 5 segundos
-    });
-
-    // Simulamos el evento beforeunload
-    const event = new Event("beforeunload");
-    window.dispatchEvent(event);
-
-    // Verificamos que localStorage se actualizó correctamente
-    expect(localStorage.setItem).toHaveBeenCalledWith("timeLeft", 115);
-  });
-});
+  

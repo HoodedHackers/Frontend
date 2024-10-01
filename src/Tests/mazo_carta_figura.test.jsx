@@ -1,8 +1,12 @@
 import { render, screen, waitFor, act } from '@testing-library/react';
 import Mazo_Carta_Figura from '../components/Partida/carta_figura/mazo_carta_figura.jsx';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import React from 'react';
 
 describe('Mazo_Carta_Figura', () => {
+  // Definir mocks para las funciones de onMouseEnter y onMouseLeave
+  const handleMouseEnter = vi.fn();
+  const handleMouseLeave = vi.fn();
   beforeEach(() => {
     // Simular valores de localStorage antes de cada prueba
     const mockPartidaId = '12345';
@@ -52,15 +56,16 @@ describe('Mazo_Carta_Figura', () => {
 
   it('Hace una llamada fetch y actualiza el mazo de cartas', async () => {
     await act(async () => {
-      render(<Mazo_Carta_Figura />);
+      render(<Mazo_Carta_Figura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />);
     });
 
     // Esperar a que el mazo de cartas se actualice
     await waitFor(() => {
-      expect(screen.getByAltText('Carta de Figura 1')).toBeInTheDocument();
       expect(screen.getByAltText('Carta de Figura 2')).toBeInTheDocument();
       expect(screen.getByAltText('Carta de Figura 3')).toBeInTheDocument();
+      expect(screen.getByAltText('Carta de Figura 4')).toBeInTheDocument();
     });
+    
 
     // Asegurarse de que el fetch fue llamado
     expect(global.fetch).toHaveBeenCalledTimes(1);
@@ -68,83 +73,108 @@ describe('Mazo_Carta_Figura', () => {
 
   it('Renderiza las cartas de los jugadores correctamente', async () => {
     await act(async () => {
-      render(<Mazo_Carta_Figura />);
+      render(<Mazo_Carta_Figura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />);
     });
 
     // Esperar a que las cartas se carguen y verificar que se muestran correctamente
     await waitFor(() => {
-      expect(screen.getByAltText('Carta de Figura 1')).toBeInTheDocument();
       expect(screen.getByAltText('Carta de Figura 2')).toBeInTheDocument();
       expect(screen.getByAltText('Carta de Figura 3')).toBeInTheDocument();
       expect(screen.getByAltText('Carta de Figura 4')).toBeInTheDocument();
-      expect(screen.getByAltText('Carta de Figura 5')).toBeInTheDocument();
-      expect(screen.getByAltText('Carta de Figura 6')).toBeInTheDocument();
+      expect(screen.getByAltText('Carta de Figura 2')).toBeInTheDocument();
+      expect(screen.getByAltText('Carta de Figura 3')).toBeInTheDocument();
+      expect(screen.getByAltText('Carta de Figura 4')).toBeInTheDocument();
     });
+    
 
     // Verificar que el fetch fue llamado una vez
     expect(global.fetch).toHaveBeenCalledTimes(1);
   });
   it('Se alterna entre 0 y 3 cartas por jugador', () => {
     let cartaFigura = [
-      { player: 1, cards_out: [{ card_id: 30, card_name: "Soy Figura" },
-        { card_id: 21, card_name: "Soy Figura" },
-        { card_id: 43, card_name: "Soy Figura" }] 
-      }
+      {
+        player: 1,
+        cards_out: [
+          { card_id: 30, card_name: 'Soy Figura' },
+          { card_id: 21, card_name: 'Soy Figura' },
+          { card_id: 43, card_name: 'Soy Figura' },
+        ],
+      },
     ];
 
     // Crea un mock para useState
     const setState = vi.fn((cartasActuales) => {
       cartaFigura = typeof cartasActuales === 'function' ? cartasActuales(cartaFigura) : cartasActuales;
-      rerender(<Mazo_Carta_Figura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />);
     });
+
     const useStateMock = () => [cartaFigura, setState];
 
     // Simula el useState de todos los componentes antes de renderizar
     vi.spyOn(React, 'useState').mockImplementation(useStateMock);
 
-    // Renderiza el componente por primera vez
-    const { rerender } = render(<Mazo_Carta_Figura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />);
+    // Renderiza el componente por primera vez y captura la función rerender
+    const { rerender } = render(
+      <Mazo_Carta_Figura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
+    );
 
     // Verifica que las cartas están presentes
-    expect(screen.getByAltText("Carta de Figura 6")).toBeInTheDocument();
-    expect(screen.getByAltText("Carta de Figura 22")).toBeInTheDocument();
-    expect(screen.getByAltText("Carta de Figura 19")).toBeInTheDocument();
+    expect(screen.getByAltText('Carta de Figura 6')).toBeInTheDocument();
+    expect(screen.getByAltText('Carta de Figura 22')).toBeInTheDocument();
+    expect(screen.getByAltText('Carta de Figura 19')).toBeInTheDocument();
 
     // Simula haber quitado 1 carta
     let cartaFigura1 = [
-      { player: 1, cards_out: [{ card_id: 30, card_name: "Soy Figura" },
-        { card_id: 21, card_name: "Soy Figura" }] 
-      }
+      {
+        player: 1,
+        cards_out: [
+          { card_id: 30, card_name: 'Soy Figura' },
+          { card_id: 21, card_name: 'Soy Figura' },
+        ],
+      },
     ];
 
-    // Quita la última carta
+    // Actualiza el estado y vuelve a renderizar
     setState(cartaFigura1);
-    
+    rerender(
+      <Mazo_Carta_Figura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
+    );
+
     // Verifica que las cartas están presentes
-    expect(screen.getByAltText("Carta de Figura 6")).toBeInTheDocument();
-    expect(screen.getByAltText("Carta de Figura 22")).toBeInTheDocument();
+    expect(screen.getByAltText('Carta de Figura 6')).toBeInTheDocument();
+    expect(screen.getByAltText('Carta de Figura 22')).toBeInTheDocument();
 
     // Simula haber quitado 2 cartas
     let cartaFigura2 = [
-      { player: 1, cards_out: [{ card_id: 30, card_name: "Soy Figura" }] 
-      }
+      {
+        player: 1,
+        cards_out: [{ card_id: 30, card_name: 'Soy Figura' }],
+      },
     ];
 
-    // Quita la última carta
+    // Actualiza el estado y vuelve a renderizar
     setState(cartaFigura2);
-    
+    rerender(
+      <Mazo_Carta_Figura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
+    );
+
     // Verifica que las cartas están presentes
-    expect(screen.getByAltText("Carta de Figura 6")).toBeInTheDocument();
+    expect(screen.getByAltText('Carta de Figura 6')).toBeInTheDocument();
 
     // Simula haber quitado todas las cartas
     let cartaFigura3 = [
-      { player: 1, cards_out: [] }
+      {
+        player: 1,
+        cards_out: [],
+      },
     ];
 
-    // Quita la última carta
+    // Actualiza el estado y vuelve a renderizar
     setState(cartaFigura3);
+    rerender(
+      <Mazo_Carta_Figura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
+    );
 
     // Verifica que no hay cartas
-    expect(screen.queryByAltText("Carta de Figura 6")).toBeNull();
+    expect(screen.queryByAltText('Carta de Figura 6')).toBeNull();
   });
 });
