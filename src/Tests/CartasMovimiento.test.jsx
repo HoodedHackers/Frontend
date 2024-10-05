@@ -1,8 +1,8 @@
 import React from 'react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import CartaMovimiento from '../components/Partida/carta_movimiento/carta_movimiento';
-import ContainerCartasMovimiento from '../components/Partida/carta_movimiento/container_cartas_movimiento';
+import CartaMovimiento from '../components/Partida/CartaMovimiento/CartaMovimiento';
+import ContainerCartasMovimiento from '../components/Partida/CartaMovimiento/ContainerCartasMovimiento';
 
 describe('Cartas_Movimiento', () => {
   let cartaMovimientos = [

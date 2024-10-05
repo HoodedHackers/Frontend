@@ -1,5 +1,5 @@
 import React from 'react';
-import './jugador.css';
+import './Jugador.css';
 
 
 // Función que divide un nombre en partes de 16 caracteres

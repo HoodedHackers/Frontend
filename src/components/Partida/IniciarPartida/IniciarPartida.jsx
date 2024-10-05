@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import styles from './iniciar_partida.module.css';
+import styles from './IniciarPartida.module.css';
 
-function Iniciar_Partida ({ onIniciar }) {
+function IniciarPartida ({ onIniciar }) {
   const [loading, setLoading] = useState(false);
 
   const handleIniciar = async () => {
@@ -42,4 +42,4 @@ function Iniciar_Partida ({ onIniciar }) {
   );
 };
 
-export default Iniciar_Partida;
+export default IniciarPartida;

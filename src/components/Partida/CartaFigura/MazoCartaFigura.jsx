@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import CartaFigura from './carta_figura'; 
-import './mazo_carta_figura.css'; 
+import CartaFigura from './CartaFigura'; 
+import './MazoCartaFigura.css'; 
 
-function Mazo_Carta_Figura ({ubicacion, onMouseEnter, onMouseLeave}) {
+function MazoCartaFigura ({ubicacion, onMouseEnter, onMouseLeave}) {
   const [mazo, setMazo] = React.useState([
     { player: 1, cards_out: [{ card_id: 30, card_name: "Soy Figura" },
       { card_id: 21, card_name: "Soy Figura" },
@@ -94,4 +94,4 @@ function Mazo_Carta_Figura ({ubicacion, onMouseEnter, onMouseLeave}) {
   );
 };
 
-export default Mazo_Carta_Figura;
+export default MazoCartaFigura;

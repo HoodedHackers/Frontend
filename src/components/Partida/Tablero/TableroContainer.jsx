@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styles from './tablero_container.module.css';
+import styles from './TableroContainer.module.css';
 
 // Colores disponibles
 const COLORES = ['#f3e84c', '#1d53b6', '#f52020', '#27f178'];
@@ -43,7 +43,7 @@ function Tablero({ squares, onSquareClick, selectedIndex }) {
   );
 }
 
-export default function Tablero_Container({ jugadores }) {
+export default function TableroContainer({ jugadores }) {
   const [squares, setSquares] = useState(generateInitialColors());
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [turnoActual, setTurnoActual] = useState(0);

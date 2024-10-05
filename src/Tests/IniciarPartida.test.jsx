@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
-import IniciarPartida from "../components/Partida/iniciar_partida/iniciar_partida.jsx";
+import IniciarPartida from "../components/Partida/IniciarPartida/IniciarPartida.jsx";
 
 describe('IniciarPartida', () => {
   const mockOnIniciar = vi.fn().mockResolvedValueOnce(); // Simulate a resolved promise

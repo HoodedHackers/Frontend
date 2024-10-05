@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './abandonar_partida.css';
+import './AbandonarPartida.css';
 
-const Abandonar_Partida = () => {
+const AbandonarPartida = () => {
     const [error, setError] = useState(null); 
     const [loading, setLoading] = useState(false);  
     const [fadeOut, setFadeOut] = useState(false); // Estado para manejar el desvanecimiento
@@ -61,7 +61,7 @@ const Abandonar_Partida = () => {
                 }, 5000); // Tiempo de desvanecimiento
             }, 5000); // Tiempo que el mensaje es visible
 
-            return () => clearTimeout(timer); // Limpiar temporizador
+            return () => clearTimeout(timer); // Limpiar Temporizador
         }
     }, [error]); // Ejecutar efecto cada vez que 'error' cambie
 
@@ -85,4 +85,4 @@ const Abandonar_Partida = () => {
     );
 };
 
-export default Abandonar_Partida;
+export default AbandonarPartida;

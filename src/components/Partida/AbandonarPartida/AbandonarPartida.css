@@ -27,7 +27,7 @@
     cursor: not-allowed;
 }
 
-/* abandonar_partida.css */
+/* AbandonarPartida.css */
 .error-message {
   opacity: 1; /* Comienza completamente visible */
   transition: opacity 0.5s ease; /* Efecto de transición */

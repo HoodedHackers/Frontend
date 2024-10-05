@@ -1,5 +1,5 @@
 import React from 'react';
-import './carta_movimiento.css';
+import './CartaMovimiento.css';
 
 const CartaMovimiento = ({tipo}) => {
   const Images = [

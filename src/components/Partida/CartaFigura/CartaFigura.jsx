@@ -1,7 +1,7 @@
 // src/components/CartaFigura.jsx
 import React from 'react';
 // import PropTypes from 'prop-types';
-import './carta_figura.css'; 
+import './CartaFigura.css'; 
 
 function CartaFigura ({ tipo }) {
 

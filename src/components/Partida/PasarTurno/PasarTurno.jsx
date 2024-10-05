@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import styles from "./pasar_turno.module.css"; 
+import styles from "./PasarTurno.module.css"; 
 
-function Pasar_Turno  ({
+function PasarTurno  ({
   jugadorActual,
   jugadores,
   onTurnoCambiado,
@@ -11,7 +11,7 @@ function Pasar_Turno  ({
   const [jugadorActivo, setJugadorActivo] = useState(jugadorActual);
 
   const pasarTurno = async () => {
-    // Reiniciar el temporizador antes de cambiar el turno
+    // Reiniciar el Temporizador antes de cambiar el turno
     setTimeLeft(tiempoLimite);
   
     // Determinar el siguiente jugador en la lista
@@ -59,4 +59,4 @@ function Pasar_Turno  ({
   );
 };
 
-export default Pasar_Turno;
+export default PasarTurno;

@@ -1,6 +1,6 @@
 import React from 'react';
-import CartaMovimiento from './carta_movimiento.jsx';
-import './container_cartas_movimiento.css';
+import CartaMovimiento from './CartaMovimiento.jsx';
+import './ContainerCartasMovimiento.css';
 
 const ContainerCartasMovimiento = ({ubicacion, onMouseEnter, onMouseLeave}) => {
   const [cartaMovimientos, setCartaMovimientos] = React.useState([
