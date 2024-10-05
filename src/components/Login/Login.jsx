@@ -35,8 +35,8 @@ const manejarBotonInicioSesion = async (data) => {
 
     const result = await response.json();
     console.log("Nombre agregado:", result);
-    localStorage.setItem("nickname", data.nickname);
-    localStorage.setItem("identifier", result.identifier);
+    localStorage.setItem("player_nickname", data.nickname);
+    localStorage.setItem("player_id", result.identifier);
     navigate("/Opciones");
   } catch (error) {
     setErrorMessage(error.message || "Error en la solicitud");
