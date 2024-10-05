@@ -108,7 +108,7 @@ function ListarPartidas() {
               <div className="item-partida-der">
                 <button
                   className="item-partida-boton"
-                  onClick={() => Unirse(1)} // CAMBIAR
+                  onClick={() => Unirse(partida.id)}
                 >
                   Unirse
                 </button>
