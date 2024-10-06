@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import styles from "./login.module.css";
+import styles from "./Login.module.css";
 
 const Login = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();

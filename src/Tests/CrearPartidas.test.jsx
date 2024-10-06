@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import * as ReactRouter from "react-router";
-import CrearPartida from  "../components/Opciones/crear_partida/crear_partida.jsx";
+import CrearPartida from  "../components/Opciones/CrearPartida/CrearPartida.jsx";
 
 describe("CrearPartida Component", () => {
   let button = null;
