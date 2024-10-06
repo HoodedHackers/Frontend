@@ -1,4 +1,4 @@
-import Listar_Partidas from "./listar_partidas/listar_partidas.jsx";
+import ListarPartidas from "./ListarPartidas/ListarPartidas.jsx";
 import CrearPartida from "./CrearPartida/CrearPartida";
 import "./Opciones.css";
 
@@ -10,7 +10,7 @@ function Opciones() {
           <CrearPartida />
         </div>
         <div className="list-container">
-          <Listar_Partidas jugador_id={"sdsda"} />
+          <ListarPartidas jugador_id={"sdsda"} />
         </div>
       </div>
     );

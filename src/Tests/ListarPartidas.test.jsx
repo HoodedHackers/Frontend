@@ -1,7 +1,7 @@
 import { describe, it, vi, afterEach, expect } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter, BrowserRouter } from "react-router-dom";
-import Listar_Partidas from '../components/Opciones/listar_partidas/listar_partidas.jsx';
+import ListarPartidas from '../components/Opciones/ListarPartidas/ListarPartidas.jsx';
 
 const navigateMock = vi.fn();
 
@@ -13,7 +13,7 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
-describe('Listar_Partidas Component', () => {
+describe('ListarPartidas Component', () => {
   const partidas = [
       { id: 1, name: 'Partida Milo', current_players: 2, max_players: 4 },
       { id: 2, name: 'Partida Ely', current_players: 2, max_players: 4 },
@@ -39,7 +39,7 @@ describe('Listar_Partidas Component', () => {
 
     render(
       <MemoryRouter>
-        <Listar_Partidas jugador_id={"sdsda"} />
+        <ListarPartidas jugador_id={"sdsda"} />
       </MemoryRouter>
     );
 
@@ -60,7 +60,7 @@ describe('Listar_Partidas Component', () => {
   
     render(
       <MemoryRouter>
-        <Listar_Partidas jugador_id={"sdsda"} />
+        <ListarPartidas jugador_id={"sdsda"} />
       </MemoryRouter>
     );
   
@@ -86,7 +86,7 @@ describe('Listar_Partidas Component', () => {
     );
   
     // Renderizamos el componente
-    render(<Listar_Partidas jugador_id={"sdsda"} />);
+    render(<ListarPartidas jugador_id={"sdsda"} />);
   
     // Esperamos a que fetch sea llamado
     await waitFor(() => {
@@ -112,7 +112,7 @@ describe('Listar_Partidas Component', () => {
   
     render(
       <MemoryRouter>
-        <Listar_Partidas jugador_id={"sdsda"} />
+        <ListarPartidas jugador_id={"sdsda"} />
       </MemoryRouter>
     );
 
@@ -143,7 +143,7 @@ describe('Listar_Partidas Component', () => {
 
     render(
       <BrowserRouter>
-          <Listar_Partidas jugador_id={"sdsda"} />
+          <ListarPartidas jugador_id={"sdsda"} />
       </BrowserRouter>
     );
         

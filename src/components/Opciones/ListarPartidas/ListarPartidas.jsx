@@ -5,7 +5,9 @@ import { useNavigate } from 'react-router-dom';
 function ListarPartidas() {
   const [partidas, setPartidas] = useState([]);
   const navigate = useNavigate();
-  const [wsLPRef, wsUPRef] = useRef(null);
+  const wsLPRef = useRef(null);
+  const wsUPRef = useRef(null);
+
 
   const Unirse = async (partida_id) => {
     try {
@@ -30,9 +32,18 @@ function ListarPartidas() {
       wsUPRef.current.onopen = () => {
         console.log("Conexión WebSocket abierta");
 
-        const startMessage = { action: "join" };
+        const startMessage = {
+           action: "connect",
+           user_identifier: localStorage.getItem('player_id') 
+          };
         wsUPRef.current.send(JSON.stringify(startMessage));
         console.log("Mensaje unión a partida enviado.");
+      };
+
+      // Manejar el arreglo de jugadores actualziado recibido como respuesta
+      socketRef.current.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        sessionStorage.setItem("players", data.players);
       };
 
       // Manejar errores
