@@ -1,8 +1,8 @@
 import React from 'react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import CartaMovimiento from '../components/Partida/CartaMovimiento/CartaMovimiento';
-import ContainerCartasMovimiento from '../components/Partida/CartaMovimiento/ContainerCartasMovimiento';
+import CartaMovimiento from '../components/Partida/CartasMovimiento/CartaMovimiento';
+import CartasMovimientoMano from '../components/Partida/CartasMovimiento/CartasMovimientoMano';
 
 describe('Cartas_Movimiento', () => {
   let cartaMovimientos = [
@@ -32,7 +32,7 @@ describe('Cartas_Movimiento', () => {
     vi.spyOn(React, 'useState').mockImplementationOnce(useStateMock);
 
     // Renderiza el componente con el mock
-    render(<ContainerCartasMovimiento ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />);
+    render(<CartasMovimientoMano ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />);
 
     // Verifica que las cartas están presentes
     expect(screen.getByAltText("Carta de Movimiento 3")).toBeInTheDocument();
@@ -61,7 +61,7 @@ describe('Cartas_Movimiento', () => {
     // Crea un mock para useState
     const setState = vi.fn((cartasActuales) => {
       cartaMovimientos = typeof cartasActuales === 'function' ? cartasActuales(cartaMovimientos) : cartasActuales;
-      rerender(<ContainerCartasMovimiento ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />);
+      rerender(<CartasMovimientoMano ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />);
     });
     const useStateMock = () => [cartaMovimientos, setState];
 
@@ -69,7 +69,7 @@ describe('Cartas_Movimiento', () => {
     vi.spyOn(React, 'useState').mockImplementation(useStateMock);
 
     // Renderiza el componente por primera vez
-    const { rerender } = render(<ContainerCartasMovimiento ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />);
+    const { rerender } = render(<CartasMovimientoMano ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />);
 
     // Verifica que las cartas están presentes
     expect(screen.getByAltText("Carta de Movimiento 3")).toBeInTheDocument();

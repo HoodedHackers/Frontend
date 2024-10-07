@@ -27,6 +27,7 @@ function ListarPartidas() {
       if (!response.ok) {
         throw new Error('Fallo al unirse a la partida');
       }
+      sessionStorage.setItem('partida_id', partida_id.toString());
       navigate(`/Partida/${partida_id}`);
     } catch (error) {
       console.error(error);

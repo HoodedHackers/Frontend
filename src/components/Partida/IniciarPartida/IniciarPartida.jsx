@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { PartidaContext } from '../PartidaProvider.jsx';
 import styles from './IniciarPartida.module.css';
 
-function IniciarPartida ({ onIniciar }) {
+function IniciarPartida () {
+  const { setPartidaIniciada } = useContext(PartidaContext);
   const [loading, setLoading] = useState(false);
 
   const handleIniciar = async () => {
@@ -21,7 +23,8 @@ function IniciarPartida ({ onIniciar }) {
         throw new Error('Error al iniciar la partida');
       }
 
-      onIniciar();  // Llamar al callback para notificar que la partida ha comenzado
+      sessionStorage.setItem('partidaIniciada', "true");
+      setPartidaIniciada(true);
       setLoading(false);
     } catch (error) {
       console.error('Error al iniciar la partida:', error);
