@@ -1,38 +1,103 @@
 import React from 'react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor, cleanup } from '@testing-library/react';
 import CartaMovimiento from '../components/Partida/CartasMovimiento/CartaMovimiento';
 import CartasMovimientoMano from '../components/Partida/CartasMovimiento/CartasMovimientoMano';
+import { PartidaContext } from '../components/Partida/PartidaProvider';
 
-describe('Cartas_Movimiento', () => {
-  let cartaMovimientos = [
-     { player: 1, cards_out: [{ card_id: 30, card_name: "Soy Movimiento" },
-       { card_id: 21, card_name: "Soy Movimiento" },
-       { card_id: 43, card_name: "Soy Movimiento" }] 
-     }
+vi.mock('../components/Partida/PartidaProvider');
+
+// Mock de los datos del contexto
+const jugadores = [
+    { id: 1, name: 'Jugador 1' }
   ];
 
-  const handleMouseEnter = () => {
-    setIsOverlayVisible(true);
-  };
-  
-  const handleMouseLeave = () => {
-    setIsOverlayVisible(false);
-  };
+// Mock de los datos de las cartas de movimiento
+let cartaMovimientosMock = [
+  { player: 1, cards_out: [
+    { card_id: 30, card_name: "Soy Movimiento" },
+    { card_id: 21, card_name: "Soy Movimiento" },
+    { card_id: 43, card_name: "Soy Movimiento" }] 
+  }
+];
+
+// Mock de handleMouseEnter
+const handleMouseEnterMock = () => {
+ setIsOverlayVisible(true);
+};
+
+// Mock de handleMouseLeave
+const handleMouseLeaveMock = () => {
+ setIsOverlayVisible(false);
+};
+
+describe('Cartas de Movimiento', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  it('Renderiza cartas', () => {
-    // Crea un mock para useState
-    const setState = vi.fn();
-    const useStateMock = () => [cartaMovimientos, setState];
+  it('Renderiza cartas boca abajo cuando la partida no inicio', () => {
+    const partidaIniciada = false;
 
-    vi.spyOn(React, 'useState').mockImplementationOnce(useStateMock);
+    // Mockea useState para devolver los datos simulados de cartaMovimientos
+    vi.spyOn(React, 'useState').mockReturnValue([cartaMovimientosMock, vi.fn()]);
 
-    // Renderiza el componente con el mock
-    render(<CartasMovimientoMano ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />);
+    // Renderiza el componente con los datos simulados
+    render(
+      <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
+        <CartasMovimientoMano 
+          ubicacion={0} 
+          onMouseEnter={handleMouseEnterMock} 
+          onMouseLeave={handleMouseLeaveMock} 
+        />
+      </PartidaContext.Provider>
+    );
+
+    // Verifica que las cartas están presentes y se renderizan boca abajo
+    const cartasBocaAbajo = screen.getAllByAltText("Carta de Movimiento 0");
+    expect(cartasBocaAbajo).toHaveLength(3);
+  });
+
+  it('Se conecta al endpoint para obtener las cartas', async () => {
+    const partidaIniciada = true;
+
+    // Mock de la respuesta del fetch
+    const responseMock = { 
+      player: 1, cards_out: [
+        { card_id: 30, card_name: "Soy Movimiento" },
+        { card_id: 21, card_name: "Soy Movimiento" },
+        { card_id: 43, card_name: "Soy Movimiento" }] 
+      };
+
+    // Simula el fetch para devolver la respuesta simulada
+    const fetchMock = vi.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(responseMock),  // Simula la respuesta en formato JSON
+    });
+
+    // Renderiza el componente
+    render(
+      <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
+        <CartasMovimientoMano 
+          ubicacion={0} 
+          onMouseEnter={handleMouseEnterMock} 
+          onMouseLeave={handleMouseLeaveMock} 
+        />
+      </PartidaContext.Provider>
+    );
+
+    // Espera a que fetch sea llamado con los parámetros correctos
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledWith('http://127.0.0.1:8000/api/partida/en_curso', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          game_id: Number(sessionStorage.getItem('partida_id')),
+          players: jugadores,
+        })
+      });
+    });
 
     // Verifica que las cartas están presentes
     expect(screen.getByAltText("Carta de Movimiento 3")).toBeInTheDocument();
@@ -57,60 +122,106 @@ describe('Cartas_Movimiento', () => {
     });
   });
 
-  it('Se alterna entre 0 y 3 cartas por jugador', () => {
-    // Crea un mock para useState
-    const setState = vi.fn((cartasActuales) => {
-      cartaMovimientos = typeof cartasActuales === 'function' ? cartasActuales(cartaMovimientos) : cartasActuales;
-      rerender(<CartasMovimientoMano ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />);
-    });
-    const useStateMock = () => [cartaMovimientos, setState];
-
-    // Simula el useState de todos los componentes antes de renderizar
-    vi.spyOn(React, 'useState').mockImplementation(useStateMock);
-
-    // Renderiza el componente por primera vez
-    const { rerender } = render(<CartasMovimientoMano ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />);
-
-    // Verifica que las cartas están presentes
-    expect(screen.getByAltText("Carta de Movimiento 3")).toBeInTheDocument();
-    expect(screen.getByAltText("Carta de Movimiento 1")).toBeInTheDocument();
-    expect(screen.getByAltText("Carta de Movimiento 2")).toBeInTheDocument();
+  it('Renderiza correctamente 2 cartas', async () => {
+    const partidaIniciada = true;
 
     // Simula haber quitado 1 carta
-    let cartaMovimientos1 = [
-      { player: 1, cards_out: [{ card_id: 30, card_name: "Soy Movimiento" },
-        { card_id: 21, card_name: "Soy Movimiento" }] 
-      }
-    ];
+    const responseMock1 = {
+      player: 1, cards_out: [
+        { card_id: 30, card_name: "Soy Movimiento" },
+        { card_id: 21, card_name: "Soy Movimiento" }
+      ]};
 
-    // Quita la última carta
-    setState(cartaMovimientos1);
-    
+    // Simula el fetch para devolver la respuesta simulada
+    vi.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(responseMock1),  // Simula la respuesta en formato JSON
+    });
+
+    // Renderiza el componente
+    render(
+      <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
+        <CartasMovimientoMano 
+          ubicacion={0} 
+          onMouseEnter={handleMouseEnterMock} 
+          onMouseLeave={handleMouseLeaveMock} 
+        />
+      </PartidaContext.Provider>
+    );
+
     // Verifica que las cartas están presentes
-    expect(screen.getByAltText("Carta de Movimiento 3")).toBeInTheDocument();
-    expect(screen.getByAltText("Carta de Movimiento 1")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByAltText("Carta de Movimiento 3")).toBeInTheDocument();
+      expect(screen.getByAltText("Carta de Movimiento 1")).toBeInTheDocument();
+      expect(screen.queryByText("Carta de Movimiento 2")).not.toBeInTheDocument();
+    });  
+  });
+
+  it('Renderiza correctamente 1 carta', async () => {
+    const partidaIniciada = true;
 
     // Simula haber quitado 2 cartas
-    let cartaMovimientos2 = [
-      { player: 1, cards_out: [{ card_id: 30, card_name: "Soy Movimiento" }] 
-      }
-    ];
+    const responseMock2 = {
+      player: 1, cards_out: [
+        { card_id: 30, card_name: "Soy Movimiento" }
+      ]};
 
-    // Quita la última carta
-    setState(cartaMovimientos2);
-    
-    // Verifica que las cartas están presentes
-    expect(screen.getByAltText("Carta de Movimiento 3")).toBeInTheDocument();
+    // Simula el fetch para devolver la respuesta simulada
+    vi.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(responseMock2),  // Simula la respuesta en formato JSON
+    });
 
-    // Simula haber quitado todas las cartas
-    let cartaMovimientos3 = [
-      { player: 1, cards_out: [] }
-    ];
+    // Renderiza el componente
+    render(
+      <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
+        <CartasMovimientoMano 
+          ubicacion={0} 
+          onMouseEnter={handleMouseEnterMock} 
+          onMouseLeave={handleMouseLeaveMock} 
+        />
+      </PartidaContext.Provider>
+    );
 
-    // Quita la última carta
-    setState(cartaMovimientos3);
-
-    // Verifica que no hay cartas
-    expect(screen.queryByAltText("Carta de Movimiento 3")).toBeNull();
+    // Verifica que la carta está presente
+    await waitFor(() => {
+      expect(screen.getByAltText("Carta de Movimiento 3")).toBeInTheDocument();
+      expect(screen.queryByText("Carta de Movimiento 1")).not.toBeInTheDocument();
+      expect(screen.queryByText("Carta de Movimiento 2")).not.toBeInTheDocument();
+    });
   });
+
+  it ('Renderiza correctamente 0 cartas', async () => {
+    const partidaIniciada = true;
+
+    // Simula haber quitado 3 cartas
+    const responseMock3 = {
+      player: 1, cards_out: []
+    };
+
+    // Simula el fetch para devolver la respuesta simulada
+    vi.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(responseMock3),  // Simula la respuesta en formato JSON
+    });
+
+    // Renderiza el componente
+    render(
+      <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
+        <CartasMovimientoMano 
+          ubicacion={0} 
+          onMouseEnter={handleMouseEnterMock} 
+          onMouseLeave={handleMouseLeaveMock} 
+        />
+      </PartidaContext.Provider>
+    );
+    
+    // Verifica que las cartas no están presentes
+    await waitFor(() => {
+      expect(screen.queryByText("Carta de Movimiento 3")).not.toBeInTheDocument();
+      expect(screen.queryByText("Carta de Movimiento 1")).not.toBeInTheDocument();
+      expect(screen.queryByText("Carta de Movimiento 2")).not.toBeInTheDocument();
+    });
+  });
+
 });

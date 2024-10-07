@@ -50,7 +50,7 @@ describe('ListarPartidas Component', () => {
   });
 
   it('Realiza el fetch inicial', async () => {
-    // Mock de fetch para simular una respuesta exitosa (puedes ajustar esto según sea necesario)
+    // Mock de fetch para simular una respuesta exitosa
     const fetchMock = vi.spyOn(global, 'fetch').mockImplementation(() =>
       Promise.resolve({
         ok: true,

@@ -44,7 +44,7 @@ const CartasMovimientoMano = ({ubicacion, onMouseEnter, onMouseLeave}) => {
 
   async function obtenerMovimientos () {
     try {
-      const response = await fetch('https://httpbin.org/post', { 
+      const response = await fetch('http://127.0.0.1:8000/api/partida/en_curso', { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
