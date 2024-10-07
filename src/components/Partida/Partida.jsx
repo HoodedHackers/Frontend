@@ -1,13 +1,13 @@
 import React, { useState, useContext } from "react";
 import { PartidaContext, PartidaProvider } from './PartidaProvider.jsx';
-import Jugador from "./Jugador/Jugador.jsx";
+import Jugador from "./jugador/jugador.jsx";
 import ContainerCartasMovimiento from "./CartaMovimiento/ContainerCartasMovimiento.jsx";
 import TableroContainer from "./Tablero/TableroContainer.jsx";
 import MazoCartaFigura from "./CartaFigura/MazoCartaFigura.jsx";
 import IniciarPartida from "./IniciarPartida/IniciarPartida.jsx";
 import AbandonarPartida from "./AbandonarPartida/AbandonarPartida.jsx";
 import PasarTurno from "./PasarTurno/PasarTurno.jsx";
-import Temporizador from "./Temporizador/Temporizador.jsx";
+import Temporizador from "./temporizador/temporizador.jsx";
 import "./Partida.css"; 
 
 function Partida() {
