@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import styles from "./Temporizador.module.css";
+import styles from "./temporizador.module.css";
 
 const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
   const [timeLeft, setTimeLeft] = useState(

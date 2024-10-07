@@ -9,7 +9,6 @@ function IniciarPartida () {
   const handleIniciar = async () => {
     setLoading(true);
     
-    // Simulación de llamada al backend para iniciar la partida
     try {
       const response = await fetch("https://httpbin.org/post", {
         method: "POST",

@@ -7,7 +7,7 @@ import MazoCartaFigura from "./CartaFigura/MazoCartaFigura.jsx";
 import IniciarPartida from "./IniciarPartida/IniciarPartida.jsx";
 import AbandonarPartida from "./AbandonarPartida/AbandonarPartida.jsx";
 import PasarTurno from "./PasarTurno/PasarTurno.jsx";
-import Temporizador from "./Temporizador/Temporizador.jsx";
+import Temporizador from "./temporizador/temporizador.jsx";
 import "./Partida.css"; 
 
 function Partida() {
