@@ -1,7 +1,7 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { PartidaContext, PartidaProvider } from './PartidaProvider.jsx';
-import Jugador from "./jugador/jugador.jsx";
-import ContainerCartasMovimiento from "./CartaMovimiento/ContainerCartasMovimiento.jsx";
+import Jugador from "./Jugador/Jugador.jsx";
+import CartasMovimientoMano from "./CartasMovimiento/CartasMovimientoMano.jsx";
 import TableroContainer from "./Tablero/TableroContainer.jsx";
 import MazoCartaFigura from "./CartaFigura/MazoCartaFigura.jsx";
 import IniciarPartida from "./IniciarPartida/IniciarPartida.jsx";
@@ -12,14 +12,13 @@ import "./Partida.css";
 
 function Partida() {
   const {
+    partidaIniciada,
     tiempoLimite,
     jugadores,
     jugadorActual,
-    partidaIniciada,
     timeLeft,
     setTimeLeft,
     manejarFinTurno,
-    manejarInicioPartida,
     isOverlayVisible,
     handleMouseEnter,
     handleMouseLeave
@@ -30,7 +29,7 @@ function Partida() {
       {jugadores.map((jugador, index) => (
         <div key={jugador.id}>
           <Jugador nombre={jugador.name} ubicacion={`jugador${index + 1}`} />
-          <ContainerCartasMovimiento
+          <CartasMovimientoMano
             ubicacion={index}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave} 
@@ -45,11 +44,8 @@ function Partida() {
       <div className="tableroContainer">
         <TableroContainer jugadores={[]} />
       </div>
-      <div >
-        <MazoCartaFigura />
-      </div>
       <div>
-      {!partidaIniciada && <IniciarPartida onIniciar={manejarInicioPartida} />}
+        {!partidaIniciada && <IniciarPartida />}
       </div>
       <div className="abandonar-partida-container">
         <AbandonarPartida />

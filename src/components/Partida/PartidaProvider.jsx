@@ -3,9 +3,10 @@ import React, { createContext, useState, useEffect } from 'react';
 export const PartidaContext = createContext();
 
 export const PartidaProvider = ({ children }) => {
+  const [partidaIniciada, setPartidaIniciada] = useState(sessionStorage.getItem("partidaIniciada") === "true" || false);
+
   const tiempoLimite = 120; // 2 minutos
 
-  // Lógica del estado movido desde `Partida`
   const [jugadores, setJugadores] = useState([
     { id: 1, name: "Jugador1" },
     { id: 2, name: "Jugador2" },
@@ -23,11 +24,6 @@ export const PartidaProvider = ({ children }) => {
   const [timeLeft, setTimeLeft] = useState(() => {
     const storedTime = localStorage.getItem("timeLeft");
     return storedTime !== null ? Number(storedTime) : tiempoLimite;
-  });
-
-  const [partidaIniciada, setPartidaIniciada] = useState(() => {
-    const storedPartidaIniciada = localStorage.getItem("partidaIniciada");
-    return storedPartidaIniciada === "true";
   });
 
   const manejarFinTurno = async () => {
@@ -54,11 +50,6 @@ export const PartidaProvider = ({ children }) => {
     }
   };
 
-  const manejarInicioPartida = () => {
-    setPartidaIniciada(true);
-    localStorage.setItem("partidaIniciada", "true");
-  };
-
   useEffect(() => {
     localStorage.setItem("timeLeft", timeLeft);
   }, [timeLeft]);
@@ -71,6 +62,8 @@ export const PartidaProvider = ({ children }) => {
   return (
     <PartidaContext.Provider
       value={{
+        partidaIniciada,
+        setPartidaIniciada,
         tiempoLimite,
         jugadores,
         jugadorActual,
@@ -78,12 +71,10 @@ export const PartidaProvider = ({ children }) => {
         setJugadorActualIndex,
         timeLeft,
         setTimeLeft,
-        partidaIniciada,
         manejarFinTurno,
-        manejarInicioPartida,
         isOverlayVisible,
         handleMouseEnter,
-        handleMouseLeave
+        handleMouseLeave,
       }}
     >
       {children}
