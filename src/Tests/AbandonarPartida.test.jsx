@@ -37,7 +37,7 @@ describe('AbandonarPartida', () => {
     
     // Espera a que se complete la operación y se verifique que se ha redirigido
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith('/Opciones');  // Verifica que se navega a '/opciones'
+      expect(mockNavigate).toHaveBeenCalledWith('/opciones');  // Verifica que se navega a '/opciones'
     });
 
     global.fetch.mockClear();

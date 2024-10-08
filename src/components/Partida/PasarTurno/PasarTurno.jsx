@@ -60,6 +60,3 @@ function PasarTurno  ({
 };
 
 export default PasarTurno;
-
-
-
