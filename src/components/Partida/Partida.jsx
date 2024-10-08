@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { PartidaContext, PartidaProvider } from './PartidaProvider.jsx';
-import Jugador from "./Jugador/Jugador.jsx";
+import Jugador from "./jugador/jugador.jsx";
 import CartasMovimientoMano from "./CartasMovimiento/CartasMovimientoMano.jsx";
 import TableroContainer from "./Tablero/TableroContainer.jsx";
 import MazoCartaFigura from "./CartaFigura/MazoCartaFigura.jsx";

@@ -3,6 +3,7 @@
 .jugador {
     white-space: pre-line; /* Permite que los saltos de línea se interpreten */
     word-wrap: break-word; /* Permite que las palabras largas se dividan */
+    max-width: 200px; /* O el ancho que necesites */
     font-size: 1.5vw; /* Ajusta el tamaño de la fuente basado en el ancho de la ventana */
     font-family: 'Orbitron', sans-serif;
     font-weight: bold;

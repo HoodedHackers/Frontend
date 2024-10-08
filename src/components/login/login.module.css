@@ -1,3 +1,4 @@
+
 .root {
   display: flex;
   flex-direction: column;
@@ -145,3 +146,4 @@
   max-width: 400px; /* Limitar el ancho máximo de la información */
   flex-shrink: 0; /* Asegura que no se reduzca el tamaño de la tarjeta de información */
 }
+
