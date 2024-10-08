@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+
+.jugador {
+    white-space: pre-line; /* Permite que los saltos de línea se interpreten */
+    word-wrap: break-word; /* Permite que las palabras largas se dividan */
+    max-width: 200px; /* O el ancho que necesites */
+    font-size: 1.5vw; /* Ajusta el tamaño de la fuente basado en el ancho de la ventana */
+    font-family: 'Orbitron', sans-serif;
+    font-weight: bold;
+    background: linear-gradient(135deg, #d4d4d4, #f0f0f0, #d4d4d4);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: #7E7B7A;
+    text-shadow: 
+      0px 0px 5px #ffd700,   /* Pequeño resplandor */
+      0px 0px 10px #ffd700,  /* Resplandor un poco más grande */
+      0px 0px 20px #ffea00,  /* Resplandor amarillo */
+      0px 0px 30px #ffea00,  /* Resplandor cibernético */
+      0px 0px 40px #ffea00,  /* Efecto de neon */
+      -2px 2px 5px rgba(0, 0, 0, 0.5); /* Sombra direccional */
+  }
+  

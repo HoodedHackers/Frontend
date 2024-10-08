@@ -78,7 +78,16 @@ export default function TableroContainer({ jugadores }) {
     }
   }
 
-  //useEffect(() => {
+ 
+
+  return (
+    <div className={styles.boardContainer}>
+      <Tablero squares={squares} onSquareClick={handleSquareClick} selectedIndex={selectedIndex} />
+    </div>
+  );
+}
+
+ //useEffect(() => {
   //  const newSocket = new WebSocket("https://httpbin.org/post");
   //  setSocket(newSocket);
 //
@@ -101,10 +110,3 @@ export default function TableroContainer({ jugadores }) {
   //    newSocket.close();
   //  };
   //}, []);
-
-  return (
-    <div className={styles.boardContainer}>
-      <Tablero squares={squares} onSquareClick={handleSquareClick} selectedIndex={selectedIndex} />
-    </div>
-  );
-}
