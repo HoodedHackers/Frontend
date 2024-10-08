@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import * as ReactRouter from "react-router";
-import Login from "../components/login/login";
+import Login from "../components/Login/Login";
 
 describe("Login Component", () => {
   let button = null;

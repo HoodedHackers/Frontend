@@ -1,5 +1,5 @@
 import React from 'react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import Partida from '../components/Partida/Partida';
 
@@ -17,10 +17,14 @@ describe('Jugador', () => {
     { id: 4, name: "Jugador 4" }
   ];
 
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('Renderiza jugadores', () => {
     // Crea un mock para useState
     const setState = vi.fn();
-    const useStateMock = (initState) => [jugadores, setState];
+    const useStateMock = () => [jugadores, setState];
 
     // Simula el useState de todos los componentes antes de renderizar
     vi.spyOn(React, 'useState').mockImplementation(useStateMock);

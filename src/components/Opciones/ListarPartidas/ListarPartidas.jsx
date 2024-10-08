@@ -5,12 +5,15 @@ import { useNavigate } from 'react-router-dom';
 function ListarPartidas() {
   const [partidas, setPartidas] = useState([]);
   const navigate = useNavigate();
-  const wsLPRef = useRef(null);
-  const wsUPRef = useRef(null);
-
+  const wsRef = useRef(null);
 
   const Unirse = async (partida_id) => {
     try {
+      const payload = {
+        "id_game": partida_id,
+        "identifier_player": localStorage.getItem('player_id')
+      };
+      console.log("Datos a enviar al backend:", payload);
       const response = await fetch(`http://127.0.0.1:8000/api/lobby/${partida_id}`, { 
         method: 'PUT',
         headers: {
@@ -24,42 +27,10 @@ function ListarPartidas() {
       if (!response.ok) {
         throw new Error('Fallo al unirse a la partida');
       }
-
-      // Conectar al WebSocket
-      wsUPRef.current = new WebSocket(`http://127.0.0.1:8000/ws/lobby/${partida_id}`);
-
-      // Manejar la conexión abierta
-      wsUPRef.current.onopen = () => {
-        console.log("Conexión WebSocket abierta");
-
-        const startMessage = {
-           action: "connect",
-           user_identifier: localStorage.getItem('player_id') 
-          };
-        wsUPRef.current.send(JSON.stringify(startMessage));
-        console.log("Mensaje unión a partida enviado.");
-      };
-
-      // Manejar el arreglo de jugadores actualziado recibido como respuesta
-      socketRef.current.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        sessionStorage.setItem("players", data.players);
-      };
-
-      // Manejar errores
-      wsUPRef.current.onerror = (error) => {
-        console.error("WebSocket error:", error);
-      };
-
-      // Navegar a la partida
+      sessionStorage.setItem('partida_id', partida_id.toString());
       navigate(`/Partida/${partida_id}`);
     } catch (error) {
       console.error(error);
-    }
-    finally {
-      if (wsUPRef.current) {
-        wsUPRef.current.close();
-      }
     }
   };  
 
@@ -84,18 +55,17 @@ function ListarPartidas() {
   useEffect(() => {
     // Fetch inicial
     fetchPartidas();
-    
   }, []);
 
   
   useEffect(() => {
-    wsLPRef.current = new WebSocket("http://127.0.0.1:8000/ws/api/lobby");
+    wsRef.current = new WebSocket("http://127.0.0.1:8000/ws/api/lobby");
 
-    wsLPRef.current.onopen = () => {
+    wsRef.current.onopen = () => {
       console.log("WebSocket connected");
     };
 
-    wsLPRef.current.onmessage = (event) => {
+    wsRef.current.onmessage = (event) => {
       console.log("Received message:", event.data);
       const updatedMessage = JSON.parse(event.data);
       if (updatedMessage.message === "update") {
@@ -104,22 +74,19 @@ function ListarPartidas() {
     };
 
     // Manejar errores
-    wsLPRef.current.onerror = (error) => {
+    wsRef.current.onerror = (error) => {
       console.error("WebSocket error:", error);
     };
 
     // Manejar cierre de conexión
-    wsLPRef.current.onclose = function () {
+    wsRef.current.onclose = function () {
       console.log("WebSocket closed");
     };
 
     // Cleanup cuando el componente se desmonta
     return () => {
-      if (wsLPRef.current) {
-        wsLPRef.current.close();
-      }
-      if (wsUPRef.current) {
-        wsUPRef.current.close();
+      if (wsRef.current) {
+        wsRef.current.close();
       }
     };
   }, []);
