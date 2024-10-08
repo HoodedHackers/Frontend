@@ -8,10 +8,10 @@ export const PartidaProvider = ({ children }) => {
   const tiempoLimite = 120; // 2 minutos
 
   const [jugadores, setJugadores] = useState([
-    { id: 1, name: "Jugador1" },
-    { id: 2, name: "Jugador2" },
-    { id: 3, name: "Jugador3" },
-    { id: 4, name: "Jugador4" }
+    { id: 1, name: "Jugador 1" },
+    { id: 2, name: "Jugador 2" },
+    { id: 3, name: "Jugador 3" },
+    { id: 4, name: "Jugador 4" }
   ]);
 
   const [jugadorActualIndex, setJugadorActualIndex] = useState(() => {
@@ -74,7 +74,7 @@ export const PartidaProvider = ({ children }) => {
         manejarFinTurno,
         isOverlayVisible,
         handleMouseEnter,
-        handleMouseLeave,
+        handleMouseLeave
       }}
     >
       {children}

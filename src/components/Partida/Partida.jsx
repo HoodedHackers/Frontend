@@ -28,7 +28,10 @@ function Partida() {
     <div className="container-partida">
       {jugadores.map((jugador, index) => (
         <div key={jugador.id}>
-          <Jugador nombre={jugador.name} ubicacion={`jugador${index + 1}`} />
+          <Jugador 
+            nombre={jugador.name} 
+            ubicacion={`jugador${index + 1}`}  
+          />
           <CartasMovimientoMano
             ubicacion={index}
             onMouseEnter={handleMouseEnter}

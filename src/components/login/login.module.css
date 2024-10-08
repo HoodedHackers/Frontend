@@ -1,23 +1,11 @@
 .root {
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-  background: radial-gradient(circle, #c084fc, #a21caf, #3b0764,#581c87);
-  background-size: 300% 300%; /* Mantiene el tamaño del gradiente */
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center; 
+  height: 100vh;
+  text-align: center;
   position: relative;
-  overflow: hidden;
-}
-
-@media (max-width: 768px) {
-  .root {
-    padding: 1rem;
-  }
 }
 
 .title {
@@ -26,27 +14,39 @@
   font-size: 3rem;
   text-shadow: 0 0 15px #ff1eff, 0 0 20px #00ffea;
   margin-bottom: 2rem;
+  margin-top: 5rem; /* Mueve el título más abajo */
   font-weight: 700;
   transition: text-shadow 0.3s ease;
 }
+
 
 .title:hover {
   text-shadow: 0 0 20px #0ff, 0 0 30px #ff1eff, 0 0 40px #00ffea;
 }
 
-.form {
-  background: rgba(0, 0, 0, 0.6);
-  padding: 3rem;
-  border-radius: 8px;
-  box-shadow: 0 0 35px #0ff;
-  max-width: 500px;
-  width: 100%;
-  transition: box-shadow 0.4s ease;
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+  width: 40%;
+  margin-top: 100px;
+  margin-left: 50px; /* Para mover a la derecha */
+  gap: 2rem; /* Añade espacio entre los formularios */
 }
 
-.formGroup {
-  margin-bottom: 1.5rem;
+
+.form {
+  background: rgba(0, 0, 0, 0.6);
+  padding: 2.5rem;
+  border-radius: 8px;
+  box-shadow: 0 0 35px #0ff;
+  width: 80%;
+  transition: box-shadow 0.4s ease;
+  margin-bottom: 2rem; /* Añade espacio entre formularios */
 }
+
 
 .input {
   padding: 14px;
@@ -74,21 +74,24 @@
   border-radius: 6px;
   border: none;
   cursor: pointer;
-  transition: background 0.3s ease, transform 0.3s ease;
+  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  margin-top: 20px; /* Ajusta este valor para mover el botón más abajo */
 }
 
+
 .customButton:hover {
-  background: linear-gradient(135deg, #ff1eff, #00ffea);
-  transform: scale(1.05);
+  background: #0ff; /* Cambiar a un color sólido para efecto de neón */
   box-shadow: 0 0 15px #ff1eff, 0 0 20px #00ffea;
 }
 
 .container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between; /* Alinear elementos a los extremos */
   align-items: center;
   gap: 2rem;
   margin-top: 2rem;
+  width: 100%; /* Asegura que la contenedor ocupe todo el ancho */
 }
 
 .card {
@@ -127,8 +130,7 @@
 }
 
 .custom-button:hover {
-  background: linear-gradient(135deg, #ff1eff, #00ffea);
-  transform: scale(1.05);
+  background: #0ff; /* Cambiar a un color sólido para efecto de neón */
   box-shadow: 0 0 15px #ff1eff, 0 0 20px #00ffea;
 }
 
@@ -137,4 +139,9 @@
   margin-top: 10px;
   margin-bottom: 20px;
   font-size: 1.3rem;
+}
+.infoContainer {
+  margin-right: 200px; /* Aumenta este valor para mover más a la izquierda */
+  max-width: 400px; /* Limitar el ancho máximo de la información */
+  flex-shrink: 0; /* Asegura que no se reduzca el tamaño de la tarjeta de información */
 }
