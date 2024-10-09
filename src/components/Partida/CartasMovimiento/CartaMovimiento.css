@@ -6,6 +6,7 @@
     margin: 0 5px; /* Espaciado entre las cartas */
     transition: transform 0.3s ease; /* Transición suave para el efecto de hover */
     z-index: 2; /* Asegura que la carta esté en el frente al hacer hover */
+    min-width: 40px;
 }
 
 .carta-movimiento:hover {

@@ -122,19 +122,6 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
     return "#ffffff"; // Blanco por defecto
   };
 
-  // Función que divide un nombre en partes de 16 caracteres
-  function dividirNombre(nombre) {
-    const partes = [];
-    let posicion = 0;
-    while (posicion < nombre.length) {
-      const corte = nombre.substr(posicion, 16);
-      partes.push(corte);
-      posicion += 16;
-    }
-
-    return partes;
-  }
-
   const timerClass = timeLeft <= 10 ? styles["timer-warning-active"] : "";
 
   return (
@@ -145,9 +132,7 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
       <audio ref={audioRef} src="/dun-dun-dun.mp3" preload="auto" />
       <div className={styles.turnIndicator}>
         <p>
-          Turno: <strong>{dividirNombre(jugadorActual).map((parte, index) => (
-            <span key={index}>{parte}<br /></span>
-          ))}</strong>
+          Turno: <strong>{jugadorActual}</strong>
         </p>
       </div>
     </div>
