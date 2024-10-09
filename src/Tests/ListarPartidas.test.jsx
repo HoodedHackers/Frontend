@@ -1,9 +1,21 @@
+import React from 'react';
 import { describe, it, vi, afterEach, expect } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter, BrowserRouter } from "react-router-dom";
 import ListarPartidas from '../components/Opciones/ListarPartidas/ListarPartidas.jsx';
 
 const navigateMock = vi.fn();
+
+const mockWebSocket = {
+  send: vi.fn(),
+  close: vi.fn(),
+  onopen: vi.fn(),
+  onmessage: vi.fn(),
+  onclose: vi.fn(),
+  onerror: vi.fn(),
+};
+
+global.WebSocket = vi.fn(() => mockWebSocket);
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
@@ -29,10 +41,20 @@ describe('ListarPartidas Component', () => {
   });
 
   it('Renderiza un mensaje cuando no hay partidas', async () => {
+    // Mock para simular el useState de Listar Partidas
+    const useStateMock = vi.spyOn(React, 'useState');
+    useStateMock.mockReturnValue([[], vi.fn()]); // Estado inicial vacío
 
+    render(
+      <ListarPartidas />
+    );
+
+    // Verificar que se muestra un mensaje indicando que no hay partidas
+    const message = screen.getByText(/No hay partidas disponibles en este momento. Por favor, intente crear una partida./i);
+    expect(message).toBeInTheDocument();
   });
 
-  it('Realiza el GET para obtener las partidas', async () => {
+  it('Se conecta al endpoint para obtener las partidas', async () => {
 
   });
 
@@ -41,6 +63,18 @@ describe('ListarPartidas Component', () => {
   });
 
   it('Renderiza una lista de partidas correctamente', async () => {
+
+  });
+
+  it('Se conecta con el WebSocket de Listar Partidas', () => {
+
+  });
+
+  it('Muestra un error si el WebSocket de Listar Partidas', () => {
+
+  });
+
+  it('Vuelve a renderizar si recibe partidas desde el WebSocket de Listar Partidas', () => {
 
   });
 
