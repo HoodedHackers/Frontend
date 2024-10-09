@@ -21,6 +21,11 @@ function renderWithProvider(component) {
 
 describe('IniciarPartida', () => {
   beforeEach(() => {
+<<<<<<< Updated upstream
+=======
+    // Limpiar sessionStorage antes de cada prueba
+    sessionStorage.clear();
+>>>>>>> Stashed changes
     renderWithProvider(<IniciarPartida />);
   });
 
@@ -60,6 +65,27 @@ describe('IniciarPartida', () => {
     await waitFor(() => expect(sessionStorage.getItem('partidaIniciada')).toBe('true'));
   });
 
+<<<<<<< Updated upstream
+=======
+  it('realiza la llamada al backend correctamente al iniciar la partida', async () => {
+    const button = screen.getByRole('button', { name: /Iniciar Partida/i });
+    fireEvent.click(button);
+
+    // Esperar que se llame a fetch con los parámetros correctos
+    await waitFor(() => {
+      expect(fetch).toHaveBeenCalledWith(
+        expect.stringContaining('/api/lobby/'),
+        expect.objectContaining({
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+      );
+    });
+  });
+
+>>>>>>> Stashed changes
   it('muestra error en consola si la llamada falla', async () => {
     // Mock para simular error en el fetch
     fetch.mockRejectedValueOnce(new Error('Error al iniciar la partida'));
@@ -76,7 +102,10 @@ describe('IniciarPartida', () => {
     consoleErrorSpy.mockRestore();
   });
 });
+<<<<<<< Updated upstream
 
 
 
   
+=======
+>>>>>>> Stashed changes

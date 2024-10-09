@@ -33,8 +33,8 @@ const Login = () => {
 
       const result = await response.json();
       console.log("Nombre agregado:", result);
-      localStorage.setItem("player_nickname", data.nickname);
-      localStorage.setItem("player_id", result.identifier);
+      sessionStorage.setItem("player_nickname", data.nickname);
+      sessionStorage.setItem("identifier", result.identifier);
       navigate("/Opciones");
     } catch (error) {
       setErrorMessage(error.message || "Error en la solicitud");
