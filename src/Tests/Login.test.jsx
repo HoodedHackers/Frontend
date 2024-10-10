@@ -37,7 +37,7 @@ describe("Login Component", () => {
 
   afterEach(() => {
     vi.clearAllMocks(); // Limpiar mocks
-    localStorage.clear(); // Limpiar localStorage
+    sessionStorage.clear(); // Limpiar sessionStorage
   });
 
   it("Renderiza el componente Login correctamente", () => {

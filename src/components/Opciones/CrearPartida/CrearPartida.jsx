@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import './CrearPartida.css'; 
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { WebSocketContext } from '../../WebSocketsProvider.jsx';
+import './CrearPartida.css'; 
 
 export default function CrearPartida() {
-
+    const { wsUPRef } = useContext(WebSocketContext); 
     const [partidaDatos, setPartidaDatos] = useState({
         nombre: '',
         min_jugadores: '',
@@ -24,7 +25,7 @@ export default function CrearPartida() {
         e.preventDefault(); 
 
         
-        const id_jugador = localStorage.getItem('identifier');
+        const id_jugador = sessionStorage.getItem('identifier');
 
         const solicitudJson = {
                 name: partidaDatos.nombre,
@@ -47,16 +48,42 @@ export default function CrearPartida() {
                 console.log('Partida creada:', data);
                 
                 const partidaId = data.id;
-                localStorage.setItem('partidaId', partidaId);
+                sessionStorage.setItem('partida_id', partidaId);
                 
                 // Crear un arreglo que contenga solo a este jugador
-                let jugadores = [id_jugador];
+                let jugadores = [{id: parseInt(sessionStorage.getItem("player_id"), 10), name: sessionStorage.getItem('player_nickname')}];
 
-                // Guardar el arreglo en localStorage bajo la clave 'jugadores'
-                localStorage.setItem('jugadores', JSON.stringify(jugadores));
+                // Guardar el arreglo en sessionStorage bajo la clave 'jugadores'
+                sessionStorage.setItem('jugadores', JSON.stringify(jugadores));
+
+                // Conectar al WebSocket de Unirse a Partida
+                wsUPRef.current = new WebSocket(`http://127.0.0.1:8000/ws/lobby/${partidaId}`);
+
+                // Manejar la conexión abierta
+                wsUPRef.current.onopen = () => {
+                  console.log("Conexión WebSocket de Unirse a Partida abierta");
                 
-                navigate(`/partida/${partidaId}`); 
+                  const startMessage = {
+                    user_identifier: sessionStorage.getItem('identifier')
+                  };
+                  wsUPRef.current.send(JSON.stringify(startMessage));
+                  console.log("Mensaje unión a partida enviado.");
+                };
+            
+                // Manejar el arreglo de jugadores actualziado recibido como respuesta
+                wsUPRef.current.onmessage = (event) => {
+                  const data = JSON.parse(event.data);
+                  sessionStorage.setItem("players", JSON.stringify(data.players));
+                };
+            
+                // Manejar errores
+                wsUPRef.current.onerror = (error) => {
+                  console.error("WebSocket error:", error);
+                };
 
+                setTimeout(() => {
+                    navigate(`/Partida/${partidaId}`);
+                  }, 500);
             } else {
                 const errorData = await response.json();
                 console.error('Error al crear la partida:', errorData.detail);

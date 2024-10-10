@@ -1,8 +1,8 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import Pasar_Turno from "../components/Partida/pasar_turno/pasar_turno.jsx";
+import PasarTurno from "../components/Partida/PasarTurno/PasarTurno.jsx";
 
-describe("Pasar_Turno", () => {
+describe("PasarTurno", () => {
   let jugadores;
   let jugadorActual;
   let onTurnoCambiadoMock;
@@ -27,7 +27,7 @@ describe("Pasar_Turno", () => {
 
   it("debería renderizar el botón y habilitarlo para el jugador actual", () => {
     render(
-      <Pasar_Turno
+      <PasarTurno
         jugadorActual={jugadorActual}
         jugadores={jugadores}
         onTurnoCambiado={onTurnoCambiadoMock}
@@ -43,7 +43,7 @@ describe("Pasar_Turno", () => {
 
   it("debería poder cambiar el turno y enviar datos con fetch al pasar el turno", async () => {
     render(
-      <Pasar_Turno
+      <PasarTurno
         jugadorActual={jugadorActual}
         jugadores={jugadores}
         onTurnoCambiado={onTurnoCambiadoMock}
@@ -71,7 +71,7 @@ describe("Pasar_Turno", () => {
     // Verificar que se actualiza el turno correctamente
     expect(onTurnoCambiadoMock).toHaveBeenCalled();
 
-    // Verificar que se reinicia el temporizador
+    // Verificar que se reinicia el Temporizador
     expect(setTimeLeftMock).toHaveBeenCalledWith(tiempoLimite);
   });
 

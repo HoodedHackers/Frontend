@@ -1,21 +1,21 @@
 import { render, screen, waitFor, act } from '@testing-library/react';
-import Mazo_Carta_Figura from '../components/Partida/carta_figura/mazo_carta_figura.jsx';
+import MazoCartaFigura from '../components/Partida/CartaFigura/MazoCartaFigura.jsx';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import React from 'react';
 
-describe('Mazo_Carta_Figura', () => {
+describe('MazoCartaFigura', () => {
   // Definir mocks para las funciones de onMouseEnter y onMouseLeave
   const handleMouseEnter = vi.fn();
   const handleMouseLeave = vi.fn();
   beforeEach(() => {
-    // Simular valores de localStorage antes de cada prueba
+    // Simular valores de sessionStorage antes de cada prueba
     const mockPartidaId = '12345';
     const mockJugadores = [
       { identifier: '1', name: 'Jugador 1' },
       { identifier: '2', name: 'Jugador 2' }
     ];
-    localStorage.setItem('partidaId', mockPartidaId);
-    localStorage.setItem('jugadores', JSON.stringify(mockJugadores));
+    sessionStorage.setItem('partida_id', mockPartidaId);
+    sessionStorage.setItem('jugadores', JSON.stringify(mockJugadores));
 
     // Mockear la respuesta del backend
     global.fetch = vi.fn(() =>
@@ -48,7 +48,7 @@ describe('Mazo_Carta_Figura', () => {
 
   it('Renderiza correctamente sin cartas iniciales', async () => {
     await act(async () => {
-      render(<Mazo_Carta_Figura />);
+      render(<MazoCartaFigura />);
     });
     const container = screen.queryByText(/No hay cartas disponibles/i); // Ajusta según tu diseño de componente
     expect(container).not.toBeInTheDocument(); // Verificamos si no hay cartas cuando se carga por primera vez
@@ -56,7 +56,7 @@ describe('Mazo_Carta_Figura', () => {
 
   it('Hace una llamada fetch y actualiza el mazo de cartas', async () => {
     await act(async () => {
-      render(<Mazo_Carta_Figura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />);
+      render(<MazoCartaFigura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />);
     });
 
     // Esperar a que el mazo de cartas se actualice
@@ -73,7 +73,7 @@ describe('Mazo_Carta_Figura', () => {
 
   it('Renderiza las cartas de los jugadores correctamente', async () => {
     await act(async () => {
-      render(<Mazo_Carta_Figura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />);
+      render(<MazoCartaFigura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />);
     });
 
     // Esperar a que las cartas se carguen y verificar que se muestran correctamente
@@ -114,7 +114,7 @@ describe('Mazo_Carta_Figura', () => {
 
     // Renderiza el componente por primera vez y captura la función rerender
     const { rerender } = render(
-      <Mazo_Carta_Figura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
+      <MazoCartaFigura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
     );
 
     // Verifica que las cartas están presentes
@@ -136,7 +136,7 @@ describe('Mazo_Carta_Figura', () => {
     // Actualiza el estado y vuelve a renderizar
     setState(cartaFigura1);
     rerender(
-      <Mazo_Carta_Figura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
+      <MazoCartaFigura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
     );
 
     // Verifica que las cartas están presentes
@@ -154,7 +154,7 @@ describe('Mazo_Carta_Figura', () => {
     // Actualiza el estado y vuelve a renderizar
     setState(cartaFigura2);
     rerender(
-      <Mazo_Carta_Figura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
+      <MazoCartaFigura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
     );
 
     // Verifica que las cartas están presentes
@@ -171,7 +171,7 @@ describe('Mazo_Carta_Figura', () => {
     // Actualiza el estado y vuelve a renderizar
     setState(cartaFigura3);
     rerender(
-      <Mazo_Carta_Figura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
+      <MazoCartaFigura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
     );
 
     // Verifica que no hay cartas

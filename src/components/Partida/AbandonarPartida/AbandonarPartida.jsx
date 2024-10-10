@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './abandonar_partida.css';
+import './AbandonarPartida.css';
 
-const Abandonar_Partida = () => {
+const AbandonarPartida = () => {
     const [error, setError] = useState(null); 
     const [loading, setLoading] = useState(false);  
     const [fadeOut, setFadeOut] = useState(false); // Estado para manejar el desvanecimiento
     const navigate = useNavigate(); 
 
-    const ident = localStorage.getItem('identifier');
-    const partidaId = localStorage.getItem('partidaId');
+    const ident = sessionStorage.getItem('identifier');
+    const partidaId = sessionStorage.getItem('partida_id');
 
     const manejadorAbandonarPartida = async () => {
         setLoading(true);  
@@ -31,10 +31,10 @@ const Abandonar_Partida = () => {
                     alert(`¡Felicidades ${data.players[0].name}, ganaste la partida!`); 
                 }
                 
-                const Jugadores = JSON.parse(localStorage.getItem('jugadores')) || [];
+                const Jugadores = JSON.parse(sessionStorage.getItem('jugadores')) || [];
                 const jugadoresActualizados = Jugadores.filter(j => j.identifier !== ident);
 
-                localStorage.setItem('jugadores', JSON.stringify(jugadoresActualizados));
+                sessionStorage.setItem('jugadores', JSON.stringify(jugadoresActualizados));
 
                 navigate('/Opciones'); 
             } else if (response.status === 404) {
@@ -61,7 +61,7 @@ const Abandonar_Partida = () => {
                 }, 5000); // Tiempo de desvanecimiento
             }, 5000); // Tiempo que el mensaje es visible
 
-            return () => clearTimeout(timer); // Limpiar temporizador
+            return () => clearTimeout(timer); // Limpiar Temporizador
         }
     }, [error]); // Ejecutar efecto cada vez que 'error' cambie
 
@@ -85,4 +85,4 @@ const Abandonar_Partida = () => {
     );
 };
 
-export default Abandonar_Partida;
+export default AbandonarPartida;

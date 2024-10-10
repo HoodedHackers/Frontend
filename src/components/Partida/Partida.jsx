@@ -1,69 +1,56 @@
-import React, { useEffect } from "react";
-import Jugador from "./jugador/jugador.jsx";
-import ContainerCartasMovimiento from "./carta_movimiento/container_cartas_movimiento.jsx";
-import Tablero_Container from "./tablero/tablero_container.jsx";
-import Mazo_Carta_Figura from "./carta_figura/mazo_carta_figura.jsx";
-import Iniciar_Partida from "./iniciar_partida/iniciar_partida.jsx";
-import Abandonar_Partida from "./abandonar_partida/abandonar_partida.jsx";
-import Pasar_Turno from "./pasar_turno/pasar_turno.jsx";
-import Temporizador from "./temporizador/temporizador.jsx";
+import React, { useContext, useEffect, useState } from "react";
+import { PartidaContext, PartidaProvider } from './PartidaProvider.jsx';
+import Jugador from "./Jugador/Jugador.jsx";
+import CartasMovimientoMano from "./CartasMovimiento/CartasMovimientoMano.jsx";
+import TableroContainer from "./Tablero/TableroContainer.jsx";
+import MazoCartaFigura from "./CartaFigura/MazoCartaFigura.jsx";
+import IniciarPartida from "./IniciarPartida/IniciarPartida.jsx";
+import AbandonarPartida from "./AbandonarPartida/AbandonarPartida.jsx";
+import PasarTurno from "./PasarTurno/PasarTurno.jsx";
+import { WebSocketContext } from '../WebSocketsProvider.jsx';
 import "./Partida.css"; 
 
 function Partida() {
-  const tiempoLimite = 120; // 2 minutos
-  const [jugadores, setJugadores] = React.useState([
-    { id: 1, name: "Jugador1" },
-    { id: 2, name: "Jugador2" },
-    { id: 3, name: "Jugador3" },
-    { id: 4, name: "Jugador4" }
-  ]);
+  const {
+    partidaIniciada,
+    setPartidaIniciada,
+    tiempoLimite,
+    jugadores,
+    setJugadores,
+    jugadorActual,
+    isOverlayVisible,
+  } = useContext(PartidaContext);
+  
+  useEffect(() => {
+    const jugadoresParseados = JSON.parse(sessionStorage.getItem("players"));
+    if (jugadoresParseados) {
+      setJugadores(jugadoresParseados);
+    }
+    const partidaIniciada = sessionStorage.getItem("partidaIniciada");
+    if (partidaIniciada) {
+      setPartidaIniciada(true);
+    }
+  }, [sessionStorage.getItem("players"), sessionStorage.getItem("partidaIniciada")]);
 
-
-  const [jugadorActualIndex, setJugadorActualIndex] = React.useState(() => {
-    const storedIndex = localStorage.getItem("jugadorActualIndex");
-    return storedIndex !== null ? Number(storedIndex) : 0;
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const storedTime = sessionStorage.getItem("timeLeft");
+    return storedTime !== null ? Number(storedTime) : tiempoLimite;
   });
-  
-  const jugadorActual = jugadores[jugadorActualIndex]; // Obtener el jugador actual
-  const [timeLeft, setTimeLeft] = React.useState(() => {
-    const storedTime = localStorage.getItem("timeLeft");
-    return storedTime !== null ? Number(storedTime) : tiempoLimite; // Usar el tiempo almacenado o el límite inicial
-  }); 
-  
-  const [partidaIniciada, setPartidaIniciada] = React.useState(() => {
-    const storedPartidaIniciada = localStorage.getItem("partidaIniciada");
-    return storedPartidaIniciada === "true"; // Convertir a booleano
-  }); // Estado para el inicio de la partida
-
-  // Estado para manejar si el overlay debe mostrarse
-  const [isOverlayVisible, setIsOverlayVisible] = React.useState(false);
-  
-  // Funciones para manejar el mouse sobre las cartas
-  const handleMouseEnter = () => {
-    setIsOverlayVisible(true);
-  };
-  
-  const handleMouseLeave = () => {
-    setIsOverlayVisible(false);
-  };
 
   const manejarFinTurno = async () => {
-    const nuevoIndex = (jugadorActualIndex + 1) % jugadores.length;
+    const nuevoIndex = (posicionJugador + 1) % jugadores.length;
     setJugadorActualIndex(nuevoIndex);
-    localStorage.setItem("jugadorActualIndex", nuevoIndex); // Guarda el nuevo índice en localStorage
-
-    // Reiniciar el temporizador y guardarlo en localStorage
+    sessionStorage.setItem("posicion_jugador", nuevoIndex);
     setTimeLeft(tiempoLimite);
-    localStorage.setItem("timeLeft", tiempoLimite); // Guardar el tiempo inicial
+    sessionStorage.setItem("timeLeft", tiempoLimite);
 
-    // Enviar actualización del turno al backend
     try {
       const response = await fetch("https://httpbin.org/post", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ jugadorActualIndex: nuevoIndex }),
+        body: JSON.stringify({ posicionJugador: nuevoIndex }),
       });
 
       if (!response.ok) {
@@ -74,55 +61,68 @@ function Partida() {
     }
   };
 
-  // Callback para iniciar la partida
-  const manejarInicioPartida = () => {
-    setPartidaIniciada(true);
-    localStorage.setItem("partidaIniciada", "true"); // Guardar el estado en localStorage
-  };
-
   useEffect(() => {
-    // Limpieza al desmontar el componente, si es necesario
-    return () => {
-      localStorage.removeItem("partidaIniciada"); // Opcional, si quieres resetear esto cuando se desmonte
-    };
-  }, []);
-
-  useEffect(() => {
-    // Guardar el tiempo restante en localStorage cada vez que cambie
-    localStorage.setItem("timeLeft", timeLeft);
+    sessionStorage.setItem("timeLeft", timeLeft);
   }, [timeLeft]);
+
+  const { wsUPRef } = useContext(WebSocketContext);
+
+  // Escucha el WebSocket de Unirse a Partida
+  useEffect(() => {
+    try {
+      wsUPRef.current.onopen = () => {
+        console.log("Conexión con el WebSocket de Unirse a Partida abierta");
+      };
+      wsUPRef.current.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        setJugadores(data.players);
+        sessionStorage.setItem("players", JSON.stringify(data.players || []));
+        console.log("Jugadores recibidos del WebSocket de Unirse a Partida");
+      };
+      wsUPRef.current.onerror = (error) => {
+        console.error("Error en el WebSocket de Unirse a Partida:", error);
+      };
+      wsUPRef.current.onclose = () => {
+        console.log("Conexión WebSocket de Unirse a Partida cerrada por el servidor");
+      };
+    } catch (error) {
+      console.error(error);
+      if (wsUPRef.current) {
+        wsUPRef.current.close();
+        wsUPRef.current = null;
+        console.log("WebSocket de Unirse a Partida cerrado");
+      }
+    }
+  }, [wsUPRef.current]);
+
 
   return (
     <div className="container-partida">
-      {jugadores.map((jugador, index) => (
+      {jugadores && jugadores.map((jugador, index) => (
         <div key={jugador.id}>
-          <Jugador nombre={jugador.name} ubicacion={`jugador${index + 1}`} />
-          <ContainerCartasMovimiento
-            ubicacion={index}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave} 
+          <Jugador 
+            nombre={jugador.name} 
+            ubicacion={`jugador${index + 1}`}  
           />
-          <Mazo_Carta_Figura
+          <CartasMovimientoMano
             ubicacion={index}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
+          />
+          <MazoCartaFigura
+            ubicacion={index}
           />
         </div>
       ))}
       <div className="tableroContainer">
-        <Tablero_Container jugadores={[]} />
-      </div>
-      <div >
-        <Mazo_Carta_Figura />
+        <TableroContainer jugadores={[]} />
       </div>
       <div>
-      {!partidaIniciada && <Iniciar_Partida onIniciar={manejarInicioPartida} />}
+        {!partidaIniciada && <IniciarPartida  />}
       </div>
       <div className="abandonar-partida-container">
-        <Abandonar_Partida />
+        <AbandonarPartida />
       </div>
       <div className="pasar-turno-container">
-        <Pasar_Turno
+        <PasarTurno
           jugadorActual={jugadorActual}
           jugadores={jugadores}
           onTurnoCambiado={manejarFinTurno}
@@ -130,18 +130,16 @@ function Partida() {
           setTimeLeft={setTimeLeft}
         />
       </div>
-      <div className="timer-container">
-        <Temporizador
-          tiempoLimite={tiempoLimite}
-          jugadorActual={jugadorActual.name}
-          timeLeft={timeLeft} // Pasar el tiempo restante al temporizador
-          setTimeLeft={setTimeLeft} // Pasar la función para actualizar el tiempo
-          onFinTurno={manejarFinTurno}
-        />
-      </div>
+
       {isOverlayVisible && <div className="overlay"></div>}
     </div>
   );
 }
 
-export default Partida;
+export default function PartidaWithProvider() {
+  return (
+    <PartidaProvider>
+      <Partida />
+    </PartidaProvider>
+  );
+}

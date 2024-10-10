@@ -1,5 +1,5 @@
 import React from 'react';
-import './carta_movimiento.css';
+import './CartaMovimiento.css';
 
 const CartaMovimiento = ({tipo}) => {
   const Images = [
@@ -14,8 +14,8 @@ const CartaMovimiento = ({tipo}) => {
   ]
 
   return (
-    <div className='carta-movimiento'>
-      <img src={Images[tipo]} alt={`Carta de Movimiento ${tipo}`} className='carta-movimiento-img'/>
+    <div className='carta-movimiento '>
+        <img src={Images[tipo]} alt={`Carta de Movimiento ${tipo}`} className='carta-movimiento-img'/>
     </div>
   );
 };

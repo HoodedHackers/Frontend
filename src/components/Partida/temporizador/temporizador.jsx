@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import styles from "./temporizador.module.css";
+import styles from "./Temporizador.module.css";
 
 const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
   const [timeLeft, setTimeLeft] = useState(
-    () => Number(localStorage.getItem("timeLeft")) || tiempoLimite
+    () => Number(sessionStorage.getItem("timeLeft")) || tiempoLimite
   );
   const audioRef = useRef(null);
   const [audioPlayed, setAudioPlayed] = useState(false);
@@ -18,10 +18,10 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
     socketRef.current.onopen = () => {
       console.log("Conexión WebSocket abierta");
 
-      // Enviar mensaje para iniciar el temporizador
+      // Enviar mensaje para iniciar el Temporizador
       const startMessage = { action: "start" };
       socketRef.current.send(JSON.stringify(startMessage));
-      console.log("Mensaje enviado al backend para iniciar el temporizador.");
+      console.log("Mensaje enviado al backend para iniciar el Temporizador.");
     };
 
     // Manejar mensajes entrantes
@@ -53,7 +53,7 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
   }, []);
 
   useEffect(() => {
-    setTimeLeft(tiempoLimite); // Reiniciar el temporizador cuando cambie el jugador
+    setTimeLeft(tiempoLimite); // Reiniciar el Temporizador cuando cambie el jugador
   
     const countdown = setInterval(() => {
       setTimeLeft((prevTime) => {
@@ -69,7 +69,7 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
           // Establece un retraso antes de llamar a onFinTurno
           setTimeout(() => {
             onFinTurno(); 
-            setTimeLeft(tiempoLimite); // Reinicia el temporizador al valor original
+            setTimeLeft(tiempoLimite); // Reinicia el Temporizador al valor original
             setAudioPlayed(false); // Reinicia el estado de audio
           }, 1000); // Cambiar a 1000 ms (1 segundo)
           return 0; // Evitar valores negativos
@@ -102,7 +102,7 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
 
   useEffect(() => {
     const handleBeforeUnload = () => {
-      localStorage.setItem("timeLeft", timeLeft);
+      sessionStorage.setItem("timeLeft", timeLeft);
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
