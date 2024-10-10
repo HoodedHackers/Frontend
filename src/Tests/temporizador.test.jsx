@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import Temporizador from "../components/Partida/temporizador/temporizador.jsx";
+import Temporizador from "../components/Partida/Temporizador/Temporizador.jsx";
 
-describe("Temporizador Component", () => {
+describe("Temporizador", () => {
   const tiempoLimite = 120; // 2 minutos
   const jugadorActual = "Ely";
-  let jugadoresEnPartida = 2; // Mínimo requerido para iniciar el temporizador
+  let jugadoresEnPartida = 2; // Mínimo requerido para iniciar el Temporizador
 
   beforeEach(() => {
     vi.useFakeTimers(); // Utiliza temporizadores simulados
