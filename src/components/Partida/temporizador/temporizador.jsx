@@ -12,7 +12,7 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
   const socketRef = useRef(null);
   useEffect(() => {
     // Conectar al WebSocket
-    socketRef.current = new WebSocket("ws://httpbin.org/post");
+    socketRef.current = new WebSocket("http://127.0.0.1:8000/ws/timer");
 
     // Manejar la conexión abierta
     socketRef.current.onopen = () => {
@@ -28,15 +28,8 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
     socketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
 
-      // Si recibimos la información de tiempo restante
-      if (data.timeLeft !== undefined) {
-        setTimeLeft(data.timeLeft);
-      }
-
-      // Si se recibe un nuevo turno
-      if (data.jugadorActualIndex !== undefined) {
-        setJugadorActualIndex(data.jugadorActualIndex);
-      }
+      console.log(data);
+  
     };
 
     // Manejar errores
@@ -100,17 +93,6 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
     };
   }, []);
 
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      localStorage.setItem("timeLeft", timeLeft);
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [timeLeft]);
 
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;

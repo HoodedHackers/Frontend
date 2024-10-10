@@ -24,7 +24,7 @@ export default function CrearPartida() {
         e.preventDefault(); 
 
         
-        const id_jugador = localStorage.getItem('identifier');
+        const id_jugador = sessionStorage.getItem('identifier');
 
         const solicitudJson = {
                 name: partidaDatos.nombre,
