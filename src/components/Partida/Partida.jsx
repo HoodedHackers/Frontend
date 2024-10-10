@@ -2,13 +2,13 @@ import React, { useContext } from "react";
 import { PartidaContext, PartidaProvider } from './PartidaProvider.jsx';
 import Jugador from "./jugador/jugador.jsx";
 import CartasMovimientoMano from "./CartasMovimiento/CartasMovimientoMano.jsx";
-import TableroContainer from "./Tablero/TableroContainer.jsx";
+import TableroWithProvider from "./Tablero/TableroContainer.jsx";
 import MazoCartaFigura from "./CartaFigura/MazoCartaFigura.jsx";
 import IniciarPartida from "./IniciarPartida/IniciarPartida.jsx";
 import AbandonarPartida from "./AbandonarPartida/AbandonarPartida.jsx";
 import PasarTurno from "./PasarTurno/PasarTurno.jsx";
 import Temporizador from "./temporizador/temporizador.jsx";
-import "./Partida.css"; 
+import "./Partida.css";
 
 function Partida() {
   const {
@@ -21,7 +21,8 @@ function Partida() {
     manejarFinTurno,
     isOverlayVisible,
     handleMouseEnter,
-    handleMouseLeave
+    handleMouseLeave,
+    partidaId, // Asegúrate de que esto está en el contexto
   } = useContext(PartidaContext);
 
   return (
@@ -45,7 +46,7 @@ function Partida() {
         </div>
       ))}
       <div className="tableroContainer">
-        <TableroContainer jugadores={[]} />
+        <TableroWithProvider />
       </div>
       <div>
         {!partidaIniciada && <IniciarPartida />}
@@ -60,6 +61,7 @@ function Partida() {
           onTurnoCambiado={manejarFinTurno}
           tiempoLimite={tiempoLimite}
           setTimeLeft={setTimeLeft}
+          partidaId={partidaId} // Pasar partidaId al componente PasarTurno
         />
       </div>
       <div className="timer-container">

@@ -1,16 +1,11 @@
-import React, { useState, useEffect } from 'react';
+// TableroContainer.jsx
+import React, { useContext } from 'react';
+import { TableroContext, TableroProvider } from './TableroProvider.jsx'; // Asegúrate de que la ruta es correcta
 import styles from './TableroContainer.module.css';
 
-// Colores disponibles
-const COLORES = ['#f3e84c', '#1d53b6', '#f52020', '#27f178'];
-const colorToImageMap = {
-  '#f3e84c': '/Imagenes/Tablero/A.svg',
-  '#1d53b6': '/Imagenes/Tablero/B.svg',
-  '#f52020': '/Imagenes/Tablero/C.svg',
-  '#27f178': '/Imagenes/Tablero/D.svg',
-};
-
 function Square({ color, onClick, isSelected }) {
+  const { colorToImageMap } = useContext(TableroContext);
+  
   return (
     <button
       className={`${styles.square} ${isSelected ? styles.selected : ''}`}
@@ -24,7 +19,9 @@ function Square({ color, onClick, isSelected }) {
   );
 }
 
-function Tablero({ squares, onSquareClick, selectedIndex }) {
+function Tablero() {
+  const { squares, handleSquareClick, selectedIndex } = useContext(TableroContext);
+
   return (
     <>
       {[0, 6, 12, 18, 24, 30].map(rowStart => (
@@ -33,7 +30,7 @@ function Tablero({ squares, onSquareClick, selectedIndex }) {
             <Square
               key={i + rowStart}
               color={color}
-              onClick={() => onSquareClick(rowStart + i)}
+              onClick={() => handleSquareClick(rowStart + i)}
               isSelected={selectedIndex === rowStart + i}
             />
           ))}
@@ -43,44 +40,18 @@ function Tablero({ squares, onSquareClick, selectedIndex }) {
   );
 }
 
-export default function TableroContainer({ jugadores }) {
-  const [squares, setSquares] = useState(generateInitialColors());
-  const [selectedIndex, setSelectedIndex] = useState(null);
-  const [turnoActual, setTurnoActual] = useState(0);
-  const [jugadoresActivos, setJugadoresActivos] = useState([true, true, true, true]);
-  const [socket, setSocket] = useState(null);
-
-  function generateInitialColors() {
-    const colorDistribution = [
-      ...Array(9).fill(COLORES[0]), // amarillo
-      ...Array(9).fill(COLORES[1]), // azul
-      ...Array(9).fill(COLORES[2]), // rojo
-      ...Array(9).fill(COLORES[3]), // verde
-    ];
-  
-    for (let i = colorDistribution.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [colorDistribution[i], colorDistribution[j]] = [colorDistribution[j], colorDistribution[i]];
-    }
-  
-    return colorDistribution.slice(0, 36);
-  }
-  
-  function handleSquareClick(index) {
-    if (selectedIndex === null) {
-      setSelectedIndex(index);
-    } else {
-      const newSquares = [...squares];
-      [newSquares[selectedIndex], newSquares[index]] = [newSquares[index], newSquares[selectedIndex]];
-      setSquares(newSquares);
-      setSelectedIndex(null);
-      setTurnoActual((turnoActual + 1) % jugadores.length);
-    }
-  }
-
+function TableroContainer() {
   return (
     <div className={styles.boardContainer}>
-      <Tablero squares={squares} onSquareClick={handleSquareClick} selectedIndex={selectedIndex} />
+      <Tablero />
     </div>
+  );
+}
+
+export default function TableroWithProvider() {
+  return (
+    <TableroProvider>
+      <TableroContainer />
+    </TableroProvider>
   );
 }
