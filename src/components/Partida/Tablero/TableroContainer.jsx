@@ -78,30 +78,6 @@ export default function TableroContainer({ jugadores }) {
     }
   }
 
-  //useEffect(() => {
-  //  const newSocket = new WebSocket("https://httpbin.org/post");
-  //  setSocket(newSocket);
-//
-  //  newSocket.onopen = () => {
-  //    console.log("Conexión WebSocket abierta");
-  //  };
-//
-  //  newSocket.onmessage = (event) => {
-  //    const data = JSON.parse(event.data);
-  //    if (data.squares) {
-  //      setSquares(data.squares);
-  //    }
-  //  };
-//
-  //  newSocket.onerror = (error) => {
-  //    console.error("WebSocket error:", error);
-  //  };
-//
-  //  return () => {
-  //    newSocket.close();
-  //  };
-  //}, []);
-
   return (
     <div className={styles.boardContainer}>
       <Tablero squares={squares} onSquareClick={handleSquareClick} selectedIndex={selectedIndex} />
