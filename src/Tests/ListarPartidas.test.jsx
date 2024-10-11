@@ -32,12 +32,28 @@ describe('ListarPartidas Component', () => {
     expect(mensaje).toBeInTheDocument();
   });
 
-  it('Renderiza una lista de partidas correctamente', () => {
-    // Usando solo useState
-  });
-
-  it('Realiza el fetch para obtener las partidas', async () => {
-
+  it('Realiza el fetch inicial', async () => {
+    // Mock de fetch para simular una respuesta exitosa
+    const fetchMock = vi.spyOn(global, 'fetch').mockImplementation(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve([]),
+      })
+    );
+  
+    render(
+      <MemoryRouter>
+        <ListarPartidas jugador_id={"sdsda"} />
+      </MemoryRouter>
+    );
+  
+    // Espera a que fetch sea llamado
+    await waitFor(() => {
+        expect(fetchMock).toHaveBeenCalledWith('http://127.0.0.1:8000/api/lobby', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+          });
+    });
   });
 
   it('Muestra un error si el fetch para obtener las partidas falla', async () => {

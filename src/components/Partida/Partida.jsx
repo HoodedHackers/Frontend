@@ -114,11 +114,13 @@ function Partida() {
       ))}
       <div className="tableroContainer">
         <TableroContainer jugadores={[]} />
+        <TableroContainer jugadores={[]} />
       </div>
       <div>
         {!partidaIniciada && <IniciarPartida  />}
       </div>
       <div className="abandonar-partida-container">
+        <AbandonarPartida />
         <AbandonarPartida />
       </div>
       <div className="pasar-turno-container">

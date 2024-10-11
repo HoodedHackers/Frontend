@@ -3,18 +3,19 @@ import { PartidaContext } from '../PartidaProvider.jsx';
 import styles from './IniciarPartida.module.css';
 
 function IniciarPartida () {
-  const { setPosicionJugador, posicionJugador, jugadores, setJugadores, setPartidaIniciada } = useContext(PartidaContext);
+  const { setPartidaIniciada, setPosicionJugador } = useContext(PartidaContext);
   const [loading, setLoading] = useState(false);
 
   function empezar() {
     // Reordena jugadores
 
     // Devuelve la posición del jugador principal o sino -1
-    setPosicionJugador(jugadores.findIndex(jugador => jugador.id === parseInt(sessionStorage.getItem("player_id"), 10)));
+    const jugadores = JSON.parse(sessionStorage.getItem("players"));
+    const posicionJugador = jugadores.findIndex(jugador => jugador.id === parseInt(sessionStorage.getItem("player_id"), 10));
+    setPosicionJugador(posicionJugador);
     if (posicionJugador == -1) {
-      setJugadores([]);
+      console.log("Jugador no encontrado");
       sessionStorage.removeItem("players");
-      console.error("Jugador no encontrado");
     }
     else {
       // Coloca al jugador principal en la primera posición para que se renderice correctamente
@@ -22,9 +23,9 @@ function IniciarPartida () {
       jugadores[0] = jugadores[posicionJugador];
       jugadores[posicionJugador] = jugadoresAux;
       sessionStorage.setItem("players", JSON.stringify(jugadores));
-      setJugadores(jugadores);
       sessionStorage.setItem('partidaIniciada', "true");
       setPartidaIniciada(true);
+      console.log("Partida iniciada");
     }
   }
 
@@ -43,7 +44,6 @@ function IniciarPartida () {
       if (!response.ok) {
         throw new Error('Error al iniciar la partida');
       }
-
       empezar();
       setLoading(false);
     } catch (error) {

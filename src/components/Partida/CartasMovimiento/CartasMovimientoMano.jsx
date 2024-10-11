@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect, useContext } from 'react';
 import CartaMovimiento from './CartaMovimiento.jsx';
 import { PartidaContext } from '../PartidaProvider.jsx';
 import './CartasMovimientoMano.css';
 
-const CartasMovimientoMano = ({ubicacion}) => {
-  const { jugadores, partidaIniciada } = useContext(PartidaContext);
+const CartasMovimientoMano = ({ubicacion, onMouseEnter, onMouseLeave}) => {
+  const { jugadores, partidaIniciada, setIsOverlayVisible } = useContext(PartidaContext);
 
   const setearCartaMovimientos = (jugadores, dataMovimientos = null) => {
     return jugadores.map((jugador, index) => {
@@ -74,7 +73,7 @@ const CartasMovimientoMano = ({ubicacion}) => {
     <div className={`jugador${ubicacion + 1}-container-cartas-movimiento`}>
       {cartasDelJugador.length > 0 ? (
         cartasDelJugador.map((carta, index) => (
-          <div key={index}>
+          <div key={index} onMouseEnter={setIsOverlayVisible(true)} onMouseLeave={setIsOverlayVisible(false)}>
             <CartaMovimiento tipo={(carta.card_id % 7) + 1} />
           </div>
         ))

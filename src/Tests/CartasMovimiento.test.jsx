@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react';
 import CartaMovimiento from '../components/Partida/CartaMovimiento/CartaMovimiento';
 import ContainerCartasMovimiento from '../components/Partida/CartaMovimiento/ContainerCartasMovimiento';
 
-describe('Cartas_Movimiento', () => {
+describe('Cartas Movimiento', () => {
   let cartaMovimientos = [
      { player: 1, cards_out: [{ card_id: 30, card_name: "Soy Movimiento" },
        { card_id: 21, card_name: "Soy Movimiento" },

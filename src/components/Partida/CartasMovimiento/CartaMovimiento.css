@@ -1,5 +1,5 @@
 .carta-movimiento {
-    width: 5vw;
+    width: 4vw;
     display: flex; /* Asegura que el contenido se alinee dentro del contenedor */
     justify-content: center; /* Centra horizontalmente */
     align-items: center; /* Centra verticalmente */ 

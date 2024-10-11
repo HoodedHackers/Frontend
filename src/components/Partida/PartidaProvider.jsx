@@ -9,9 +9,9 @@ export const PartidaProvider = ({ children }) => {
 
   const [jugadores, setJugadores] = useState([]);
 
-  const [posicionJugador, setPosicionJugador] = useState([]);
+  const [posicionJugador, setPosicionJugador] = useState();
 
-  const [isOverlayVisible, setIsOverlayVisible] = useState(false);
+  const [isOverlayVisible, setIsOverlayVisible] = useState(true);
 
   return (
     <PartidaContext.Provider
