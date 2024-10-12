@@ -1,18 +1,58 @@
+.container-partida {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%; 
+  height: 100vh; 
+  background: radial-gradient(circle, #121213, #3a3a3b, #8a878b, #474647); 
+  background-size: 200% 200%;
+  animation: gradientAnimation 15s ease infinite;
+}
+
+.tableroContainer {
+  display: grid;
+  grid-template-areas:
+    "top top top"
+    "left board right"
+    "bottom bottom bottom";
+  place-items: center;
+  width: 80vh;
+  height: 80vh; /* Añade height para asegurarte de que sea un contenedor cuadrado */
+  position: absolute; /* Establece posición absoluta */
+  top: 50%; /* Mueve el contenedor al 50% desde la parte superior */
+  left: 50%; /* Mueve el contenedor al 50% desde la parte izquierda */
+  transform: translate(-50%, -50%); /* Ajusta el contenedor para que quede centrado */
+  margin: 0; /* Asegúrate de que el margen no afecte el centrado */
+}
+
+
+.timer-container {
+  position: relative;
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  margin-top: 40px; 
+  margin-bottom: 20px; 
+}
+
 .jugador1 {
-    position: absolute; /* Posicionamiento absoluto */
-    bottom: 0; /* Al borde superior */
-    left: 50%; /* Centrado horizontalmente */
-    transform: translateX(-50%); /* Ajuste para centrar horizontalmente */
-    padding-bottom: 10px; /* Padding de 10 píxeles en la parte superior */
-  }
+  position: absolute; /* Posicionamiento absoluto */
+  bottom: 0; /* Al borde superior */
+  left: 50%; /* Centrado horizontalmente */
+  transform: translateX(-50%); /* Ajuste para centrar horizontalmente */
+  padding-bottom: 10px; /* Padding de 10 píxeles en la parte superior */
+  text-align: center;
+}
 
 .jugador2 {
-    position: absolute; /* Posicionamiento absoluto */
-    top: 0; /* Al borde superior */
-    left: 50%; /* Centrado horizontalmente */
-    transform: translateX(-50%); /* Ajuste para centrar horizontalmente */
-    padding-top: 10px; /* Padding de 10 píxeles en la parte superior */
-  }
+  position: absolute; /* Posicionamiento absoluto */
+  top: 0; /* Al borde superior */
+  left: 50%; /* Centrado horizontalmente */
+  transform: translateX(-50%); /* Ajuste para centrar horizontalmente */
+  padding-top: 10px; /* Padding de 10 píxeles en la parte superior */
+  text-align: center;
+}
 
 .jugador3 {
   position: absolute; /* Posicionamiento absoluto */
@@ -20,12 +60,71 @@
   left: 0; /* A la izquierda */
   transform: translateY(-50%); /* Ajusta la posición para centrar verticalmente */
   padding-left: 10px; /* Padding de 10 píxeles en el borde izquierdo */
+  max-width: 19vh;
+  text-align: left;
 }
 
 .jugador4 {
-    position: absolute; /* Posicionamiento absoluto */
-    top: 50%; /* Centrado verticalmente */
-    right: 0; /* A la izquierda */
-    transform: translateY(-50%); /* Ajusta la posición para centrar verticalmente */
-    padding-right: 10px; /* Padding de 10 píxeles en el borde izquierdo */
-  }
+  position: absolute; /* Posicionamiento absoluto */
+  top: 50%; /* Centrado verticalmente */
+  right: 0; /* A la izquierda */
+  transform: translateY(-50%); /* Ajusta la posición para centrar verticalmente */
+  padding-right: 10px; /* Padding de 10 píxeles en el borde izquierdo */
+  max-width: 19vh;
+  text-align: right;
+}
+
+.abandonar-partida-container {
+  position: absolute; /* Permite colocar el contenedor en una posición específica */
+  bottom: 20px; /* Distancia desde el borde inferior */
+  left: 20px; /* Distancia desde el borde izquierdo */
+  z-index: 11; /* Asegúrate de que el botón esté encima de otros elementos */
+}
+
+.pasar-turno-container {
+  display: flex;
+  align-items: center;
+  position: absolute; 
+  top: 30px; /* Ajusta esta propiedad según sea necesario */
+  left: 20px; /* Mueve el contenedor hacia la izquierda */
+}
+
+.startButton {
+  z-index: 20; /* Asegúrate de que el botón esté encima de la superposición */
+  padding: 10px 20px;
+  font-size: 18px;
+  cursor: pointer;
+  background-color: #4CAF50; /* Color de fondo */
+  color: white; /* Color del texto */
+  border: none;
+  border-radius: 5px;
+}
+  
+button:disabled {
+  opacity: 0.5; /* Estilo para botones deshabilitados */
+  cursor: not-allowed; /* Cambiar el cursor para botones deshabilitados */
+}
+
+/* Fondo oscuro */
+.overlay {
+  position: fixed; /* Fijo para cubrir toda la pantalla */
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  background: rgba(0, 0, 0, 0.5); /* Color de fondo oscuro con opacidad */
+  z-index: 0; /* Detrás de otros elementos */
+}
+
+.timer-container {
+  position: absolute;
+  top: 70px; 
+  left: 70%; 
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center; /* Centrar contenido */
+  align-items: center; /* Alinear verticalmente el contenido */
+  flex-direction: row; /* Cambiar a fila para alinear el botón al lado del Temporizador */
+  margin-top: 0;
+  margin-bottom: 0;
+}
