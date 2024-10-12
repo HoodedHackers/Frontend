@@ -17,6 +17,8 @@ function Partida() {
     tiempoLimite,
     jugadores,
     setJugadores,
+    posicionJugador,
+    setPosicionJugador,
     jugadorActual,
     isOverlayVisible,
   } = useContext(PartidaContext);
@@ -95,6 +97,29 @@ function Partida() {
     }
   }, [wsUPRef.current]);
 
+  function empezarPartida() {
+    // Reordena jugadores
+
+    // Devuelve la posición del jugador principal o sino -1
+    const jugadores = JSON.parse(sessionStorage.getItem("players"));
+    const posicionJugador = jugadores.findIndex(jugador => jugador.id === parseInt(sessionStorage.getItem("player_id"), 10));
+    setPosicionJugador(posicionJugador);
+    if (posicionJugador == -1) {
+      console.log("Jugador no encontrado");
+      sessionStorage.removeItem("players");
+    }
+    else {
+      // Coloca al jugador principal en la primera posición para que se renderice correctamente
+      let jugadoresAux = jugadores[0];
+      jugadores[0] = jugadores[posicionJugador];
+      jugadores[posicionJugador] = jugadoresAux;
+      sessionStorage.setItem("players", JSON.stringify(jugadores));
+      sessionStorage.setItem('partidaIniciada', "true");
+      setPartidaIniciada(true);
+      console.log("Partida iniciada");
+    }
+  }
+
   return (
     <div className="container-partida">
       {jugadores && jugadores.map((jugador, index) => (
@@ -113,13 +138,11 @@ function Partida() {
       ))}
       <div className="tableroContainer">
         <TableroContainer jugadores={[]} />
-        <TableroContainer jugadores={[]} />
       </div>
       <div>
-        {!partidaIniciada && <IniciarPartida  />}
+        {!partidaIniciada && <IniciarPartida empezarPartida={empezarPartida} />}
       </div>
       <div className="abandonar-partida-container">
-        <AbandonarPartida />
         <AbandonarPartida />
       </div>
       <div className="pasar-turno-container">

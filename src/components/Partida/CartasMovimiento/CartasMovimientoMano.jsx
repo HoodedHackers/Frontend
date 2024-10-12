@@ -73,9 +73,27 @@ const CartasMovimientoMano = ({ubicacion, onMouseEnter, onMouseLeave}) => {
     <div className={`jugador${ubicacion + 1}-container-cartas-movimiento`}>
       {cartasDelJugador.length > 0 ? (
         cartasDelJugador.map((carta, index) => (
-          <div key={index} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-            <CartaMovimiento tipo={(carta.card_id % 7) + 1} />
-          </div>
+          ubicacion === 0 ? (
+            <div
+              key={index}
+              onMouseEnter={handleMouseEnter} 
+              onMouseLeave={handleMouseLeave}
+            >
+              <CartaMovimiento
+                tipo={(carta.card_id % 7) + 1} 
+                ubicacion={ubicacion}
+              />
+            </div>
+          ) : (
+            <div 
+              key={index}
+            >
+              <CartaMovimiento
+                tipo={(carta.card_id % 7) + 1} 
+                ubicacion={ubicacion}
+              />
+            </div>
+          )
         ))
       ) : (
         null

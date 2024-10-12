@@ -1,40 +1,15 @@
 import React, { useContext, useState } from 'react';
-import { PartidaContext } from '../PartidaProvider.jsx';
 import styles from './IniciarPartida.module.css';
 
-function IniciarPartida () {
-  const { setPartidaIniciada, setPosicionJugador } = useContext(PartidaContext);
+function IniciarPartida ({empezarPartida}) {
   const [loading, setLoading] = useState(false);
-
-  function empezar() {
-    // Reordena jugadores
-
-    // Devuelve la posición del jugador principal o sino -1
-    const jugadores = JSON.parse(sessionStorage.getItem("players"));
-    const posicionJugador = jugadores.findIndex(jugador => jugador.id === parseInt(sessionStorage.getItem("player_id"), 10));
-    setPosicionJugador(posicionJugador);
-    if (posicionJugador == -1) {
-      console.log("Jugador no encontrado");
-      sessionStorage.removeItem("players");
-    }
-    else {
-      // Coloca al jugador principal en la primera posición para que se renderice correctamente
-      let jugadoresAux = jugadores[0];
-      jugadores[0] = jugadores[posicionJugador];
-      jugadores[posicionJugador] = jugadoresAux;
-      sessionStorage.setItem("players", JSON.stringify(jugadores));
-      sessionStorage.setItem('partidaIniciada', "true");
-      setPartidaIniciada(true);
-      console.log("Partida iniciada");
-    }
-  }
 
   const handleIniciar = async () => {
     setLoading(true);
     
     try {
-      const response = await fetch("https://httpbin.org/post", {
-        method: "POST",
+      const response = await fetch("http://127.0.0.1:8000/api/partida/en_curso", {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -44,7 +19,7 @@ function IniciarPartida () {
       if (!response.ok) {
         throw new Error('Error al iniciar la partida');
       }
-      empezar();
+      empezarPartida();
       setLoading(false);
     } catch (error) {
       console.error('Error al iniciar la partida:', error);

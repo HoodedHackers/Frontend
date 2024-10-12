@@ -1,7 +1,7 @@
 import React from 'react';
 import './CartaMovimiento.css';
 
-const CartaMovimiento = ({tipo}) => {
+const CartaMovimiento = ({tipo, ubicacion}) => {
   const Images = [
     "/Imagenes/Movimiento/back-mov.svg",
     "/Imagenes/Movimiento/mov1.svg",
@@ -14,9 +14,15 @@ const CartaMovimiento = ({tipo}) => {
   ]
 
   return (
-    <div className='carta-movimiento '>
-        <img src={Images[tipo]} alt={`Carta de Movimiento ${tipo}`} className='carta-movimiento-img'/>
-    </div>
+      ubicacion === 0 ? (
+        <div className='carta-movimiento'>
+          <img src={Images[tipo]} alt={`Carta de Movimiento ${tipo}`} className='carta-movimiento-img'/>
+        </div>
+      ) : (
+        <div className='carta-movimiento-sin-hover'>
+          <img src={Images[tipo]} alt={`Carta de Movimiento ${tipo}`} className='carta-movimiento-img'/>
+        </div>
+      ) 
   );
 };
 
