@@ -69,7 +69,7 @@ describe('IniciarPartida', () => {
     // Esperar que se llame a fetch con los parámetros correctos
     await waitFor(() => {
       expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/partida/en_curso'),
+        expect.stringContaining('/start'),
         expect.objectContaining({
           method: 'PUT',
           headers: {
