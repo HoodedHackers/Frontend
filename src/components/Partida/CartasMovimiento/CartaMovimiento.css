@@ -5,13 +5,13 @@
     align-items: center; /* Centra verticalmente */ 
     margin: 0 5px; /* Espaciado entre las cartas */
     transition: transform 0.3s ease; /* Transición suave para el efecto de hover */
-    z-index: 2; /* Asegura que la carta esté en el frente al hacer hover */
+    z-index: 0; /* Asegura que la carta esté en el frente al hacer hover */
 }
 
 .carta-movimiento:hover {
     transform: scale(1.5); /* Aumenta el tamaño de la carta al hacer hover */
     position: relative; /* Cambiar posición para centrado */
-    z-index: 3; /* Asegura que la carta esté por encima del fondo */
+    z-index: 1; /* Asegura que la carta esté por encima del fondo */
 }
 
 .carta-movimiento-img {

@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import CartaFigura from './CartaFigura'; 
+import { PartidaContext } from '../PartidaProvider.jsx';
 import './MazoCartaFigura.css'; 
 
 function MazoCartaFigura ({ubicacion}) {
@@ -21,7 +22,8 @@ function MazoCartaFigura ({ubicacion}) {
       { card_id: 45, card_name: "Soy Figura" }] 
     },
   ]); 
-    
+  
+  const { handleMouseEnter, handleMouseLeave } = useContext(PartidaContext);
   const [partidaId, setPartidaId] = React.useState(null);
   const [jugadores, setJugadores] = React.useState([]);
 
@@ -83,7 +85,7 @@ function MazoCartaFigura ({ubicacion}) {
     <div className={`container-cartas-figura grupo-${ubicacion + 1}`}>
       {cartasDelJugador.length > 0 ? (
         cartasDelJugador.map((carta) => (
-          <div key={carta.card_id}>
+          <div key={carta.card_id} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
             <CartaFigura tipo={(carta.card_id % 25) + 1} />
           </div>
         ))

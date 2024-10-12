@@ -95,7 +95,6 @@ function Partida() {
     }
   }, [wsUPRef.current]);
 
-
   return (
     <div className="container-partida">
       {jugadores && jugadores.map((jugador, index) => (
@@ -132,7 +131,6 @@ function Partida() {
           setTimeLeft={setTimeLeft}
         />
       </div>
-
       {isOverlayVisible && <div className="overlay"></div>}
     </div>
   );

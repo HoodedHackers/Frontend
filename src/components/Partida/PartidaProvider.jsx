@@ -11,7 +11,15 @@ export const PartidaProvider = ({ children }) => {
 
   const [posicionJugador, setPosicionJugador] = useState();
 
-  const [isOverlayVisible, setIsOverlayVisible] = useState(true);
+  const [isOverlayVisible, setIsOverlayVisible] = useState();
+
+  const handleMouseEnter = () => {
+    setIsOverlayVisible(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsOverlayVisible(false);
+  };
 
   return (
     <PartidaContext.Provider
@@ -24,7 +32,9 @@ export const PartidaProvider = ({ children }) => {
         posicionJugador,
         setPosicionJugador,
         isOverlayVisible,
-        setIsOverlayVisible
+        setIsOverlayVisible,
+        handleMouseEnter,
+        handleMouseLeave
       }}
     >
       {children}
