@@ -11,6 +11,8 @@ export const PartidaProvider = ({ children }) => {
 
   const [posicionJugador, setPosicionJugador] = useState();
 
+  const [jugadorActualIndex, setJugadorActualIndex] = useState(parseInt(localStorage.getItem("jugadorActualIndex"), 10) || 0);
+
   const [isOverlayVisible, setIsOverlayVisible] = useState();
 
   const handleMouseEnter = () => {
@@ -31,6 +33,8 @@ export const PartidaProvider = ({ children }) => {
         setJugadores,
         posicionJugador,
         setPosicionJugador,
+        jugadorActualIndex,
+        setJugadorActualIndex,
         isOverlayVisible,
         setIsOverlayVisible,
         handleMouseEnter,

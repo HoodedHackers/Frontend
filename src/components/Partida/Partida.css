@@ -1,7 +1,8 @@
 .container-partida {
+  position: relative;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
   width: 100%; 
   height: 100vh; 
   background: radial-gradient(circle, #121213, #3a3a3b, #8a878b, #474647); 
@@ -41,6 +42,7 @@
   left: 50%; /* Centrado horizontalmente */
   transform: translateX(-50%); /* Ajuste para centrar horizontalmente */
   padding-bottom: 10px; /* Padding de 10 píxeles en la parte superior */
+  text-align: center;
 }
 
 .jugador2 {
@@ -49,6 +51,7 @@
   left: 50%; /* Centrado horizontalmente */
   transform: translateX(-50%); /* Ajuste para centrar horizontalmente */
   padding-top: 10px; /* Padding de 10 píxeles en la parte superior */
+  text-align: center;
 }
 
 .jugador3 {
@@ -57,7 +60,8 @@
   left: 0; /* A la izquierda */
   transform: translateY(-50%); /* Ajusta la posición para centrar verticalmente */
   padding-left: 10px; /* Padding de 10 píxeles en el borde izquierdo */
-  max-width: 15svh; /* Establece un ancho máximo */
+  max-width: 15svh;
+  text-align: left;
 }
 
 .jugador4 {
@@ -66,7 +70,8 @@
   right: 0; /* A la izquierda */
   transform: translateY(-50%); /* Ajusta la posición para centrar verticalmente */
   padding-right: 10px; /* Padding de 10 píxeles en el borde izquierdo */
-  max-width: 15svh; /* Establece un ancho máximo */
+  max-width: 15svh;
+  text-align: right;
 }
 
 .abandonar-partida-container {

@@ -30,13 +30,13 @@ function MazoCartaFigura ({ubicacion}) {
   // Efecto para obtener partidaId y jugadores desde sessionStorage solo cuando el componente se monta
   useEffect(() => {
     const PartidaId = sessionStorage.getItem('partida_id');
-    const Jugadores = JSON.parse(sessionStorage.getItem('jugadores'));
+    const Jugadores = JSON.parse(sessionStorage.getItem('players'));
 
     if (PartidaId && Jugadores) {
       setPartidaId(PartidaId);
       setJugadores(Jugadores);
       console.log(sessionStorage.getItem('partida_id'));
-      console.log(JSON.parse(sessionStorage.getItem('jugadores')));
+      console.log(JSON.parse(sessionStorage.getItem('players')));
     }
 
   }, []); 

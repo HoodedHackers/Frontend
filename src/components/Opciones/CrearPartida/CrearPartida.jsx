@@ -49,12 +49,6 @@ export default function CrearPartida() {
                 
                 const partidaId = data.id;
                 sessionStorage.setItem('partida_id', partidaId);
-                
-                // Crear un arreglo que contenga solo a este jugador
-                let jugadores = [{id: parseInt(sessionStorage.getItem("player_id"), 10), name: sessionStorage.getItem('player_nickname')}];
-
-                // Guardar el arreglo en sessionStorage bajo la clave 'jugadores'
-                sessionStorage.setItem('jugadores', JSON.stringify(jugadores));
 
                 // Conectar al WebSocket de Unirse a Partida
                 wsUPRef.current = new WebSocket(`http://127.0.0.1:8000/ws/lobby/${partidaId}`);

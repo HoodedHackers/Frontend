@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import { PartidaContext, PartidaProvider } from './PartidaProvider.jsx';
-import Jugador from "./Jugador/Jugador.jsx";
+import Jugador from "./jugador/jugador.jsx";
 import CartasMovimientoMano from "./CartasMovimiento/CartasMovimientoMano.jsx";
-import TableroContainer from "./Tablero/TableroContainer.jsx";
+import TableroWithProvider from "./Tablero/TableroContainer.jsx";
 import MazoCartaFigura from "./CartaFigura/MazoCartaFigura.jsx";
 import IniciarPartida from "./IniciarPartida/IniciarPartida.jsx";
 import AbandonarPartida from "./AbandonarPartida/AbandonarPartida.jsx";
 import PasarTurno from "./PasarTurno/PasarTurno.jsx";
+import Temporizador from "./temporizador/temporizador.jsx";
 import { WebSocketContext } from '../WebSocketsProvider.jsx';
-import "./Partida.css"; 
+import "./Partida.css";
 
 function Partida() {
   const {
@@ -19,8 +20,10 @@ function Partida() {
     setJugadores,
     posicionJugador,
     setPosicionJugador,
-    jugadorActual,
+    jugadorActualIndex,
+    setJugadorActualIndex,
     isOverlayVisible,
+    partidaId
   } = useContext(PartidaContext);
   
   useEffect(() => {
@@ -137,7 +140,7 @@ function Partida() {
         </div>
       ))}
       <div className="tableroContainer">
-        <TableroContainer jugadores={[]} />
+        <TableroWithProvider />
       </div>
       <div>
         {!partidaIniciada && <IniciarPartida empezarPartida={empezarPartida} />}
@@ -148,13 +151,25 @@ function Partida() {
       </div>
       <div className="pasar-turno-container">
         <PasarTurno
-          jugadorActual={jugadorActual}
+          //jugadorActual={jugadores[jugadorActualIndex]}
           jugadores={jugadores}
           onTurnoCambiado={manejarFinTurno}
           tiempoLimite={tiempoLimite}
           setTimeLeft={setTimeLeft}
+          partidaId={partidaId} // Pasar partidaId al componente PasarTurno
         />
       </div>
+      {/*
+      <div className="timer-container">
+        <Temporizador
+          tiempoLimite={tiempoLimite}
+          jugadorActual={jugadores[jugadorActualIndex].name}
+          timeLeft={timeLeft} // Pasar el tiempo restante al Temporizador
+          setTimeLeft={setTimeLeft} // Pasar la función para actualizar el tiempo
+          onFinTurno={manejarFinTurno}
+        />
+      </div>
+      */}
       {isOverlayVisible && <div className="overlay"></div>}
     </div>
   );

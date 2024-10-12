@@ -32,6 +32,7 @@
   border: 5px solid rgba(0, 0, 0, 0.4);
   transition: background 0.3s;
   text-align: center;
+  min-width: 100px;
 }
 
 /* Estilo del texto del Temporizador */
@@ -45,9 +46,11 @@
 
 /* Indicador del turno actual */
 .turnIndicator {
+  word-wrap: break-word; /* Asegura que el texto largo se ajuste dentro del contenedor */
   margin-top: 5px;
   font-size: 1rem;
   color: #ffffff;
+  max-width: 100%;
 }
 
 /* Media query para pantallas pequeñas (menos de 480px) */

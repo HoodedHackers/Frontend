@@ -1,35 +1,39 @@
 import React, { useEffect, useState } from "react";
-import styles from "./PasarTurno.module.css"; 
+import styles from "./PasarTurno.module.css";
 
-function PasarTurno  ({
+function PasarTurno({
   jugadorActual,
   jugadores,
   onTurnoCambiado,
   tiempoLimite,
   setTimeLeft,
+  partidaId, 
 }) {
   const [jugadorActivo, setJugadorActivo] = useState(jugadorActual);
 
   const pasarTurno = async () => {
     // Reiniciar el Temporizador antes de cambiar el turno
     setTimeLeft(tiempoLimite);
-  
+
     // Determinar el siguiente jugador en la lista
     const indiceSiguienteJugador =
       (jugadores.indexOf(jugadorActivo) + 1) % jugadores.length;
     const siguienteJugador = jugadores[indiceSiguienteJugador];
-  
+
     // Actualizar el estado local del jugador activo
     setJugadorActivo(siguienteJugador);
-  
+    const partidaId = localStorage.getItem('partidaId');
+
     // Enviar actualización del turno al backend
     try {
-      const response = await fetch("https://httpbin.org/post", {
+      const response = await fetch(`http://127.0.0.1:8000/api/lobby/${partidaId}/advance`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ jugadorActualIndex: indiceSiguienteJugador }),
+        body: JSON.stringify({
+          identifier: jugadorActual.identifier, // Suponiendo que jugadorActual tiene una propiedad identifier
+        }),
       });
 
       if (!response.ok) {
@@ -57,6 +61,6 @@ function PasarTurno  ({
       Terminar Turno
     </button>
   );
-};
+}
 
 export default PasarTurno;

@@ -12,7 +12,7 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
   const socketRef = useRef(null);
   useEffect(() => {
     // Conectar al WebSocket
-    socketRef.current = new WebSocket("ws://httpbin.org/post");
+    socketRef.current = new WebSocket("http://127.0.0.1:8000/ws/timer");
 
     // Manejar la conexión abierta
     socketRef.current.onopen = () => {
@@ -28,15 +28,8 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
     socketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
 
-      // Si recibimos la información de tiempo restante
-      if (data.timeLeft !== undefined) {
-        setTimeLeft(data.timeLeft);
-      }
-
-      // Si se recibe un nuevo turno
-      if (data.jugadorActualIndex !== undefined) {
-        setJugadorActualIndex(data.jugadorActualIndex);
-      }
+      console.log(data);
+  
     };
 
     // Manejar errores
@@ -100,17 +93,6 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
     };
   }, []);
 
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      sessionStorage.setItem("timeLeft", timeLeft);
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [timeLeft]);
 
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
@@ -122,19 +104,6 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
     return "#ffffff"; // Blanco por defecto
   };
 
-  // Función que divide un nombre en partes de 16 caracteres
-  function dividirNombre(nombre) {
-    const partes = [];
-    let posicion = 0;
-    while (posicion < nombre.length) {
-      const corte = nombre.substr(posicion, 16);
-      partes.push(corte);
-      posicion += 16;
-    }
-
-    return partes;
-  }
-
   const timerClass = timeLeft <= 10 ? styles["timer-warning-active"] : "";
 
   return (
@@ -145,9 +114,7 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
       <audio ref={audioRef} src="/dun-dun-dun.mp3" preload="auto" />
       <div className={styles.turnIndicator}>
         <p>
-          Turno: <strong>{dividirNombre(jugadorActual).map((parte, index) => (
-            <span key={index}>{parte}<br /></span>
-          ))}</strong>
+          Turno: <strong>{jugadorActual}</strong>
         </p>
       </div>
     </div>

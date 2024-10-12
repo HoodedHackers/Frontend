@@ -31,10 +31,10 @@ const AbandonarPartida = () => {
                     alert(`¡Felicidades ${data.players[0].name}, ganaste la partida!`); 
                 }
                 
-                const Jugadores = JSON.parse(sessionStorage.getItem('jugadores')) || [];
+                const Jugadores = JSON.parse(sessionStorage.getItem('players')) || [];
                 const jugadoresActualizados = Jugadores.filter(j => j.identifier !== ident);
 
-                sessionStorage.setItem('jugadores', JSON.stringify(jugadoresActualizados));
+                sessionStorage.setItem('players', JSON.stringify(jugadoresActualizados));
 
                 navigate('/Opciones'); 
             } else if (response.status === 404) {
