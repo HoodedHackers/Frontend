@@ -142,7 +142,8 @@ function Partida() {
       <div>
         {!partidaIniciada && <IniciarPartida empezarPartida={empezarPartida} />}
       </div>
-      <div className="abandonar-partida-container">
+      <div className={"abandonar-partida-container"}>
+      {isOverlayVisible && <div className="overlay-supremo"></div>}
         <AbandonarPartida />
       </div>
       <div className="pasar-turno-container">
