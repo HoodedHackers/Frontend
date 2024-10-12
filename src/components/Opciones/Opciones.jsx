@@ -1,5 +1,5 @@
-import ListarPartidas from "./ListarPartidas/ListarPartidas.jsx";
-import CrearPartida from "./CrearPartida/CrearPartida.jsx";
+import Listar_Partidas from "./listar_partidas/listar_partidas.jsx";
+import Crear_Partida from "./crear_partida/crear_partida";
 import "./Opciones.css";
 
 function Opciones() {
@@ -10,10 +10,10 @@ function Opciones() {
         <h2 className="titulo-opciones">ELEGÍ UNA OPCIÓN</h2>
       </div>
       <div className="form-container">
-        <CrearPartida />
+        <Crear_Partida />
       </div>
       <div className="list-container">
-        <ListarPartidas />
+        <Listar_Partidas jugador_id={"sdsda"} />
       </div>
     </div>
 

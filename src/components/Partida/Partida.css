@@ -117,7 +117,7 @@ button:disabled {
   display: flex;
   justify-content: center; /* Centrar contenido */
   align-items: center; /* Alinear verticalmente el contenido */
-  flex-direction: row; /* Cambiar a fila para alinear el botón al lado del Temporizador */
+  flex-direction: row; /* Cambiar a fila para alinear el botón al lado del temporizador */
   margin-top: 0;
   margin-bottom: 0;
 }

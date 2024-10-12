@@ -18,10 +18,10 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
     socketRef.current.onopen = () => {
       console.log("Conexión WebSocket abierta");
 
-      // Enviar mensaje para iniciar el Temporizador
+      // Enviar mensaje para iniciar el temporizador
       const startMessage = { action: "start" };
       socketRef.current.send(JSON.stringify(startMessage));
-      console.log("Mensaje enviado al backend para iniciar el Temporizador.");
+      console.log("Mensaje enviado al backend para iniciar el temporizador.");
     };
 
     // Manejar mensajes entrantes
@@ -53,7 +53,7 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
   }, []);
 
   useEffect(() => {
-    setTimeLeft(tiempoLimite); // Reiniciar el Temporizador cuando cambie el jugador
+    setTimeLeft(tiempoLimite); // Reiniciar el temporizador cuando cambie el jugador
   
     const countdown = setInterval(() => {
       setTimeLeft((prevTime) => {
@@ -69,7 +69,7 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
           // Establece un retraso antes de llamar a onFinTurno
           setTimeout(() => {
             onFinTurno(); 
-            setTimeLeft(tiempoLimite); // Reinicia el Temporizador al valor original
+            setTimeLeft(tiempoLimite); // Reinicia el temporizador al valor original
             setAudioPlayed(false); // Reinicia el estado de audio
           }, 1000); // Cambiar a 1000 ms (1 segundo)
           return 0; // Evitar valores negativos

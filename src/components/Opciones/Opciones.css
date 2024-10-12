@@ -38,6 +38,7 @@
 .form-container {
     flex: 1; /* Ocupa un tercio de la pantalla */
     max-width: 30%; /* Máximo 30% de la pantalla */
+    height: 100%; /* Ocupa todo el alto disponible */
     max-height: 80vh;
     background-color: #494848;
     padding: 20px;

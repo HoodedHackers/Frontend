@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './components/Login/Login.jsx';
 import Opciones from './components/Opciones/Opciones.jsx';
-import PartidaWithProvider from './components/Partida/Partida.jsx';
+import Partida from './components/Partida/Partida.jsx';
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -12,7 +12,7 @@ createRoot(document.getElementById("root")).render(
       <Routes>
         <Route path='/' element={<Login />} />
         <Route path='/Opciones' element={<Opciones />} />
-        <Route path='/Partida/:id' element={<PartidaWithProvider />} />
+        <Route path='/Partida/:id' element={<Partida />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

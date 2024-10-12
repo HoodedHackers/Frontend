@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import TableroContainer from '../components/Partida/tablero/TableroContainer';
+import Tablero_Container from '../components/Partida/tablero/tablero_container';
 
 // Mock de WebSocket
 global.WebSocket = class {
@@ -19,7 +19,7 @@ global.WebSocket = class {
 
 describe('Tablero', () => {
   beforeEach(() => {
-    render(<TableroContainer jugadores={[]} />); // Renderizamos el componente sin jugadores
+    render(<Tablero_Container jugadores={[]} />); // Renderizamos el componente sin jugadores
   });
 
   it('se renderiza correctamente con 36 cuadrados', () => {

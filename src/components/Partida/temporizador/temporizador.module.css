@@ -1,4 +1,4 @@
-/* Animación de advertencia del Temporizador */
+/* Animación de advertencia del temporizador */
 .timer-warning-active {
   animation: pulse 0.5s infinite;
   border-radius: 10px;
@@ -34,7 +34,7 @@
   text-align: center;
 }
 
-/* Estilo del texto del Temporizador */
+/* Estilo del texto del temporizador */
 .timer-text {
   font-size: 1rem;
   font-weight: bold;
