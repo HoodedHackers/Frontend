@@ -30,7 +30,7 @@ function ListarPartidas() {
 
       // Manejar la conexión abierta
       wsUPRef.current.onopen = () => {
-        console.log("Conexión WebSocket de Unirse a Partida abierta");
+        console.log("Conexión WebSocket de Unirse a Partida abierta.");
 
         const startMessage = {
           user_identifier: sessionStorage.getItem('identifier')

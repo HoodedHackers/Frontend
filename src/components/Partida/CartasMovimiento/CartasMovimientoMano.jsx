@@ -1,34 +1,55 @@
-import React, { useState, useEffect, useContext } from 'react';
+// HARDCODEADO
+import React, { useState, useEffect, useContext, createContext } from 'react';
 import CartaMovimiento from './CartaMovimiento.jsx';
 import { PartidaContext } from '../PartidaProvider.jsx';
 import './CartasMovimientoMano.css';
 
-const CartasMovimientoMano = ({ubicacion, onMouseEnter, onMouseLeave}) => {
-  const { jugadores, partidaIniciada, handleMouseEnter, handleMouseLeave } = useContext(PartidaContext);
+export const CartasMovimientoContext = createContext();
 
-  const setearCartaMovimientos = (jugadores, dataMovimientos = null) => {
-    return jugadores.map((jugador, index) => {
-      if (index === 0 && dataMovimientos && partidaIniciada) {
-        // Si es el primer jugador y los datos de movimientos están disponibles
-        return {
-          player: jugador.id,
-          cards_out: dataMovimientos.cards_out, // Usa los datos recibidos
-        };
-      } else {
-        // Para el resto de los jugadores
-        return {
-          player: jugador.id,
-          cards_out: [
-            { card_id: -1, card_name: "Soy Movimiento" },
-            { card_id: -1, card_name: "Soy Movimiento" },
-            { card_id: -1, card_name: "Soy Movimiento" }
-          ]
-        };
+export const CartasMovimientoMano = ({ubicacion, onMouseEnter, onMouseLeave}) => {
+  const [seleccionada, setSeleccionada] = useState(null);
+  const { jugadores, partidaIniciada } = useContext(PartidaContext);
+
+  //const setearCartaMovimientos = (jugadores, dataMovimientos = null) => {
+  //  return jugadores.map((jugador, index) => {
+  //    if (index === 0 && dataMovimientos && partidaIniciada) {
+  //      // Si es el primer jugador y los datos de movimientos están disponibles
+  //      return {
+  //        player: jugador.id,
+  //        cards_out: dataMovimientos.cards_out, // Usa los datos recibidos
+  //      };
+  //    } else {
+  //      // Para el resto de los jugadores
+  //      return {
+  //        player: jugador.id,
+  //        cards_out: [
+  //          { card_id: -1, card_name: "Soy Movimiento" },
+  //          { card_id: -1, card_name: "Soy Movimiento" },
+  //          { card_id: -1, card_name: "Soy Movimiento" }
+  //        ]
+  //      };
+  //    }
+  //  });
+  //};
+
+  const [cartaMovimientos, setCartaMovimientos] = useState(
+    [
+      { player: parseInt(sessionStorage.getItem("player_id"), 10), cards_out: 
+        [
+          { card_id: 10, card_name: "Soy Movimiento" },
+          { card_id: 12, card_name: "Soy Movimiento" },
+          { card_id: 13, card_name: "Soy Movimiento" }
+        ] 
+      },
+      { player: 1, cards_out: 
+        [
+          { card_id: -1, card_name: "Soy Movimiento" },
+          { card_id: -1, card_name: "Soy Movimiento" },
+          { card_id: -1, card_name: "Soy Movimiento" }
+        ] 
       }
-    });
-  };
-
-  const [cartaMovimientos, setCartaMovimientos] = useState(() => setearCartaMovimientos(jugadores));
+    ]
+  );
 
   // Actualiza las cartas de movimiento cuando los jugadores cambian
   useEffect(() => {
@@ -70,36 +91,38 @@ const CartasMovimientoMano = ({ubicacion, onMouseEnter, onMouseLeave}) => {
   const cartasDelJugador = cartaMovimientos[ubicacion]?.cards_out || [];
 
   return (
-    <div className={`jugador${ubicacion + 1}-container-cartas-movimiento`}>
-      {cartasDelJugador.length > 0 ? (
-        cartasDelJugador.map((carta, index) => (
-          ubicacion === 0 ? (
-            <div
-              key={index}
-              onMouseEnter={handleMouseEnter} 
-              onMouseLeave={handleMouseLeave}
-            >
-              <CartaMovimiento
-                tipo={(carta.card_id % 7) + 1} 
-                ubicacion={ubicacion}
-              />
-            </div>
-          ) : (
-            <div 
-              key={index}
-            >
-              <CartaMovimiento
-                tipo={(carta.card_id % 7) + 1} 
-                ubicacion={ubicacion}
-              />
-            </div>
-          )
-        ))
-      ) : (
-        null
-      )}
-    </div>
+    <CartasMovimientoContext.Provider 
+      value={{
+        seleccionada,
+        setSeleccionada
+      }}
+    >  
+      <div className={`jugador${ubicacion + 1}-container-cartas-movimiento`}>
+        {cartasDelJugador.length > 0 ? (
+          cartasDelJugador.map((carta, index) => (
+            ubicacion === 0 ? (
+              <div key={index}>
+                <CartaMovimiento
+                  id={carta.card_id} 
+                  ubicacion={ubicacion}
+                  activa={false}
+                />
+              </div>
+            ) : (
+              <div 
+                key={index}
+              >
+                <CartaMovimiento
+                  id={carta.card_id} 
+                  ubicacion={ubicacion}
+                />
+              </div>
+            )
+          ))
+        ) : (
+          null
+        )}
+      </div>
+    </CartasMovimientoContext.Provider>
   );
 };
-
-export default CartasMovimientoMano;
