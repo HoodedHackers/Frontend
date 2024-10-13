@@ -10,46 +10,29 @@ export const CartasMovimientoMano = ({ubicacion, onMouseEnter, onMouseLeave}) =>
   const [seleccionada, setSeleccionada] = useState(null);
   const { jugadores, partidaIniciada } = useContext(PartidaContext);
 
-  //const setearCartaMovimientos = (jugadores, dataMovimientos = null) => {
-  //  return jugadores.map((jugador, index) => {
-  //    if (index === 0 && dataMovimientos && partidaIniciada) {
-  //      // Si es el primer jugador y los datos de movimientos están disponibles
-  //      return {
-  //        player: jugador.id,
-  //        cards_out: dataMovimientos.cards_out, // Usa los datos recibidos
-  //      };
-  //    } else {
-  //      // Para el resto de los jugadores
-  //      return {
-  //        player: jugador.id,
-  //        cards_out: [
-  //          { card_id: -1, card_name: "Soy Movimiento" },
-  //          { card_id: -1, card_name: "Soy Movimiento" },
-  //          { card_id: -1, card_name: "Soy Movimiento" }
-  //        ]
-  //      };
-  //    }
-  //  });
-  //};
-
-  const [cartaMovimientos, setCartaMovimientos] = useState(
-    [
-      { player: parseInt(sessionStorage.getItem("player_id"), 10), cards_out: 
-        [
-          { card_id: 10, card_name: "Soy Movimiento" },
-          { card_id: 12, card_name: "Soy Movimiento" },
-          { card_id: 13, card_name: "Soy Movimiento" }
-        ] 
-      },
-      { player: 1, cards_out: 
-        [
-          { card_id: -1, card_name: "Soy Movimiento" },
-          { card_id: -1, card_name: "Soy Movimiento" },
-          { card_id: -1, card_name: "Soy Movimiento" }
-        ] 
+  const setearCartaMovimientos = (jugadores, dataMovimientos = null) => {
+    return jugadores.map((jugador, index) => {
+      if (index === 0 && dataMovimientos && partidaIniciada) {
+        // Si es el primer jugador y los datos de movimientos están disponibles
+        return {
+          player: jugador.id,
+          cards_out: dataMovimientos.cards_out, // Usa los datos recibidos
+        };
+      } else {
+        // Para el resto de los jugadores
+        return {
+          player: jugador.id,
+          cards_out: [
+            { card_id: -1, card_name: "Soy Movimiento" },
+            { card_id: -1, card_name: "Soy Movimiento" },
+            { card_id: -1, card_name: "Soy Movimiento" }
+          ]
+        };
       }
-    ]
-  );
+    });
+  }
+  
+  const [cartaMovimientos, setCartaMovimientos] = useState(() => setearCartaMovimientos(jugadores));
 
   // Actualiza las cartas de movimiento cuando los jugadores cambian
   useEffect(() => {

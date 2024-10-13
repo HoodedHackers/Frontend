@@ -64,11 +64,11 @@ const CartaMovimiento = ({id, ubicacion}) => {
           onMouseEnter={handleMouseEnter} 
           onMouseLeave={handleMouseLeave}
         >
-          <img src={Images[(id % 7) + 1]} alt={`Carta de Movimiento ${id}`} className='carta-movimiento-img'/>
+          <img src={Images[(id % 7) + 1]} alt={`Carta de Movimiento ${(id % 7) + 1}`} className='carta-movimiento-img'/>
         </div>
       ) : (
         <div className={"carta-movimiento-sin-hover"}>
-          <img src={Images[(id % 7) + 1]} alt={`Carta de Movimiento ${id}`} className='carta-movimiento-img'/>
+          <img src={Images[(id % 7) + 1]} alt={`Carta de Movimiento ${(id % 7) + 1}`} className='carta-movimiento-img'/>
         </div>
       ) 
   );

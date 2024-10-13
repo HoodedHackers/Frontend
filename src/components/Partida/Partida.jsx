@@ -10,7 +10,6 @@ import PasarTurno from "./PasarTurno/PasarTurno.jsx";
 import Temporizador from "./temporizador/temporizador.jsx";
 import { WebSocketContext } from '../WebSocketsProvider.jsx';
 import "./Partida.css";
-import { set } from "react-hook-form";
 
 function Partida() {
   const {

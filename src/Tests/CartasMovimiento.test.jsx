@@ -1,9 +1,10 @@
 import React from 'react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { render, screen, waitFor, cleanup } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import CartaMovimiento from '../components/Partida/CartasMovimiento/CartaMovimiento';
-import CartasMovimientoMano from '../components/Partida/CartasMovimiento/CartasMovimientoMano';
+import { CartasMovimientoMano, CartasMovimientoContext } from '../components/Partida/CartasMovimiento/CartasMovimientoMano';
 import { PartidaContext } from '../components/Partida/PartidaProvider';
+import { WebSocketProvider } from '../components/WebSocketsProvider';
 
 vi.mock('../components/Partida/PartidaProvider');
 
@@ -21,16 +22,6 @@ let cartaMovimientosMock = [
   }
 ];
 
-// Mock de handleMouseEnter
-const handleMouseEnterMock = () => {
- setIsOverlayVisible(true);
-};
-
-// Mock de handleMouseLeave
-const handleMouseLeaveMock = () => {
- setIsOverlayVisible(false);
-};
-
 describe('Cartas de Movimiento', () => {
 
   afterEach(() => {
@@ -45,13 +36,13 @@ describe('Cartas de Movimiento', () => {
 
     // Renderiza el componente con los datos simulados
     render(
-      <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
-        <CartasMovimientoMano 
-          ubicacion={0} 
-          onMouseEnter={handleMouseEnterMock} 
-          onMouseLeave={handleMouseLeaveMock} 
-        />
-      </PartidaContext.Provider>
+      <WebSocketProvider>
+        <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
+          <CartasMovimientoMano 
+            ubicacion={0}
+          />
+        </PartidaContext.Provider>
+      </WebSocketProvider>  
     );
 
     // Verifica que las cartas están presentes y se renderizan boca abajo
@@ -61,7 +52,6 @@ describe('Cartas de Movimiento', () => {
 
   it('Se conecta al endpoint para obtener las cartas', async () => {
     const partidaIniciada = true;
-
     // Mock de la respuesta del fetch
     const responseMock = { 
       player: 1, cards_out: [
@@ -78,13 +68,13 @@ describe('Cartas de Movimiento', () => {
 
     // Renderiza el componente
     render(
-      <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
-        <CartasMovimientoMano 
-          ubicacion={0} 
-          onMouseEnter={handleMouseEnterMock} 
-          onMouseLeave={handleMouseLeaveMock} 
-        />
-      </PartidaContext.Provider>
+      <WebSocketProvider>
+        <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
+          <CartasMovimientoMano 
+            ubicacion={0}
+          />
+        </PartidaContext.Provider>
+      </WebSocketProvider> 
     );
 
     // Espera a que fetch sea llamado con los parámetros correctos
@@ -106,18 +96,28 @@ describe('Cartas de Movimiento', () => {
   });
 
   it('Se renderizan todos los tipos de cartas de movimiento', () => {
-    const tipos = [0, 1, 2, 3, 4, 5, 6, 7]; // Tipos de carta a verificar
+    const tipos = [-1, 0, 1, 2, 3, 4, 5, 6]; // Tipos de carta a verificar
+    const seleccionada = null;
 
     // Renderiza una carta por cada tipo
     tipos.forEach((tipo) => {
-      render(<CartaMovimiento tipo={tipo} />);
-      const imagen = screen.getByAltText(`Carta de Movimiento ${tipo}`);
+      render(
+        <WebSocketProvider>
+        <PartidaContext.Provider value={{ jugadores }}>
+          <CartasMovimientoContext.Provider value={{seleccionada}}> 
+            <CartaMovimiento 
+              id={tipo}
+            />
+          </CartasMovimientoContext.Provider>  
+        </PartidaContext.Provider>
+      </WebSocketProvider> 
+      );
+      const imagen = screen.getByAltText(`Carta de Movimiento ${tipo + 1}`);
       
       // Verifica que la imagen esté en el documento
       expect(imagen).toBeInTheDocument();
 
-      // También puedes verificar que la src de la imagen sea la esperada
-      const expectedSrc = `/Imagenes/Movimiento/${tipo === 0 ? 'back-mov' : `mov${tipo}`}.svg`;
+      const expectedSrc = `/Imagenes/Movimiento/${tipo + 1 === 0 ? 'back-mov' : `mov${tipo + 1}`}.svg`;
       expect(imagen.src).toContain(expectedSrc);
     });
   });
@@ -140,13 +140,13 @@ describe('Cartas de Movimiento', () => {
 
     // Renderiza el componente
     render(
-      <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
-        <CartasMovimientoMano 
-          ubicacion={0} 
-          onMouseEnter={handleMouseEnterMock} 
-          onMouseLeave={handleMouseLeaveMock} 
-        />
-      </PartidaContext.Provider>
+      <WebSocketProvider>
+        <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
+          <CartasMovimientoMano 
+            ubicacion={0}
+          />
+        </PartidaContext.Provider>
+      </WebSocketProvider> 
     );
 
     // Verifica que las cartas están presentes
@@ -174,13 +174,13 @@ describe('Cartas de Movimiento', () => {
 
     // Renderiza el componente
     render(
-      <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
-        <CartasMovimientoMano 
-          ubicacion={0} 
-          onMouseEnter={handleMouseEnterMock} 
-          onMouseLeave={handleMouseLeaveMock} 
-        />
-      </PartidaContext.Provider>
+      <WebSocketProvider>
+        <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
+          <CartasMovimientoMano 
+            ubicacion={0}
+          />
+        </PartidaContext.Provider>
+      </WebSocketProvider> 
     );
 
     // Verifica que la carta está presente
@@ -207,13 +207,13 @@ describe('Cartas de Movimiento', () => {
 
     // Renderiza el componente
     render(
-      <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
-        <CartasMovimientoMano 
-          ubicacion={0} 
-          onMouseEnter={handleMouseEnterMock} 
-          onMouseLeave={handleMouseLeaveMock} 
-        />
-      </PartidaContext.Provider>
+      <WebSocketProvider>
+        <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
+          <CartasMovimientoMano 
+            ubicacion={0}
+          />
+        </PartidaContext.Provider>
+      </WebSocketProvider> 
     );
     
     // Verifica que las cartas no están presentes
