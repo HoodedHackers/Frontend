@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import CartaFigura from './CartaFigura'; 
+import { PartidaContext } from '../PartidaProvider.jsx';
 import './MazoCartaFigura.css'; 
 
-function MazoCartaFigura ({ubicacion, onMouseEnter, onMouseLeave}) {
+function MazoCartaFigura ({ubicacion}) {
   const [mazo, setMazo] = React.useState([
     { player: 1, cards_out: [{ card_id: 30, card_name: "Soy Figura" },
       { card_id: 21, card_name: "Soy Figura" },
@@ -21,20 +22,21 @@ function MazoCartaFigura ({ubicacion, onMouseEnter, onMouseLeave}) {
       { card_id: 45, card_name: "Soy Figura" }] 
     },
   ]); 
-    
+  
+  const { handleMouseEnter, handleMouseLeave } = useContext(PartidaContext);
   const [partidaId, setPartidaId] = React.useState(null);
   const [jugadores, setJugadores] = React.useState([]);
 
-  // Efecto para obtener partidaId y jugadores desde localStorage solo cuando el componente se monta
+  // Efecto para obtener partidaId y jugadores desde sessionStorage solo cuando el componente se monta
   useEffect(() => {
-    const PartidaId = localStorage.getItem('partidaId');
-    const Jugadores = JSON.parse(localStorage.getItem('jugadores'));
+    const PartidaId = sessionStorage.getItem('partida_id');
+    const Jugadores = JSON.parse(sessionStorage.getItem('players'));
 
     if (PartidaId && Jugadores) {
       setPartidaId(PartidaId);
       setJugadores(Jugadores);
-      console.log(localStorage.getItem('partidaId'));
-      console.log(JSON.parse(localStorage.getItem('jugadores')));
+      console.log(sessionStorage.getItem('partida_id'));
+      console.log(JSON.parse(sessionStorage.getItem('players')));
     }
 
   }, []); 
@@ -83,7 +85,7 @@ function MazoCartaFigura ({ubicacion, onMouseEnter, onMouseLeave}) {
     <div className={`container-cartas-figura grupo-${ubicacion + 1}`}>
       {cartasDelJugador.length > 0 ? (
         cartasDelJugador.map((carta) => (
-          <div key={carta.card_id} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+          <div key={carta.card_id} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
             <CartaFigura tipo={(carta.card_id % 25) + 1} />
           </div>
         ))

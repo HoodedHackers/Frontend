@@ -1,9 +1,7 @@
 import React, { useContext, useState } from 'react';
-import { PartidaContext } from '../PartidaProvider.jsx';
 import styles from './IniciarPartida.module.css';
 
-function IniciarPartida({ id_game, playerIdentifier }) {
-  const { setPartidaIniciada } = useContext(PartidaContext);
+function IniciarPartida ({empezarPartida}) {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(''); // Agregar estado para mensajes de error
 
@@ -11,10 +9,10 @@ function IniciarPartida({ id_game, playerIdentifier }) {
     setLoading(true);
     setErrorMessage(''); // Limpiar mensaje de error anterior
     
-    const partidaID = localStorage.getItem('partidaId');
-    const id_jugador = sessionStorage.getItem('identifier');
+    const partidaID = sessionStorage.getItem('partida_id');
+    const identifier = sessionStorage.getItem('identifier');
     try {
-      let body = JSON.stringify({ identifier: id_jugador });
+      let body = JSON.stringify({ identifier: identifier });
       console.log(body);
       const response = await fetch(`http://127.0.0.1:8000/api/lobby/${partidaID}/start`, {
         method: "PUT",  
@@ -28,9 +26,9 @@ function IniciarPartida({ id_game, playerIdentifier }) {
         const errorData = await response.json();
         throw new Error(errorData.detail || 'Error al iniciar la partida');
       }
-
-      sessionStorage.setItem('partidaIniciada', "true");
-      setPartidaIniciada(true);
+      empezarPartida();
+      console.log('Llamando a empezarPartida...');
+      setLoading(false);
     } catch (error) {
       console.error('Error al iniciar la partida:', error);
       setErrorMessage(error.message); // Establecer mensaje de error para mostrar en la interfaz

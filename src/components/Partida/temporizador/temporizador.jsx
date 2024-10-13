@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import styles from "./temporizador.module.css";
+import styles from "./Temporizador.module.css";
 
 const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
   const [timeLeft, setTimeLeft] = useState(
-    () => Number(localStorage.getItem("timeLeft")) || tiempoLimite
+    () => Number(sessionStorage.getItem("timeLeft")) || tiempoLimite
   );
   const audioRef = useRef(null);
   const [audioPlayed, setAudioPlayed] = useState(false);

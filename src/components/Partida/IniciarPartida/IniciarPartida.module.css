@@ -5,14 +5,13 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.7); /* Opacidad para oscurecer */
-    z-index: 10;
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1;
   }
 
   .startButton {
-    z-index: 20;
     padding: 15px 30px;
     font-size: 22px;
     background-color: #10ee18; /* Color de fondo */

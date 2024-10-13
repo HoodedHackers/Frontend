@@ -8,8 +8,8 @@ const AbandonarPartida = () => {
     const [fadeOut, setFadeOut] = useState(false); // Estado para manejar el desvanecimiento
     const navigate = useNavigate(); 
 
-    const ident = localStorage.getItem('identifier');
-    const partidaId = localStorage.getItem('partidaId');
+    const ident = sessionStorage.getItem('identifier');
+    const partidaId = sessionStorage.getItem('partida_id');
 
     const manejadorAbandonarPartida = async () => {
         setLoading(true);  
@@ -31,10 +31,10 @@ const AbandonarPartida = () => {
                     alert(`¡Felicidades ${data.players[0].name}, ganaste la partida!`); 
                 }
                 
-                const Jugadores = JSON.parse(localStorage.getItem('jugadores')) || [];
+                const Jugadores = JSON.parse(sessionStorage.getItem('players')) || [];
                 const jugadoresActualizados = Jugadores.filter(j => j.identifier !== ident);
 
-                localStorage.setItem('jugadores', JSON.stringify(jugadoresActualizados));
+                sessionStorage.setItem('players', JSON.stringify(jugadoresActualizados));
 
                 navigate('/Opciones'); 
             } else if (response.status === 404) {

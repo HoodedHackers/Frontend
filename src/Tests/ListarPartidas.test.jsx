@@ -155,6 +155,7 @@ describe('ListarPartidas Component', () => {
 
   it('Permite al usuario unirse a una partida', async () => {
 
+
   });
 
 });

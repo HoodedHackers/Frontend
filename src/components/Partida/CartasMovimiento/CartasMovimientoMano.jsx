@@ -4,7 +4,7 @@ import { PartidaContext } from '../PartidaProvider.jsx';
 import './CartasMovimientoMano.css';
 
 const CartasMovimientoMano = ({ubicacion, onMouseEnter, onMouseLeave}) => {
-  const { jugadores, partidaIniciada } = useContext(PartidaContext);
+  const { jugadores, partidaIniciada, handleMouseEnter, handleMouseLeave } = useContext(PartidaContext);
 
   const setearCartaMovimientos = (jugadores, dataMovimientos = null) => {
     return jugadores.map((jugador, index) => {
@@ -73,9 +73,27 @@ const CartasMovimientoMano = ({ubicacion, onMouseEnter, onMouseLeave}) => {
     <div className={`jugador${ubicacion + 1}-container-cartas-movimiento`}>
       {cartasDelJugador.length > 0 ? (
         cartasDelJugador.map((carta, index) => (
-          <div key={index} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-            <CartaMovimiento tipo={(carta.card_id % 7) + 1} />
-          </div>
+          ubicacion === 0 ? (
+            <div
+              key={index}
+              onMouseEnter={handleMouseEnter} 
+              onMouseLeave={handleMouseLeave}
+            >
+              <CartaMovimiento
+                tipo={(carta.card_id % 7) + 1} 
+                ubicacion={ubicacion}
+              />
+            </div>
+          ) : (
+            <div 
+              key={index}
+            >
+              <CartaMovimiento
+                tipo={(carta.card_id % 7) + 1} 
+                ubicacion={ubicacion}
+              />
+            </div>
+          )
         ))
       ) : (
         null

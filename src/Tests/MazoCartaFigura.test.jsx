@@ -8,14 +8,14 @@ describe('MazoCartaFigura', () => {
   const handleMouseEnter = vi.fn();
   const handleMouseLeave = vi.fn();
   beforeEach(() => {
-    // Simular valores de localStorage antes de cada prueba
+    // Simular valores de sessionStorage antes de cada prueba
     const mockPartidaId = '12345';
     const mockJugadores = [
       { identifier: '1', name: 'Jugador 1' },
       { identifier: '2', name: 'Jugador 2' }
     ];
-    localStorage.setItem('partidaId', mockPartidaId);
-    localStorage.setItem('jugadores', JSON.stringify(mockJugadores));
+    sessionStorage.setItem('partida_id', mockPartidaId);
+    sessionStorage.setItem('players', JSON.stringify(mockJugadores));
 
     // Mockear la respuesta del backend
     global.fetch = vi.fn(() =>
