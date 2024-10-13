@@ -3,19 +3,19 @@ import { describe, it, vi, afterEach, expect } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter, BrowserRouter } from "react-router-dom";
 import ListarPartidas from '../components/Opciones/ListarPartidas/ListarPartidas.jsx';
+import { WebSocketProvider } from '../components/WebSocketsProvider.jsx';
 
-const navigateMock = vi.fn();
-
-const mockWebSocket = {
-  send: vi.fn(),
-  close: vi.fn(),
-  onopen: vi.fn(),
-  onmessage: vi.fn(),
-  onclose: vi.fn(),
-  onerror: vi.fn(),
+const mockFetch = (data, status = 200) => {
+  return vi.fn(() =>
+    Promise.resolve({
+      ok: status >= 200 && status < 300,
+      status,
+      json: () => Promise.resolve(data),
+    })
+  );
 };
 
-global.WebSocket = vi.fn(() => mockWebSocket);
+const navigateMock = vi.fn();
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
@@ -24,6 +24,38 @@ vi.mock('react-router-dom', async () => {
     useNavigate: () => navigateMock,
   };
 });
+
+// websocketMock.js
+export function createWebSocketMock() {
+  const listeners = {
+    open: [],
+    message: [],
+    close: [],
+    error: [],
+  };
+
+  return {
+    send: vi.fn((data) => console.log("Mensaje enviado:", data)),
+    close: vi.fn(() => listeners.close.forEach((cb) => cb({ code: 1000 }))),
+
+    // Métodos para registrar eventos
+    addEventListener: vi.fn((type, callback) => {
+      if (listeners[type]) listeners[type].push(callback);
+    }),
+    removeEventListener: vi.fn((type, callback) => {
+      listeners[type] = listeners[type].filter((cb) => cb !== callback);
+    }),
+
+    // Métodos para simular eventos WebSocket
+    triggerOpen: () => listeners.open.forEach((cb) => cb()),
+    triggerMessage: (data) =>
+      listeners.message.forEach((cb) => cb({ data: JSON.stringify(data) })),
+    triggerError: (error) =>
+      listeners.error.forEach((cb) => cb({ message: error })),
+    triggerClose: (code = 1000) =>
+      listeners.close.forEach((cb) => cb({ code })),
+  };
+}
 
 describe('ListarPartidas Component', () => {
   const partidas = [
@@ -46,7 +78,9 @@ describe('ListarPartidas Component', () => {
     useStateMock.mockReturnValue([[], vi.fn()]); // Estado inicial vacío
 
     render(
-      <ListarPartidas />
+      <WebSocketProvider>
+        <ListarPartidas />
+      </WebSocketProvider>
     );
 
     // Verificar que se muestra un mensaje indicando que no hay partidas
@@ -54,16 +88,41 @@ describe('ListarPartidas Component', () => {
     expect(message).toBeInTheDocument();
   });
 
-  it('Se conecta al endpoint para obtener las partidas', async () => {
+  it('Muestra un error por consola si el GET falla', async () => {
+    global.fetch = mockFetch(null, 404);
 
+    // Mock de console.error
+    const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    render(
+      <WebSocketProvider>
+        <ListarPartidas />
+      </WebSocketProvider>
+    );
+
+    await waitFor(() => {
+      expect(consoleErrorMock).toHaveBeenCalled();
+      const errorArg = consoleErrorMock.mock.calls[0][0]; // Primer argumento pasado a console.error
+      expect(errorArg.message).toBe("No se pudo obtener las partidas.");
+    });
   });
 
-  it('Muestra un error si el GET falla', async () => {
+  it('Se concecta al endpoint de Listar Partidas para renderizar partidas', async () => {
+    global.fetch = mockFetch(partidas);
 
-  });
+    render(
+      <WebSocketProvider>
+        <ListarPartidas />
+      </WebSocketProvider>
+    );
 
-  it('Renderiza una lista de partidas correctamente', async () => {
-
+    expect(await screen.findByText('Partida Milo')).toBeInTheDocument();
+    expect(screen.getByText('Partida Ely')).toBeInTheDocument();
+    expect(screen.getByText('Partida Ema')).toBeInTheDocument();
+    expect(screen.getByText('Partida Andy')).toBeInTheDocument();
+    expect(screen.getByText('Partida Lou')).toBeInTheDocument();
+    expect(screen.getByText('Partida Lu')).toBeInTheDocument();
+    expect(screen.getByText('Partida Mati')).toBeInTheDocument();
   });
 
   it('Se conecta con el WebSocket de Listar Partidas', () => {
