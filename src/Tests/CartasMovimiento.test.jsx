@@ -222,6 +222,22 @@ describe('Cartas de Movimiento', () => {
       expect(screen.queryByText("Carta de Movimiento 1")).not.toBeInTheDocument();
       expect(screen.queryByText("Carta de Movimiento 2")).not.toBeInTheDocument();
     });
+  });  
+
+  it('Se conecta con el WebSocket de Usar Carta de Movimiento', async () => {
+    // NO SE TESTEAR WEBSOCKETS
   });
+
+  it('Muestra un error si el WebSocket de Usar Carta de Movimiento falla', async () => {
+    // NO SE TESTEAR WEBSOCKETS
+  });
+
+  it('Se puede seleccionar una carta de movimiento', () => {
+    // NO SE TESTEAR WEBSOCKETS
+  });
+  
+  it('Solo se puede sellecionar una carta de movimiento', () => {
+    // NO SE TESTEAR WEBSOCKETS
+  });  
 
 });

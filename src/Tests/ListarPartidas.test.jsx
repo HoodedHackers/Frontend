@@ -141,7 +141,7 @@ describe('ListarPartidas Component', () => {
   });
   
 
-  it('Muestra un error si el WebSocket de Listar Partidas', () => {
+  it('Muestra un error si el WebSocket de Listar Partidas falla', () => {
 
   });
 
