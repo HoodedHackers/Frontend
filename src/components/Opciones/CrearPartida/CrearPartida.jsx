@@ -51,7 +51,7 @@ export default function CrearPartida() {
                 sessionStorage.setItem('partida_id', partidaId);
 
                 // Conectar al WebSocket de Unirse a Partida
-                wsUPRef.current = new WebSocket(`http://127.0.0.1:8000/ws/lobby/${partidaId}`);
+                wsUPRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaId}`);
 
                 // Manejar la conexión abierta
                 wsUPRef.current.onopen = () => {

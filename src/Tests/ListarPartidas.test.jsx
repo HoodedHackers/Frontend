@@ -1,7 +1,53 @@
+import React from 'react';
 import { describe, it, vi, afterEach, expect } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter, BrowserRouter } from "react-router-dom";
 import ListarPartidas from '../components/Opciones/ListarPartidas/ListarPartidas.jsx';
+import { WebSocketProvider } from '../components/WebSocketsProvider.jsx';
+
+const mockFetch = (data, status = 200) => {
+  return vi.fn(() =>
+    Promise.resolve({
+      ok: status >= 200 && status < 300,
+      status,
+      json: () => Promise.resolve(data),
+    })
+  );
+};
+
+const navigateMock = vi.fn();
+
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: () => navigateMock,
+  };
+});
+
+class MockWebSocket {
+  constructor(url) {
+    this.url = url;
+    this.onopen = jest.fn();
+    this.onmessage = jest.fn();
+    this.onerror = jest.fn();
+    this.onclose = jest.fn();
+    this.sentMessages = [];
+  }
+
+  send(message) {
+    this.sentMessages.push(message);
+  }
+
+  close() {
+    this.onclose();
+  }
+
+  // Simula que el socket recibe un mensaje
+  receiveMessage(data) {
+    this.onmessage({ data: JSON.stringify(data) });
+  }
+}
 
 describe('ListarPartidas Component', () => {
   const partidas = [
@@ -19,68 +65,103 @@ describe('ListarPartidas Component', () => {
   });
 
   it('Renderiza un mensaje cuando no hay partidas', async () => {
+    // Mock para simular el useState de Listar Partidas
+    const useStateMock = vi.spyOn(React, 'useState');
+    useStateMock.mockReturnValue([[], vi.fn()]); // Estado inicial vacío
 
     render(
-      <MemoryRouter>
+      <WebSocketProvider>
         <ListarPartidas />
-      </MemoryRouter>
+      </WebSocketProvider>
     );
 
-    // Espera a que el mensaje sea renderizado
-    const mensaje = await screen.findByText('No hay partidas disponibles en este momento. Por favor, intente crear una partida.');
-
-    expect(mensaje).toBeInTheDocument();
+    // Verificar que se muestra un mensaje indicando que no hay partidas
+    const message = screen.getByText(/No hay partidas disponibles en este momento. Por favor, intente crear una partida./i);
+    expect(message).toBeInTheDocument();
   });
 
-  it('Realiza el fetch inicial', async () => {
-    // Mock de fetch para simular una respuesta exitosa
-    const fetchMock = vi.spyOn(global, 'fetch').mockImplementation(() =>
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve([]),
-      })
-    );
-  
+  it('Muestra un error por consola si el GET falla', async () => {
+    global.fetch = mockFetch(null, 404);
+
+    // Mock de console.error
+    const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(() => {});
+
     render(
-      <MemoryRouter>
-        <ListarPartidas jugador_id={"sdsda"} />
-      </MemoryRouter>
+      <WebSocketProvider>
+        <ListarPartidas />
+      </WebSocketProvider>
     );
-  
-    // Espera a que fetch sea llamado
+
     await waitFor(() => {
-        expect(fetchMock).toHaveBeenCalledWith('http://127.0.0.1:8000/api/lobby', {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-          });
+      expect(consoleErrorMock).toHaveBeenCalled();
+      const errorArg = consoleErrorMock.mock.calls[0][0]; // Primer argumento pasado a console.error
+      expect(errorArg.message).toBe("No se pudo obtener las partidas.");
     });
   });
 
-  it('Muestra un error si el fetch para obtener las partidas falla', async () => {
+  it('Se concecta al endpoint de Listar Partidas para renderizar partidas', async () => {
+    global.fetch = mockFetch(partidas);
+
+    render(
+      <WebSocketProvider>
+        <ListarPartidas />
+      </WebSocketProvider>
+    );
+
+    expect(await screen.findByText('Partida Milo')).toBeInTheDocument();
+    expect(screen.getByText('Partida Ely')).toBeInTheDocument();
+    expect(screen.getByText('Partida Ema')).toBeInTheDocument();
+    expect(screen.getByText('Partida Andy')).toBeInTheDocument();
+    expect(screen.getByText('Partida Lou')).toBeInTheDocument();
+    expect(screen.getByText('Partida Lu')).toBeInTheDocument();
+    expect(screen.getByText('Partida Mati')).toBeInTheDocument();
+  });
+
+  it('Se conecta con el WebSocket de Listar Partidas', async () => {
+    const socketMock = createWebSocketMock(); // Crear el mock del WebSocket
+  
+    // Mockear el constructor del WebSocket para que devuelva nuestro mock
+    global.WebSocket = vi.fn(() => socketMock);
+
+    const consoleLogMock = vi.spyOn(console, 'log').mockImplementation(() => {})
+  
+    render(
+      <WebSocketProvider>
+        <ListarPartidas />
+      </WebSocketProvider>
+    );
+  
+    // Simular que la conexión se abre
+    socketMock.triggerOpen();
+  
+    // Verificar que se registró la conexión en el log
+    await waitFor(() => {
+      expect(consoleLogMock).toHaveBeenCalledWith("WebSocket de Listar Partida conectado");
+    });
+  });
+  
+
+  it('Muestra un error si el WebSocket de Listar Partidas', () => {
 
   });
 
-  it('Actualiza las partidas vía WebSocket', async () => {
-    
-  });
-
-  it('Muestra un error si el Websocket de actualización de partidas falla', async () => {
+  it('Vuelve a renderizar si recibe partidas desde el WebSocket de Listar Partidas', () => {
 
   });
 
-  it('Realiza el fetch para unirse a partida', async () => {
+  it('Se conecta con el endpoint de Unirse a Partida', () => {
 
   });
 
-  it('Muestra un error si el fetch para unirse a partida falla', async () => {
+  it('Muestra un error si el endpoint falla', () => {
 
   });
 
-  it('Envía mensaje al WebSocket de unirse a partida', () => {
+  it('Se conecta con el WebSocket de Unirse a Partida', () => {
 
   });
 
-  it('Muestra un error si el WebSocket de unirse a partida falla', async () => {
+  it('Muestra un error si el WebSocket falla', () => {
 
   });
 
