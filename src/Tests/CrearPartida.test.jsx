@@ -12,7 +12,7 @@ describe("CrearPartida Component", () => {
     // Mock para useNavigate
     vi.spyOn(ReactRouter, "useNavigate").mockImplementation(() => navigate);
 
-    // Mock de localStorage para identifier
+    // Mock de sessionStorage para identifier
     vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key) => {
       if (key === 'identifier') {
         return "1234"; 

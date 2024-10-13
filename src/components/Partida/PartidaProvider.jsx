@@ -1,63 +1,27 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 
 export const PartidaContext = createContext();
 
 export const PartidaProvider = ({ children }) => {
-  const [partidaIniciada, setPartidaIniciada] = useState(sessionStorage.getItem("partidaIniciada") === "true" || false);
+  const [partidaIniciada, setPartidaIniciada] = useState(false);
 
   const tiempoLimite = 120; // 2 minutos
 
-  const [jugadores, setJugadores] = useState([
-    { id: 1, name: "Jugador 1" },
-    { id: 2, name: "Jugador 2" },
-    { id: 3, name: "Jugador 3" },
-    { id: 4, name: "Jugador 4" }
-  ]);
+  const [jugadores, setJugadores] = useState([]);
 
-  const [jugadorActualIndex, setJugadorActualIndex] = useState(() => {
-    const storedIndex = localStorage.getItem("jugadorActualIndex");
-    return storedIndex !== null ? Number(storedIndex) : 0;
-  });
+  const [posicionJugador, setPosicionJugador] = useState();
 
-  const jugadorActual = jugadores[jugadorActualIndex];
+  const [jugadorActualIndex, setJugadorActualIndex] = useState(parseInt(localStorage.getItem("jugadorActualIndex"), 10) || 0);
 
-  const [timeLeft, setTimeLeft] = useState(() => {
-    const storedTime = localStorage.getItem("timeLeft");
-    return storedTime !== null ? Number(storedTime) : tiempoLimite;
-  });
+  const [isOverlayVisible, setIsOverlayVisible] = useState();
 
-  const manejarFinTurno = async () => {
-    const nuevoIndex = (jugadorActualIndex + 1) % jugadores.length;
-    setJugadorActualIndex(nuevoIndex);
-    localStorage.setItem("jugadorActualIndex", nuevoIndex);
-    setTimeLeft(tiempoLimite);
-    localStorage.setItem("timeLeft", tiempoLimite);
-
-    try {
-      const response = await fetch("https://httpbin.org/post", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ jugadorActualIndex: nuevoIndex }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Error al actualizar el turno en el servidor");
-      }
-    } catch (error) {
-      console.error("Error en la conexión al servidor:", error);
-    }
+  const handleMouseEnter = () => {
+    setIsOverlayVisible(true);
   };
 
-  useEffect(() => {
-    localStorage.setItem("timeLeft", timeLeft);
-  }, [timeLeft]);
-
-  const [isOverlayVisible, setIsOverlayVisible] = useState(false);
-
-  const handleMouseEnter = () => setIsOverlayVisible(true);
-  const handleMouseLeave = () => setIsOverlayVisible(false);
+  const handleMouseLeave = () => {
+    setIsOverlayVisible(false);
+  };
 
   return (
     <PartidaContext.Provider
@@ -66,13 +30,13 @@ export const PartidaProvider = ({ children }) => {
         setPartidaIniciada,
         tiempoLimite,
         jugadores,
-        jugadorActual,
+        setJugadores,
+        posicionJugador,
+        setPosicionJugador,
         jugadorActualIndex,
         setJugadorActualIndex,
-        timeLeft,
-        setTimeLeft,
-        manejarFinTurno,
         isOverlayVisible,
+        setIsOverlayVisible,
         handleMouseEnter,
         handleMouseLeave
       }}

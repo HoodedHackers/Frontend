@@ -37,7 +37,6 @@
 
 /* Estilo del texto del Temporizador */
 .timer-text {
-  max-width: 100%;
   font-size: 1rem;
   font-weight: bold;
   color: #ffeb3b;
