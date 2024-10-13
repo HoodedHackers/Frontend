@@ -6,8 +6,7 @@ import { WebSocketContext } from '../../WebSocketsProvider.jsx';
 function ListarPartidas() {
   const [partidas, setPartidas] = useState([]);
   const navigate = useNavigate();
-  const wsLPRef = useRef(null);
-  const { wsUPRef } = useContext(WebSocketContext); 
+  const { wsLPRef, wsUPRef } = useContext(WebSocketContext); 
 
 
   const Unirse = async (partidaID) => {
@@ -27,7 +26,7 @@ function ListarPartidas() {
       }
 
       // Conectar al WebSocket de Unirse a Partida
-      wsUPRef.current = new WebSocket(`http://127.0.0.1:8000/ws/lobby/${partidaID}`);
+      wsUPRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaID}`);
 
       // Manejar la conexión abierta
       wsUPRef.current.onopen = () => {
@@ -72,10 +71,9 @@ function ListarPartidas() {
         },
       });
       if (!response.ok) {
-        throw new Error('No se pudo obtener las partidas');
+        throw new Error('No se pudo obtener las partidas.');
       }
       const data = await response.json();
-      console.log("Partidas recibidas del back:", data); // BORRAR
       setPartidas(data);
     } catch (error) {
       console.error(error);
@@ -90,7 +88,7 @@ function ListarPartidas() {
 
   
   useEffect(() => {
-    wsLPRef.current = new WebSocket("http://127.0.0.1:8000/ws/api/lobby");
+    wsLPRef.current = new WebSocket("ws://127.0.0.1:8000/ws/api/lobby");
 
     wsLPRef.current.onopen = () => {
       console.log("WebSocket de Listar Partida conectado");
@@ -106,7 +104,7 @@ function ListarPartidas() {
 
     // Manejar errores
     wsLPRef.current.onerror = (error) => {
-      console.error("WebSocket Listar Partida error:", error);
+      console.error("Error en el WebSocket Listar Partidas: ", error);
     };
 
     // Manejar cierre de conexión
