@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { PartidaContext, PartidaProvider } from './PartidaProvider.jsx';
-import Jugador from "./jugador/jugador.jsx";
+import Jugador from "./Jugador/Jugador.jsx";
 import CartasMovimientoMano from "./CartasMovimiento/CartasMovimientoMano.jsx";
 import TableroWithProvider from "./Tablero/TableroContainer.jsx";
 import MazoCartaFigura from "./CartaFigura/MazoCartaFigura.jsx";
 import IniciarPartida from "./IniciarPartida/IniciarPartida.jsx";
 import AbandonarPartida from "./AbandonarPartida/AbandonarPartida.jsx";
 import PasarTurno from "./PasarTurno/PasarTurno.jsx";
-import Temporizador from "./temporizador/temporizador.jsx";
+import Temporizador from "./Temporizador/Temporizador.jsx";
 import { WebSocketContext } from '../WebSocketsProvider.jsx';
 import "./Partida.css";
 
