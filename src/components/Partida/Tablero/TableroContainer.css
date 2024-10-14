@@ -3,7 +3,7 @@
   display: grid;
   place-items: center;
   border: 6px solid; 
-  border-image: linear-gradient(to bottom right, #cccccc, #999999, #ffffff) 1;
+  border-image: linear-gradient(to bottom right, #cccccc, #999999) 1;
   box-sizing: border-box;
 }
 
