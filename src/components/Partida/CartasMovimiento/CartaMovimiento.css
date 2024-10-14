@@ -6,9 +6,16 @@
     margin: 0 5px; /* Espaciado entre las cartas */
     transition: transform 0.3s ease; /* Transición suave para el efecto de hover */
     z-index: 0; /* Asegura que la carta esté en el frente al hacer hover */
+    background-color: azure;
+    border-radius: 2px;
 }
 
-.carta-movimiento-sin-hover {
+.carta-movimiento.activa {
+    transform: scale(1.5); /* Aumenta el tamaño de la carta al hacer clic */
+    animation: neonGlow 2s infinite; /* Animación del resplandor */
+}
+
+.carta-movimiento-sin-hover { /* Esta es la que se les muestra a los demas jugadores */
     width: 4vw;
     display: flex; /* Asegura que el contenido se alinee dentro del contenedor */
     justify-content: center; /* Centra horizontalmente */
@@ -16,6 +23,8 @@
     margin: 0 5px; /* Espaciado entre las cartas */
     transition: transform 0.3s ease; /* Transición suave para el efecto de hover */
     z-index: 0; /* Asegura que la carta esté en el frente al hacer hover */
+    background-color: azure;
+    border-radius: 2px;
 }
 
 .carta-movimiento:hover {
@@ -30,3 +39,14 @@
     object-fit: contain; /* Asegura que la imagen se mantenga en proporción */
 }
 
+@keyframes neonGlow {
+    0% {
+      box-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff, 0 0 30px #ffff00;
+    }
+    50% {
+      box-shadow: 0 0 20px #00ffff, 0 0 30px #ffff00, 0 0 40px #ff00ff;
+    }
+    100% {
+      box-shadow: 0 0 10px #ffff00, 0 0 20px #ff00ff, 0 0 30px #00ffff;
+    }
+  }

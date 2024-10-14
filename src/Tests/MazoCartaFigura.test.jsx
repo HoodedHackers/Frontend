@@ -15,7 +15,7 @@ describe('MazoCartaFigura', () => {
       { identifier: '2', name: 'Jugador 2' }
     ];
     sessionStorage.setItem('partida_id', mockPartidaId);
-    sessionStorage.setItem('players', JSON.stringify(mockJugadores));
+    sessionStorage.setItem('jugadores', JSON.stringify(mockJugadores));
 
     // Mockear la respuesta del backend
     global.fetch = vi.fn(() =>

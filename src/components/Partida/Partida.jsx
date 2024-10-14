@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { PartidaContext, PartidaProvider } from './PartidaProvider.jsx';
-import Jugador from "./Jugador/Jugador.jsx";
-import CartasMovimientoMano from "./CartasMovimiento/CartasMovimientoMano.jsx";
+import Jugador from "./jugador/jugador.jsx";
+import { CartasMovimientoMano } from "./CartasMovimiento/CartasMovimientoMano.jsx";
 import TableroWithProvider from "./Tablero/TableroContainer.jsx";
 import MazoCartaFigura from "./CartaFigura/MazoCartaFigura.jsx";
 import IniciarPartida from "./IniciarPartida/IniciarPartida.jsx";
 import AbandonarPartida from "./AbandonarPartida/AbandonarPartida.jsx";
 import PasarTurno from "./PasarTurno/PasarTurno.jsx";
-import Temporizador from "./Temporizador/Temporizador.jsx";
+import Temporizador from "./temporizador/temporizador.jsx";
 import { WebSocketContext } from '../WebSocketsProvider.jsx';
 import "./Partida.css";
 
@@ -22,6 +22,8 @@ function Partida() {
     setPosicionJugador,
     jugadorActualIndex,
     setJugadorActualIndex,
+    jugando,
+    setJugando,
     isOverlayVisible,
     partidaId
   } = useContext(PartidaContext);
@@ -64,6 +66,8 @@ function Partida() {
     } catch (error) {
       console.error("Error en la conexión al servidor:", error);
     }
+
+    setJugando(false);
   };
 
   useEffect(() => {

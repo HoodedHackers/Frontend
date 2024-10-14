@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState } from 'react';
 
 export const PartidaContext = createContext();
 
@@ -11,7 +11,10 @@ export const PartidaProvider = ({ children }) => {
 
   const [posicionJugador, setPosicionJugador] = useState();
 
-  const [jugadorActualIndex, setJugadorActualIndex] = useState(parseInt(localStorage.getItem("jugadorActualIndex"), 10) || 0);
+  //const [jugadorActualIndex, setJugadorActualIndex] = useState(parseInt(localStorage.getItem("jugadorActualIndex"), 10) || 0);
+  const [jugadorActualIndex, setJugadorActualIndex] = useState(0);
+
+  const [jugando, setJugando] = useState(false); // True si se ha elegido una carta de movimiento
 
   const [isOverlayVisible, setIsOverlayVisible] = useState();
 
@@ -35,6 +38,8 @@ export const PartidaProvider = ({ children }) => {
         setPosicionJugador,
         jugadorActualIndex,
         setJugadorActualIndex,
+        jugando,
+        setJugando,
         isOverlayVisible,
         setIsOverlayVisible,
         handleMouseEnter,

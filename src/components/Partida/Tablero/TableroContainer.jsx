@@ -1,11 +1,13 @@
 // TableroContainer.jsx
 import React, { useContext } from 'react';
-import { TableroContext, TableroProvider } from './TableroProvider.jsx'; // Asegúrate de que la ruta es correcta
+import { TableroContext, TableroProvider } from './TableroProvider.jsx';
+import { PartidaContext } from '../PartidaProvider.jsx';
 import styles from './TableroContainer.module.css';
 
 function Square({ color, onClick, isSelected }) {
   const { colorToImageMap } = useContext(TableroContext);
-  
+  const { jugando } = useContext(PartidaContext);
+
   return (
     <button
       className={`${styles.square} ${isSelected ? styles.selected : ''}`}
@@ -15,6 +17,7 @@ function Square({ color, onClick, isSelected }) {
         backgroundPosition: 'center', // Centra la imagen
       }}
       onClick={onClick}
+      disabled={!jugando}
     />
   );
 }
