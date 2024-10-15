@@ -19,7 +19,6 @@
   transition: text-shadow 0.3s ease;
 }
 
-
 .title:hover {
   text-shadow: 0 0 20px #0ff, 0 0 30px #ff1eff, 0 0 40px #00ffea;
 }
@@ -36,7 +35,6 @@
   gap: 2rem; /* Añade espacio entre los formularios */
 }
 
-
 .form {
   background: rgba(0, 0, 0, 0.6);
   padding: 2.5rem;
@@ -46,7 +44,6 @@
   transition: box-shadow 0.4s ease;
   margin-bottom: 2rem; /* Añade espacio entre formularios */
 }
-
 
 .input {
   padding: 14px;
@@ -78,7 +75,6 @@
   margin-top: 20px; /* Ajusta este valor para mover el botón más abajo */
 }
 
-
 .customButton:hover {
   background: #0ff; /* Cambiar a un color sólido para efecto de neón */
   box-shadow: 0 0 15px #ff1eff, 0 0 20px #00ffea;
@@ -91,7 +87,7 @@
   align-items: center;
   gap: 2rem;
   margin-top: 2rem;
-  width: 100%; /* Asegura que la contenedor ocupe todo el ancho */
+  width: 100%; /* Asegura que el contenedor ocupe todo el ancho */
 }
 
 .card {
@@ -140,9 +136,9 @@
   margin-bottom: 20px;
   font-size: 1.3rem;
 }
+
 .infoContainer {
   margin-right: 200px; /* Aumenta este valor para mover más a la izquierda */
   max-width: 400px; /* Limitar el ancho máximo de la información */
   flex-shrink: 0; /* Asegura que no se reduzca el tamaño de la tarjeta de información */
 }
-

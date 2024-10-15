@@ -48,7 +48,30 @@ const colorToImageMap = {
       setTurnoActual((turnoActual + 1) % jugadoresActivos.length);
     }
   }
-
+  useEffect(() => {
+    const socket = new WebSocket('wss://echo.websocket.org');
+    
+    socket.onmessage = (event) => {
+      console.log("Mensaje recibido:", event.data);
+      if (event.data.startsWith('{')) { // Verifica si parece un JSON
+        try {
+          const data = JSON.parse(event.data);
+          if (data.action === 'tablero_actualizado') {
+            setSquares(data.squares);
+          }
+        } catch (error) {
+          console.warn("No se pudo parsear el mensaje como JSON:", event.data);
+        }
+      } else {
+        console.warn("Mensaje recibido no es JSON:", event.data);
+      }
+    };
+    
+    return () => {
+      socket.close();
+    };
+  }, []);
+  
   return (
     <TableroContext.Provider
       value={{
