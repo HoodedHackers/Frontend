@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import styles from "./Temporizador.module.css";
+import "./Temporizador.css"; // Importa tu archivo CSS normal
 
 const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
   const [timeLeft, setTimeLeft] = useState(
@@ -17,7 +17,6 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
     // Manejar la conexión abierta
     socketRef.current.onopen = () => {
       console.log("Conexión WebSocket abierta");
-
       // Enviar mensaje para iniciar el Temporizador
       const startMessage = { action: "start" };
       socketRef.current.send(JSON.stringify(startMessage));
@@ -27,9 +26,7 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
     // Manejar mensajes entrantes
     socketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
-
       console.log(data);
-  
     };
 
     // Manejar errores
@@ -47,7 +44,7 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
 
   useEffect(() => {
     setTimeLeft(tiempoLimite); // Reiniciar el Temporizador cuando cambie el jugador
-  
+
     const countdown = setInterval(() => {
       setTimeLeft((prevTime) => {
         if (prevTime > 0) {
@@ -69,9 +66,9 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
         }
       });
     }, 1000);
-  
+
     return () => clearInterval(countdown);
-  }, [audioPlayed, onFinTurno, tiempoLimite, jugadorActual]); 
+  }, [audioPlayed, onFinTurno, tiempoLimite, jugadorActual]);
 
   useEffect(() => {
     const audioElement = audioRef.current;
@@ -93,7 +90,6 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
     };
   }, []);
 
-
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
 
@@ -104,15 +100,15 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
     return "#ffffff"; // Blanco por defecto
   };
 
-  const timerClass = timeLeft <= 10 ? styles["timer-warning-active"] : "";
+  const timerClass = timeLeft <= 10 ? "timer-warning-active" : "";
 
   return (
-    <div className={styles.rectangulo}>
-      <span className={`${styles["timer-text"]} ${timerClass}`} style={{ color: getColor() }}>
+    <div className="rectangulo">
+      <span className={`timer-text ${timerClass}`} style={{ color: getColor() }}>
         {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
       </span>
       <audio ref={audioRef} src="/dun-dun-dun.mp3" preload="auto" />
-      <div className={styles.turnIndicator}>
+      <div className="turnIndicator">
         <p>
           Turno: <strong>{jugadorActual}</strong>
         </p>

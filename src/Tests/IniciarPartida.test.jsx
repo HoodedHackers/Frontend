@@ -1,21 +1,28 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, beforeEach, expect, vi } from 'vitest';
+import { describe, it, beforeEach, expect, vi, afterEach } from 'vitest';
 import IniciarPartida from '../components/Partida/IniciarPartida/IniciarPartida.jsx';
-import { PartidaProvider } from '../components/Partida/PartidaProvider.jsx'; // Asegúrate de que la ruta sea correcta
-import { set } from 'react-hook-form';
+import { PartidaProvider } from '../components/Partida/PartidaProvider.jsx'; 
+import { WebSocketContext } from "../components/WebSocketsProvider.jsx";
 
-// Mock de fetch global
-global.fetch = vi.fn(() =>
-  Promise.resolve({
-    ok: true,
-    json: () => Promise.resolve({}),
-  })
-);
+
+const mockWebSocket = {
+  send: vi.fn(),
+  close: vi.fn(),
+  onopen: null,
+  onclose: null,
+  onmessage: null,
+  onerror: null,
+};
+
+// Mock del WebSocket
+global.WebSocket = vi.fn(() => mockWebSocket);
 
 function renderWithProvider(component) {
   return render(
     <PartidaProvider>
-      {component}
+      <WebSocketContext.Provider value={{ wsStartGameRef: { current: mockWebSocket } }}>
+        {component}
+      </WebSocketContext.Provider>
     </PartidaProvider>
   );
 }
@@ -23,7 +30,14 @@ function renderWithProvider(component) {
 describe('IniciarPartida', () => {
   beforeEach(() => {
     sessionStorage.clear();
-    renderWithProvider(<IniciarPartida />);
+    sessionStorage.setItem('partida_id', '12345');
+    sessionStorage.setItem('identifier', 'jugador1');
+    sessionStorage.setItem('owner_identifier', 'jugador1'); // Simular que el jugador actual es el creador
+    renderWithProvider(<IniciarPartida empezarPartida={vi.fn()} />);
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   it('se renderiza correctamente', () => {
@@ -35,10 +49,9 @@ describe('IniciarPartida', () => {
   it('deshabilita el botón cuando está cargando', async () => {
     const button = screen.getByRole('button', { name: /Iniciar Partida/i });
     fireEvent.click(button);
-
     expect(button).toBeDisabled();
 
-    // Esperar a que la petición termine
+    // Esperar a que la función termine
     await waitFor(() => expect(button).not.toBeDisabled());
   });
 
@@ -54,45 +67,49 @@ describe('IniciarPartida', () => {
     await waitFor(() => expect(button).toHaveTextContent(/Iniciar Partida/i));
   });
 
-  it('guarda el estado de la partida en sessionStorage después de iniciar', async () => {
+  it('envía un mensaje por WebSocket al iniciar la partida', async () => {
     const button = screen.getByRole('button', { name: /Iniciar Partida/i });
+    
     fireEvent.click(button);
-
-    // Esperar que la partida haya iniciado y verificar sessionStorage
-    setTimeout(() => expect(sessionStorage.getItem('partidaIniciada')).toBe('true'), 1000);
-  });
-
-  it('realiza la llamada al backend correctamente al iniciar la partida', async () => {
-    const button = screen.getByRole('button', { name: /Iniciar Partida/i });
-    fireEvent.click(button);
-
-    // Esperar que se llame a fetch con los parámetros correctos
+    
+    // Esperar a que se envíe el mensaje
     await waitFor(() => {
-      expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/start'),
-        expect.objectContaining({
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-      );
+      expect(mockWebSocket.send).toHaveBeenCalled();
+      const sentMessage = JSON.parse(mockWebSocket.send.mock.calls[0][0]);
+      expect(sentMessage.action).toBe("start");
+      expect(sentMessage.jugadores).toContain('jugador1'); // Verifica que el jugador actual esté en la lista
     });
   });
 
-  it('muestra error en consola si la llamada falla', async () => {
-    // Mock para simular error en el fetch
-    fetch.mockRejectedValueOnce(new Error('Error al iniciar la partida'));
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+  it('muestra un mensaje de error si la llamada falla', async () => {
+    const button = screen.getByRole('button', { name: /Iniciar Partida/i });
     
+    // Mockear un error en el fetch
+    global.fetch = vi.fn(() => Promise.reject(new Error('Error al iniciar la partida')));
+    
+    fireEvent.click(button);
+
+    // Esperar a que se muestre el error en el componente
+    await waitFor(() => {
+      expect(screen.getByText(/Error al iniciar la partida/i)).toBeInTheDocument();
+    });
+  });
+
+  it('actualiza la lista de jugadores al recibir un mensaje de WebSocket', async () => {
     const button = screen.getByRole('button', { name: /Iniciar Partida/i });
     fireEvent.click(button);
-    
-    // Esperar que se muestre el error en la consola
-    await waitFor(() => {
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Error al iniciar la partida:', expect.any(Error));
+
+    // Simular recibir un mensaje de WebSocket
+    const mensajeSimulado = {
+      action: "start",
+      jugadores: ['jugador1', 'jugador2'],
+    };
+    await act(async () => {
+      mockWebSocket.onmessage({ data: JSON.stringify(mensajeSimulado) });
     });
-    
-    consoleErrorSpy.mockRestore();
+
+    // Verificar que el componente muestre la lista de jugadores
+    expect(screen.getByText(/La partida ha comenzado/i)).toBeInTheDocument();
+    expect(mockWebSocket.send).toHaveBeenCalled(); // Verificar que se envió un mensaje de inicio de partida
   });
-});
+}); 
