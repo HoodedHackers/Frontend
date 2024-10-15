@@ -10,7 +10,7 @@ vi.mock('../components/Partida/PartidaProvider');
 
 // Mock de los datos del contexto
 const jugadores = [
-    { id: 1, name: 'Jugador 1' }
+    { id: 1, player_name: 'Jugador 1' }
   ];
 
 // Mock de los datos de las cartas de movimiento

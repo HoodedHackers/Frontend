@@ -1,4 +1,3 @@
-// HARDCODEADO
 import React, { useState, useEffect, useContext, createContext } from 'react';
 import CartaMovimiento from './CartaMovimiento.jsx';
 import { PartidaContext } from '../PartidaProvider.jsx';
@@ -15,13 +14,13 @@ export const CartasMovimientoMano = ({ubicacion, onMouseEnter, onMouseLeave}) =>
       if (index === 0 && dataMovimientos && partidaIniciada) {
         // Si es el primer jugador y los datos de movimientos están disponibles
         return {
-          player: jugador.id,
+          player: jugador.player_id,
           cards_out: dataMovimientos.cards_out, // Usa los datos recibidos
         };
       } else {
         // Para el resto de los jugadores
         return {
-          player: jugador.id,
+          player: jugador.player_id,
           cards_out: [
             { card_id: -1, card_name: "Soy Movimiento" },
             { card_id: -1, card_name: "Soy Movimiento" },

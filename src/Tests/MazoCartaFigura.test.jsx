@@ -11,8 +11,8 @@ describe('MazoCartaFigura', () => {
     // Simular valores de sessionStorage antes de cada prueba
     const mockPartidaId = '12345';
     const mockJugadores = [
-      { identifier: '1', name: 'Jugador 1' },
-      { identifier: '2', name: 'Jugador 2' }
+      { identifier: '1', player_id: 'Jugador 1' },
+      { identifier: '2', player_id: 'Jugador 2' }
     ];
     sessionStorage.setItem('partida_id', mockPartidaId);
     sessionStorage.setItem('jugadores', JSON.stringify(mockJugadores));

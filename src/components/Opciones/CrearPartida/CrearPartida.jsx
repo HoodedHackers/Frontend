@@ -51,8 +51,9 @@ export default function CrearPartida() {
                 sessionStorage.setItem('owner_identifier', id_jugador);  // Guardamos el owner
    
                 // Conectar al WebSocket de Unirse a Partida
-                wsUPRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaId}`);
-    
+                const player_id = parseInt(sessionStorage.getItem("player_id"), 10);
+                wsUPRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaId}?player_id=${player_id}`);
+
                 // Manejar la conexión abierta
                 wsUPRef.current.onopen = () => {
                     console.log("Conexión WebSocket de Unirse a Partida abierta");
