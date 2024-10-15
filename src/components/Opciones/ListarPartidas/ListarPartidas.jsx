@@ -26,7 +26,8 @@ function ListarPartidas() {
       }
 
       // Conectar al WebSocket de Unirse a Partida
-      wsUPRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaID}`);
+      const player_id = parseInt(sessionStorage.getItem("player_id"), 10);
+      wsUPRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaID}?player_id=${player_id}`);
 
       // Manejar la conexión abierta
       wsUPRef.current.onopen = () => {

@@ -1,4 +1,3 @@
-// HARDCODEADO
 import React, { useState, useEffect, useContext, createContext } from 'react';
 import CartaMovimiento from './CartaMovimiento.jsx';
 import { PartidaContext } from '../PartidaProvider.jsx';
