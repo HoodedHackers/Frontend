@@ -3,16 +3,19 @@ import styles from './IniciarPartida.module.css';
 import { WebSocketContext } from '../../WebSocketsProvider.jsx';
 
 function IniciarPartida({ empezarPartida }) {
+  
   const { wsStartGameRef } = useContext(WebSocketContext);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [partidaIniciada, setPartidaIniciada] = useState(false);
   const [jugadores, setJugadores] = useState([]); // Estado para almacenar jugadores
 
+  
   useEffect(() => {
     // Escuchar mensajes del WebSocket
     const handleWebSocketMessage = (message) => {
       const data = JSON.parse(message.data);
+      console.log('Mensaje recibido a través del WebSocket:', data);
       if (data.action === "start") {
         setJugadores(data.jugadores); // Actualiza la lista de jugadores
         setPartidaIniciada(true);

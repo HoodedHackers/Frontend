@@ -52,25 +52,10 @@ function Partida() {
     if (jugadores.length > 0) {  // Asegura que jugadores exista antes de acceder
       const nuevoIndex = (posicionJugador + 1) % jugadores.length;
       setJugadorActualIndex(nuevoIndex);
+      setPosicionJugador(nuevoIndex);
       sessionStorage.setItem("posicion_jugador", nuevoIndex);
       setTimeLeft(tiempoLimite);
       sessionStorage.setItem("timeLeft", tiempoLimite);
-
-      try {
-        const response = await fetch("https://httpbin.org/post", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ posicionJugador: nuevoIndex }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Error al actualizar el turno en el servidor");
-        }
-      } catch (error) {
-        console.error("Error en la conexión al servidor:", error);
-      }
 
       setJugando(false);
     }

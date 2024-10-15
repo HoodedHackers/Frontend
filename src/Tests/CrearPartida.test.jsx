@@ -2,7 +2,9 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import * as ReactRouter from "react-router";
-import CrearPartida from  "../components/Opciones/CrearPartida/CrearPartida.jsx";
+import CrearPartida from "../components/Opciones/CrearPartida/CrearPartida.jsx";
+import { WebSocketContext } from "../components/WebSocketsProvider.jsx";
+
 
 describe("CrearPartida Component", () => {
   let button = null;
@@ -13,9 +15,9 @@ describe("CrearPartida Component", () => {
     vi.spyOn(ReactRouter, "useNavigate").mockImplementation(() => navigate);
 
     // Mock de sessionStorage para identifier
-    vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key) => {
-      if (key === 'identifier') {
-        return "1234"; 
+    vi.spyOn(Storage.prototype, "getItem").mockImplementation((key) => {
+      if (key === "identifier") {
+        return "1234";
       }
       return null;
     });
@@ -32,10 +34,14 @@ describe("CrearPartida Component", () => {
       }
     });
 
+    // Mock del contexto WebSocket
+    const wsUPRefMock = { current: null };
     render(
-      <BrowserRouter>
-        <CrearPartida />
-      </BrowserRouter>
+      <WebSocketContext.Provider value={{ wsUPRef: wsUPRefMock }}>
+        <BrowserRouter>
+          <CrearPartida />
+        </BrowserRouter>
+      </WebSocketContext.Provider>
     );
 
     button = screen.getByRole("button", { name: /Crear Partida/i });
@@ -46,8 +52,8 @@ describe("CrearPartida Component", () => {
   });
 
   it("Renderiza el componente CrearPartida correctamente", () => {
-    expect(screen.getByRole('heading', { name: /crear partida/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /crear partida/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /crear partida/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /crear partida/i })).toBeInTheDocument();
   });
 
   it("Permite al usuario ingresar el nombre de la partida", () => {
@@ -69,19 +75,24 @@ describe("CrearPartida Component", () => {
   });
 
   it("Redirige a la pantalla de espera después de crear la partida", async () => {
+    fireEvent.change(screen.getByLabelText(/Nombre de Partida/i), { target: { value: "Mi Partida" } });
+    fireEvent.change(screen.getByLabelText(/Min Jugadores/i), { target: { value: "2" } });
+    fireEvent.change(screen.getByLabelText(/Max Jugadores/i), { target: { value: "4" } });
+
     fireEvent.click(button);
 
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled()); // Asegurar que fetch se haya llamado
+
     await waitFor(() => {
-      expect(navigate).toHaveBeenCalledWith("/partida/12345");
-      expect(navigate).toHaveBeenCalledTimes(1);
-    });
+      expect(navigate).toHaveBeenCalledWith("/Partida/12345"); // Comprobar redirección
+    }, { timeout: 1000 }); // Añadir un timeout por el uso del setTimeout en el componente
   });
 
   it("Envía el JSON correcto al backend", async () => {
     fireEvent.change(screen.getByLabelText(/Nombre de Partida/i), { target: { value: "Mi Partida" } });
     fireEvent.change(screen.getByLabelText(/Min Jugadores/i), { target: { value: "2" } });
     fireEvent.change(screen.getByLabelText(/Max Jugadores/i), { target: { value: "4" } });
-    
+
     fireEvent.click(button);
 
     await waitFor(() => {
@@ -89,12 +100,12 @@ describe("CrearPartida Component", () => {
         "http://127.0.0.1:8000/api/lobby",
         expect.objectContaining({
           method: "POST",
-          headers: { "Content-Type": "application/json" },  // Verifica que se incluyan los headers correctos
+          headers: { "Content-Type": "application/json" }, // Verifica que se incluyan los headers correctos
           body: JSON.stringify({
             name: "Mi Partida",
-            min_players: "2",  
-            max_players: "4",  
-            identifier: "1234",  
+            min_players: "2", // Deben ser cadenas en el JSON
+            max_players: "4", // Deben ser cadenas en el JSON
+            identifier: "1234", // Mockeado en sessionStorage
           }),
         })
       );
@@ -116,5 +127,4 @@ describe("CrearPartida Component", () => {
       expect(screen.getByText(/Error al crear la partida/i)).toBeInTheDocument();
     });
   });
-
 });

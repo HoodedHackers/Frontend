@@ -13,7 +13,7 @@ function PasarTurno({
 
   useEffect(() => {
     // Obtener el ID de la partida del localStorage
-    const id = localStorage.getItem('partidaId');
+    const id = sessionStorage.getItem('partida_id');
     if (id) {
       setPartidaId(id);
     } else {
@@ -27,9 +27,10 @@ function PasarTurno({
       console.error("jugadorActual no está definido correctamente");
       return;
     }
-  
+    
+    const id = sessionStorage.getItem('partida_id');
     // Validar que partidaId esté definido
-    if (!partidaId) {
+    if (!id) {
       console.error("partidaId no está definido");
       return;
     }
@@ -39,13 +40,13 @@ function PasarTurno({
   
     // Enviar actualización del turno al backend
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/lobby/${partidaId}/advance`, {
+      const response = await fetch(`https://httpbin.org/post`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          identifier: jugadorActual.id, // Validar que jugadorActual tiene un id
+          identifier: jugadorActual.identifier, // Validar que jugadorActual tiene un id
         }),
       });
   
