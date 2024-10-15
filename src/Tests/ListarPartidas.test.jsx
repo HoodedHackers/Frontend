@@ -51,13 +51,13 @@ class MockWebSocket {
 
 describe('ListarPartidas Component', () => {
   const partidas = [
-      { id: 1, player_id: 'Partida Milo', current_players: 2, max_players: 4 },
-      { id: 2, player_id: 'Partida Ely', current_players: 2, max_players: 4 },
-      { id: 3, player_id: 'Partida Ema', current_players: 2, max_players: 4 },
-      { id: 4, player_id: 'Partida Andy', current_players: 2, max_players: 4 },
-      { id: 5, player_id: 'Partida Lou', current_players: 2, max_players: 4 },
-      { id: 6, player_id: 'Partida Lu', current_players: 2, max_players: 4 },
-      { id: 7, player_id: 'Partida Mati', current_players: 2, max_players: 4 }
+      { id: 1, name: 'Partida Milo', current_players: 2, max_players: 4 },
+      { id: 2, name: 'Partida Ely', current_players: 2, max_players: 4 },
+      { id: 3, name: 'Partida Ema', current_players: 2, max_players: 4 },
+      { id: 4, name: 'Partida Andy', current_players: 2, max_players: 4 },
+      { id: 5, name: 'Partida Lou', current_players: 2, max_players: 4 },
+      { id: 6, name: 'Partida Lu', current_players: 2, max_players: 4 },
+      { id: 7, name: 'Partida Mati', current_players: 2, max_players: 4 }
     ];
   
   afterEach(() => {
