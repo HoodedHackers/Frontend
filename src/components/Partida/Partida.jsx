@@ -99,7 +99,7 @@ function Partida() {
   function empezarPartida() {
     const jugadores = JSON.parse(sessionStorage.getItem("players"));
     if (jugadores && Array.isArray(jugadores)) {
-      const posicionJugador = jugadores.findIndex(jugador => jugador.id === parseInt(sessionStorage.getItem("player_id"), 10));
+      const posicionJugador = jugadores.findIndex(jugador => jugador.player_id === parseInt(sessionStorage.getItem("player_id"), 10));
       setPosicionJugador(posicionJugador);
       if (posicionJugador !== -1) {
         let jugadoresAux = jugadores[0];
@@ -120,7 +120,7 @@ function Partida() {
     <div className="container-partida">
       {Array.isArray(jugadores) && jugadores.length > 0 ? (
         jugadores.map((jugador, index) => (
-          <div key={jugador.id}>
+          <div key={jugador.player_id}>
             <Jugador 
               nombre={jugador.player_name} 
               ubicacion={`jugador${index + 1}`}  

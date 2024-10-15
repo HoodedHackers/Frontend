@@ -23,7 +23,7 @@ function PasarTurno({
 
   const pasarTurno = async () => {
     // Validar que jugadorActual no sea undefined
-    if (!jugadorActual || !jugadorActual.id) {
+    if (!jugadorActual || !jugadorActual.player_id) {
       console.error("jugadorActual no está definido correctamente");
       return;
     }
@@ -78,8 +78,8 @@ function PasarTurno({
   return (
     <button
       onClick={pasarTurno}
-      disabled={!jugadorActual || jugadorActual.id !== jugadorActivo.id} // Deshabilitar si no es el turno del jugador o si jugadorActual es undefined
-      className={`boton ${(!jugadorActual || jugadorActual.id !== jugadorActivo.id) ? "botonDeshabilitado" : ""}`}
+      disabled={!jugadorActual || jugadorActual.player_id !== jugadorActivo.player_id} // Deshabilitar si no es el turno del jugador o si jugadorActual es undefined
+      className={`boton ${(!jugadorActual || jugadorActual.player_id !== jugadorActivo.player_id) ? "botonDeshabilitado" : ""}`}
     >
       Terminar Turno
     </button>

@@ -11,30 +11,30 @@ function IniciarPartida({ empezarPartida }) {
   const [jugadores, setJugadores] = useState([]); // Estado para almacenar jugadores
 
   
-  useEffect(() => {
-    // Escuchar mensajes del WebSocket
-    const handleWebSocketMessage = (message) => {
-      const data = JSON.parse(message.data);
-      console.log('Mensaje recibido a través del WebSocket:', data);
-      if (data.action === "start") {
-        setJugadores(data.jugadores); // Actualiza la lista de jugadores
-        setPartidaIniciada(true);
-        console.log('Partida iniciada. Jugadores:', data.jugadores);
-      }
-    };
-
-    // Asegúrate de que el WebSocket esté conectado
-    if (wsStartGameRef.current) {
-      wsStartGameRef.current.onmessage = handleWebSocketMessage;
-    }
-
-    return () => {
-      // Limpia el manejador al desmontar el componente
-      if (wsStartGameRef.current) {
-        wsStartGameRef.current.onmessage = null;
-      }
-    };
-  }, [wsStartGameRef]);
+  //useEffect(() => {
+  //  // Escuchar mensajes del WebSocket
+  //  const handleWebSocketMessage = (message) => {
+  //    const data = JSON.parse(message.data);
+  //    console.log('Mensaje recibido a través del WebSocket:', data);
+  //    if (data.action === "start") {
+  //      setJugadores(data.jugadores); // Actualiza la lista de jugadores
+  //      setPartidaIniciada(true);
+  //      console.log('Partida iniciada. Jugadores:', data.jugadores);
+  //    }
+  //  };
+//
+  //  // Asegúrate de que el WebSocket esté conectado
+  //  if (wsStartGameRef.current) {
+  //    wsStartGameRef.current.onmessage = handleWebSocketMessage;
+  //  }
+//
+  //  return () => {
+  //    // Limpia el manejador al desmontar el componente
+  //    if (wsStartGameRef.current) {
+  //      wsStartGameRef.current.onmessage = null;
+  //    }
+  //  };
+  //}, [wsStartGameRef]);
 
   const handleIniciar = async () => {
     setLoading(true);
