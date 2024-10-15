@@ -118,3 +118,5 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
 };
 
 export default Temporizador;
+
+
