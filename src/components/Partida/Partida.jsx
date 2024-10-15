@@ -122,7 +122,7 @@ function Partida() {
         jugadores.map((jugador, index) => (
           <div key={jugador.id}>
             <Jugador 
-              nombre={jugador.name} 
+              nombre={jugador.player_name} 
               ubicacion={`jugador${index + 1}`}  
             />
             <CartasMovimientoMano ubicacion={index} />
