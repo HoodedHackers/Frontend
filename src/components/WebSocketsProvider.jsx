@@ -8,6 +8,38 @@ export const WebSocketProvider = ({ children }) => {
     const wsUCMRef = useRef(null); // WebSocket de Usar Carta de Movimiento
     const wsStartGameRef = useRef(null); // WebSocket para iniciar partida
 
+    useEffect(() => {
+      wsUCMRef.current = new WebSocket('ws://tu-url-websocket-para-cartas-de-movimiento');
+
+      wsUCMRef.current.onopen = () => {
+          console.log("Conexión WebSocket para cartas de movimiento abierta");
+      };
+
+      wsUCMRef.current.onmessage = (event) => {
+          // Aquí manejarás el evento de la carta de movimiento
+          const data = JSON.parse(event.data);
+          console.log("Carta de movimiento recibida:", data);
+      };
+
+      wsUCMRef.current.onerror = (error) => {
+          console.error("Error en WebSocket de cartas de movimiento:", error);
+      };
+
+      wsUCMRef.current.onclose = () => {
+          console.log("Conexión WebSocket de cartas de movimiento cerrada");
+      };
+
+      return () => {
+          if (wsUCMRef.current) {
+              wsUCMRef.current.close();
+          }
+      };
+  }, []);
+
+
+
+
+
   return (
     <WebSocketContext.Provider
       value={{

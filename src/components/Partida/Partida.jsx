@@ -28,6 +28,30 @@ function Partida() {
     partidaId
   } = useContext(PartidaContext);
 
+  
+    const { wsUCMRef } = useContext(WebSocketContext);
+  
+    const [cartaMovimiento, setCartaMovimiento] = useState(null);
+  
+    // Configura el WebSocket para recibir la carta de movimiento
+    useEffect(() => {
+      if (wsUCMRef.current) {
+        wsUCMRef.current.onmessage = (event) => {
+          const data = JSON.parse(event.data);
+          if (data.jugador_id && data.carta) {
+            console.log("Carta de movimiento recibida:", data);
+            setCartaMovimiento(data.carta); 
+          }
+        };
+      }
+  
+      return () => {
+        if (wsUCMRef.current) {
+          wsUCMRef.current.onmessage = null;
+        }
+      };
+    }, [wsUCMRef]);
+  
   useEffect(() => {
     const jugadoresParseados = JSON.parse(sessionStorage.getItem("players"));
     if (jugadoresParseados && Array.isArray(jugadoresParseados)) {
@@ -118,23 +142,32 @@ function Partida() {
 
   return (
     <div className="container-partida">
-      {Array.isArray(jugadores) && jugadores.length > 0 ? (
-        jugadores.map((jugador, index) => (
-          <div key={jugador.id}>
-            <Jugador 
-              nombre={jugador.name} 
-              ubicacion={`jugador${index + 1}`}  
-            />
-            <CartasMovimientoMano ubicacion={index} />
-            <MazoCartaFigura ubicacion={index} />
-          </div>
-        ))
-      ) : (
+    {/* Renderizar jugadores */}
+    {Array.isArray(jugadores) && jugadores.length > 0 ? (
+      jugadores.map((jugador, index) => (
+        <div key={jugador.id}>
+          <Jugador 
+            nombre={jugador.name} 
+            ubicacion={`jugador${index + 1}`}  
+          />
+          <CartasMovimientoMano ubicacion={index} />
+          <MazoCartaFigura ubicacion={index} />
+        </div>
+      ))
+    ) : (
         <p>No hay jugadores en la partida.</p>
       )}
       <div className="tableroContainer">
         <TableroWithProvider />
       </div>
+      {/* Mostrar la carta de movimiento seleccionada */}
+      {cartaMovimiento && (
+      <div className="carta-movimiento">
+        <p>Carta de Movimiento Seleccionada:</p>
+        <img src={cartaMovimiento.image} alt={cartaMovimiento.name} />
+      </div>
+    )}
+
       <div>
         {!partidaIniciada && <IniciarPartida empezarPartida={empezarPartida} />}
       </div>
