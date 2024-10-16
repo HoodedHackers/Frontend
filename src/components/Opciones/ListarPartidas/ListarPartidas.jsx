@@ -39,6 +39,8 @@ function ListarPartidas() {
 
       sessionStorage.setItem("partida_id", partidaID);
 
+      sessionStorage.setItem('isOwner', false);
+
       // Navegar a la partida
       setTimeout(() => {
         navigate(`/Partida/${partidaID}`);

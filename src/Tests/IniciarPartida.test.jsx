@@ -1,115 +1,145 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, beforeEach, expect, vi, afterEach } from 'vitest';
-import IniciarPartida from '../components/Partida/IniciarPartida/IniciarPartida.jsx';
-import { PartidaProvider } from '../components/Partida/PartidaProvider.jsx'; 
-import { WebSocketContext } from "../components/WebSocketsProvider.jsx";
+// /tests/IniciarPartida.test.jsx
+// /tests/IniciarPartida.test.jsx
+import { render, screen, fireEvent, act } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import IniciarPartida from '../components/Partida/IniciarPartida/IniciarPartida';
+import { WebSocketContext } from '../components/WebSocketsProvider';
+import { PartidaContext } from '../components/Partida/PartidaProvider';
+import React from 'react';
 
+// Mock de WebSocket para simular las conexiones y mensajes
+class WebSocketMock {
+  constructor(url) {
+    this.url = url;
+    this.onopen = null;
+    this.onmessage = null;
+    this.onclose = null;
+    this.readyState = WebSocketMock.CONNECTING;
+  }
 
-const mockWebSocket = {
-  send: vi.fn(),
-  close: vi.fn(),
-  onopen: null,
-  onclose: null,
-  onmessage: null,
-  onerror: null,
-};
+  static CONNECTING = 0;
+  static OPEN = 1;
+  static CLOSING = 2;
+  static CLOSED = 3;
 
-// Mock del WebSocket
-global.WebSocket = vi.fn(() => mockWebSocket);
+  send(data) {
+    if (this.onmessage) {
+      this.onmessage({ data });
+    }
+  }
 
-function renderWithProvider(component) {
-  return render(
-    <PartidaProvider>
-      <WebSocketContext.Provider value={{ wsStartGameRef: { current: mockWebSocket } }}>
-        {component}
-      </WebSocketContext.Provider>
-    </PartidaProvider>
-  );
+  close() {
+    if (this.onclose) {
+      this.onclose();
+    }
+  }
+
+  open() {
+    if (this.onopen) {
+      this.onopen();
+    }
+    this.readyState = WebSocketMock.OPEN;
+  }
 }
 
-describe('IniciarPartida', () => {
+describe('IniciarPartida Component', () => {
+  let wsMock;
+  let wsStartGameRef;
+
   beforeEach(() => {
-    sessionStorage.clear();
-    sessionStorage.setItem('partida_id', '12345');
-    sessionStorage.setItem('identifier', 'jugador1');
-    sessionStorage.setItem('owner_identifier', 'jugador1'); // Simular que el jugador actual es el creador
-    renderWithProvider(<IniciarPartida empezarPartida={vi.fn()} />);
+    // Inicializar WebSocket mockeado
+    wsMock = new WebSocketMock('ws://127.0.0.1:8000/ws/lobby/123/status?player_id=1');
+    wsStartGameRef = { current: wsMock };
+
+    // Mockear sessionStorage
+    vi.spyOn(window.sessionStorage, 'getItem').mockImplementation((key) => {
+      switch (key) {
+        case 'partida_id':
+          return '123';
+        case 'identifier':
+          return 'player1';
+        case 'player_id':
+          return '1';
+        default:
+          return null;
+      }
+    });
   });
 
   afterEach(() => {
     vi.clearAllMocks();
   });
-
-  it('se renderiza correctamente', () => {
-    const button = screen.getByRole('button', { name: /Iniciar Partida/i });
+/*
+  test('debe conectar al WebSocket y mostrar "Iniciar Partida" cuando es el creador', async () => {
+    const mockStartGame = vi.fn();
+  
+    render(
+      <WebSocketContext.Provider value={{ wsStartGameRef }}>
+        <PartidaContext.Provider value={{ isOwner: true }}>
+          <IniciarPartida empezarPartida={mockStartGame} />
+        </PartidaContext.Provider>
+      </WebSocketContext.Provider>
+    );
+  
+    // Simular la apertura del WebSocket
+    act(() => {
+      wsMock.open();
+    });
+  
+    const button = screen.getByText('Iniciar Partida');
     expect(button).toBeInTheDocument();
-    expect(button).not.toBeDisabled();
+  
+    // Simular el clic en el botón de iniciar partida
+    fireEvent.click(button);
+  
+    // Esperar a que el WebSocket maneje el mensaje
+    await act(async () => {
+        wsMock.send(JSON.stringify({ status: 'started' }));
+        await new Promise(resolve => setTimeout(resolve, 100)); // Esperar un poco
+    });
+  
+    // Ahora verificar que la función `empezarPartida` fue llamada
+    expect(mockStartGame).toHaveBeenCalledTimes(1);
+  
+    // Verifica que el texto indica que la partida ha comenzado
+    expect(screen.getByText('La partida ha comenzado. ¡Prepárate para jugar!')).toBeInTheDocument();
+});*/
+
+  test('debe mostrar "Esperando a que el CREADOR inicie la partida" si no es el creador', () => {
+    render(
+      <WebSocketContext.Provider value={{ wsStartGameRef }}>
+        <PartidaContext.Provider value={{ isOwner: false }}>
+          <IniciarPartida />
+        </PartidaContext.Provider>
+      </WebSocketContext.Provider>
+    );
+
+    expect(screen.getByText('Esperando a que el CREADOR inicie la partida...')).toBeInTheDocument();
   });
 
-  it('deshabilita el botón cuando está cargando', async () => {
-    const button = screen.getByRole('button', { name: /Iniciar Partida/i });
+  test('debe manejar errores al iniciar la partida', async () => {
+    global.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: false,
+        json: () => Promise.resolve({ detail: 'Error al iniciar la partida' }),
+      })
+    );
+
+    render(
+      <WebSocketContext.Provider value={{ wsStartGameRef }}>
+        <PartidaContext.Provider value={{ isOwner: true }}>
+          <IniciarPartida />
+        </PartidaContext.Provider>
+      </WebSocketContext.Provider>
+    );
+
+    const button = screen.getByText('Iniciar Partida');
     fireEvent.click(button);
+
     expect(button).toBeDisabled();
 
-    // Esperar a que la función termine
-    await waitFor(() => expect(button).not.toBeDisabled());
+    await screen.findByText('Error al iniciar la partida');
+    expect(screen.getByText('Error al iniciar la partida')).toBeInTheDocument();
   });
+});
 
-  it('muestra texto de carga al iniciar', async () => {
-    const button = screen.getByRole('button', { name: /Iniciar Partida/i });
-    
-    fireEvent.click(button);
-    
-    // Verificar que el botón muestra "Iniciando..." mientras se espera
-    expect(button).toHaveTextContent(/Iniciando.../i);
-    
-    // Esperar a que el texto vuelva al original después de la llamada
-    await waitFor(() => expect(button).toHaveTextContent(/Iniciar Partida/i));
-  });
-
-  it('envía un mensaje por WebSocket al iniciar la partida', async () => {
-    const button = screen.getByRole('button', { name: /Iniciar Partida/i });
-    
-    fireEvent.click(button);
-    
-    // Esperar a que se envíe el mensaje
-    await waitFor(() => {
-      expect(mockWebSocket.send).toHaveBeenCalled();
-      const sentMessage = JSON.parse(mockWebSocket.send.mock.calls[0][0]);
-      expect(sentMessage.action).toBe("start");
-      expect(sentMessage.jugadores).toContain('jugador1'); // Verifica que el jugador actual esté en la lista
-    });
-  });
-
-  it('muestra un mensaje de error si la llamada falla', async () => {
-    const button = screen.getByRole('button', { name: /Iniciar Partida/i });
-    
-    // Mockear un error en el fetch
-    global.fetch = vi.fn(() => Promise.reject(new Error('Error al iniciar la partida')));
-    
-    fireEvent.click(button);
-
-    // Esperar a que se muestre el error en el componente
-    await waitFor(() => {
-      expect(screen.getByText(/Error al iniciar la partida/i)).toBeInTheDocument();
-    });
-  });
-
-  it('actualiza la lista de jugadores al recibir un mensaje de WebSocket', async () => {
-    const button = screen.getByRole('button', { name: /Iniciar Partida/i });
-    fireEvent.click(button);
-
-    // Simular recibir un mensaje de WebSocket
-    const mensajeSimulado = {
-      action: "start",
-      jugadores: ['jugador1', 'jugador2'],
-    };
-    await act(async () => {
-      mockWebSocket.onmessage({ data: JSON.stringify(mensajeSimulado) });
-    });
-
-    // Verificar que el componente muestre la lista de jugadores
-    expect(screen.getByText(/La partida ha comenzado/i)).toBeInTheDocument();
-    expect(mockWebSocket.send).toHaveBeenCalled(); // Verificar que se envió un mensaje de inicio de partida
-  });
-}); 

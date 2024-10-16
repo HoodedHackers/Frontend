@@ -48,7 +48,6 @@ export default function CrearPartida() {
                 
                 const partidaId = data.id;
                 sessionStorage.setItem('partida_id', partidaId);
-                sessionStorage.setItem('owner_identifier', id_jugador);  // Guardamos el owner
    
                 // Conectar al WebSocket de Unirse a Partida
                 const player_id = parseInt(sessionStorage.getItem("player_id"), 10);
@@ -75,7 +74,9 @@ export default function CrearPartida() {
                 wsUPRef.current.onerror = (error) => {
                     console.error("WebSocket error:", error);
                 };
-    
+
+                sessionStorage.setItem('isOwner', true);
+
                 setTimeout(() => {
                     navigate(`/Partida/${partidaId}`);
                 }, 500);
