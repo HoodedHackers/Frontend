@@ -14,18 +14,14 @@ export const CartasMovimientoMano = ({ubicacion, onMouseEnter, onMouseLeave}) =>
       if (index === 0 && dataMovimientos && partidaIniciada) {
         // Si es el primer jugador y los datos de movimientos están disponibles
         return {
-          player: jugador.player_id,
-          cards_out: dataMovimientos.cards_out, // Usa los datos recibidos
+          player_id: jugador.player_id,
+          all_cards: dataMovimientos.all_cards, // Usa los datos recibidos
         };
       } else {
         // Para el resto de los jugadores
         return {
-          player: jugador.player_id,
-          cards_out: [
-            { card_id: -1, card_name: "Soy Movimiento" },
-            { card_id: -1, card_name: "Soy Movimiento" },
-            { card_id: -1, card_name: "Soy Movimiento" }
-          ]
+          player_id: jugador.player_id,
+          all_cards: [-1, -1, -1]
         };
       }
     });
@@ -35,27 +31,28 @@ export const CartasMovimientoMano = ({ubicacion, onMouseEnter, onMouseLeave}) =>
 
   // Actualiza las cartas de movimiento cuando los jugadores cambian
   useEffect(() => {
-    // Obtener los movimientos para el primer jugador
-    const cargarMovimientos = async () => {
+    if (partidaIniciada) {
+      // Obtener los movimientos para el primer jugador
+      const cargarMovimientos = async () => {
       const dataMovimientos = await obtenerMovimientos();
       setCartaMovimientos(setearCartaMovimientos(jugadores, dataMovimientos));
     };
-
     cargarMovimientos();
-  }, [jugadores, partidaIniciada]);
+    }
+  }, [partidaIniciada]);
 
 
   async function obtenerMovimientos () {
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/partida/en_curso', { 
+      const response = await fetch('http://127.0.0.1:8000/api/partida/en_curso/movimiento', { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          game_id: Number(sessionStorage.getItem('partida_id')),
-          players: jugadores
-          })
+          game_id: parseInt(sessionStorage.getItem("partida_id"), 10),
+          player: sessionStorage.getItem("identifier")
+        })
       });
       if (!response.ok) {
         throw new Error('Fallo al intentar recuperar los movimientos');
@@ -70,7 +67,7 @@ export const CartasMovimientoMano = ({ubicacion, onMouseEnter, onMouseLeave}) =>
   };
 
   // Verifica si cartaMovimientos tiene el jugador en la ubicación y si tiene cartas
-  const cartasDelJugador = cartaMovimientos[ubicacion]?.cards_out || [];
+  const cartasDelJugador = cartaMovimientos[ubicacion]?.all_cards || [];
 
   
 
@@ -87,7 +84,7 @@ export const CartasMovimientoMano = ({ubicacion, onMouseEnter, onMouseLeave}) =>
             ubicacion === 0 ? (
               <div key={index}>
                 <CartaMovimiento
-                  id={carta.card_id} 
+                  id={isNaN(carta) ? -1 : carta} 
                   ubicacion={ubicacion}
                   activa={false}
                 />
@@ -97,7 +94,7 @@ export const CartasMovimientoMano = ({ubicacion, onMouseEnter, onMouseLeave}) =>
                 key={index}
               >
                 <CartaMovimiento
-                  id={carta.card_id} 
+                  id={isNaN(carta) ? -1 : carta} 
                   ubicacion={ubicacion}
                 />
               </div>

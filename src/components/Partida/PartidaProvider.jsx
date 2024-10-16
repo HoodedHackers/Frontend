@@ -3,7 +3,7 @@ import React, { createContext, useState } from 'react';
 export const PartidaContext = createContext();
 
 export const PartidaProvider = ({ children }) => {
-  const [partidaIniciada, setPartidaIniciada] = useState(false);
+  const [partidaIniciada, setPartidaIniciada] = useState((sessionStorage.getItem("partidaIniciada") === "true") || false);
 
   const tiempoLimite = 120; // 2 minutos
 

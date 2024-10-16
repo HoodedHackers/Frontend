@@ -15,11 +15,7 @@ const jugadores = [
 
 // Mock de los datos de las cartas de movimiento
 let cartaMovimientosMock = [
-  { player: 1, cards_out: [
-    { card_id: 30, card_name: "Soy Movimiento" },
-    { card_id: 21, card_name: "Soy Movimiento" },
-    { card_id: 43, card_name: "Soy Movimiento" }] 
-  }
+  { player_id: 1, all_cards: [30, 21, 43] }
 ];
 
 describe('Cartas de Movimiento', () => {
@@ -53,12 +49,7 @@ describe('Cartas de Movimiento', () => {
   it('Se conecta al endpoint para obtener las cartas', async () => {
     const partidaIniciada = true;
     // Mock de la respuesta del fetch
-    const responseMock = { 
-      player: 1, cards_out: [
-        { card_id: 30, card_name: "Soy Movimiento" },
-        { card_id: 21, card_name: "Soy Movimiento" },
-        { card_id: 43, card_name: "Soy Movimiento" }] 
-      };
+    const responseMock =   { player_id: 1, all_cards: [30, 21, 43] };
 
     // Simula el fetch para devolver la respuesta simulada
     const fetchMock = vi.spyOn(global, 'fetch').mockResolvedValue({
@@ -79,12 +70,12 @@ describe('Cartas de Movimiento', () => {
 
     // Espera a que fetch sea llamado con los parámetros correctos
     await waitFor(() => {
-      expect(fetchMock).toHaveBeenCalledWith('http://127.0.0.1:8000/api/partida/en_curso', {
+      expect(fetchMock).toHaveBeenCalledWith('http://127.0.0.1:8000/api/partida/en_curso/movimiento', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          game_id: Number(sessionStorage.getItem('partida_id')),
-          players: jugadores,
+          game_id: parseInt(sessionStorage.getItem("partida_id"), 10),
+          player: sessionStorage.getItem("identifier")
         })
       });
     });
@@ -126,11 +117,7 @@ describe('Cartas de Movimiento', () => {
     const partidaIniciada = true;
 
     // Simula haber quitado 1 carta
-    const responseMock1 = {
-      player: 1, cards_out: [
-        { card_id: 30, card_name: "Soy Movimiento" },
-        { card_id: 21, card_name: "Soy Movimiento" }
-      ]};
+    const responseMock1 = { player_id: 1, all_cards: [30, 21] };
 
     // Simula el fetch para devolver la respuesta simulada
     vi.spyOn(global, 'fetch').mockResolvedValue({
@@ -161,10 +148,7 @@ describe('Cartas de Movimiento', () => {
     const partidaIniciada = true;
 
     // Simula haber quitado 2 cartas
-    const responseMock2 = {
-      player: 1, cards_out: [
-        { card_id: 30, card_name: "Soy Movimiento" }
-      ]};
+    const responseMock2 = { player_id: 1, all_cards: [30] };
 
     // Simula el fetch para devolver la respuesta simulada
     vi.spyOn(global, 'fetch').mockResolvedValue({
@@ -196,7 +180,7 @@ describe('Cartas de Movimiento', () => {
 
     // Simula haber quitado 3 cartas
     const responseMock3 = {
-      player: 1, cards_out: []
+      player_id: 1, all_cards: []
     };
 
     // Simula el fetch para devolver la respuesta simulada
@@ -236,7 +220,7 @@ describe('Cartas de Movimiento', () => {
     // NO SE TESTEAR WEBSOCKETS
   });
   
-  it('Solo se puede sellecionar una carta de movimiento', () => {
+  it('Solo se puede seleccionar una carta de movimiento', () => {
     // NO SE TESTEAR WEBSOCKETS
   });  
 
