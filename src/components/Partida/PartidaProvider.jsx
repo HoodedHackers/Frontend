@@ -17,6 +17,8 @@ export const PartidaProvider = ({ children }) => {
   const [jugando, setJugando] = useState(false); // True si se ha elegido una carta de movimiento
 
   const [isOverlayVisible, setIsOverlayVisible] = useState();
+  
+  const [isOwner] = useState(sessionStorage.getItem("isOwner") === 'true');
 
   const handleMouseEnter = () => {
     setIsOverlayVisible(true);
@@ -43,7 +45,8 @@ export const PartidaProvider = ({ children }) => {
         isOverlayVisible,
         setIsOverlayVisible,
         handleMouseEnter,
-        handleMouseLeave
+        handleMouseLeave,
+        isOwner,
       }}
     >
       {children}

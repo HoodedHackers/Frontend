@@ -32,11 +32,11 @@ function Partida() {
     const jugadoresParseados = JSON.parse(sessionStorage.getItem("players"));
     if (jugadoresParseados && Array.isArray(jugadoresParseados)) {
       setJugadores(jugadoresParseados);
-      console.log("Jugadores actuales:", jugadoresParseados); 
+      console.log("Jugadores actuales:", jugadoresParseados);
     } else {
       setJugadores([]);  // Asegura que jugadores sea un array vacío
     }
-  
+
     const partidaIniciada = sessionStorage.getItem("partidaIniciada");
     if (partidaIniciada) {
       setPartidaIniciada(true);
@@ -66,6 +66,7 @@ function Partida() {
   }, [timeLeft]);
 
   const { wsUPRef } = useContext(WebSocketContext);
+  const { wsUCMRef } = useContext(WebSocketContext);
 
   useEffect(() => {
     try {
@@ -96,6 +97,7 @@ function Partida() {
     }
   }, [wsUPRef.current]);
 
+
   function empezarPartida() {
     const jugadores = JSON.parse(sessionStorage.getItem("players"));
     if (jugadores && Array.isArray(jugadores)) {
@@ -121,9 +123,9 @@ function Partida() {
       {Array.isArray(jugadores) && jugadores.length > 0 ? (
         jugadores.map((jugador, index) => (
           <div key={jugador.player_id}>
-            <Jugador 
-              nombre={jugador.player_name} 
-              ubicacion={`jugador${index + 1}`}  
+            <Jugador
+              nombre={jugador.player_name}
+              ubicacion={`jugador${index + 1}`}
             />
             <CartasMovimientoMano ubicacion={index} />
             <MazoCartaFigura ubicacion={index} />

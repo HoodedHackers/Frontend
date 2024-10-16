@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import styles from './IniciarPartida.module.css';
 import { WebSocketContext } from '../../WebSocketsProvider.jsx';
+import { PartidaContext } from '../PartidaProvider.jsx';
 
 function IniciarPartida({ empezarPartida }) {
   
@@ -9,6 +10,7 @@ function IniciarPartida({ empezarPartida }) {
   const [errorMessage, setErrorMessage] = useState('');
   const [partidaIniciada, setPartidaIniciada] = useState(false);
   const [jugadores, setJugadores] = useState([]); // Estado para almacenar jugadores
+  const {isOwner} = useContext(PartidaContext);
 
     // Conectar al WebSocket cuando el componente se monte
     useEffect(() => {
@@ -96,10 +98,9 @@ function IniciarPartida({ empezarPartida }) {
     }
   };
 
-  const ownerIdentifier = sessionStorage.getItem('owner_identifier');
   const currentIdentifier = sessionStorage.getItem('identifier');
+  
 
-  console.log("Owner Identifier:", ownerIdentifier);
   console.log("Current Identifier:", currentIdentifier);
 
   return (
@@ -108,7 +109,7 @@ function IniciarPartida({ empezarPartida }) {
         <p>La partida ha comenzado. ¡Prepárate para jugar!</p>
       ) : (
         <>
-          {currentIdentifier === ownerIdentifier ? (
+          {isOwner ? (
             <button
               className={styles.startButton}
               onClick={handleIniciar}
