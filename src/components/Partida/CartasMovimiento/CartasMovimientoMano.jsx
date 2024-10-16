@@ -36,8 +36,8 @@ export const CartasMovimientoMano = ({ubicacion, onMouseEnter, onMouseLeave}) =>
       const cargarMovimientos = async () => {
       const dataMovimientos = await obtenerMovimientos();
       setCartaMovimientos(setearCartaMovimientos(jugadores, dataMovimientos));
-    };
-    cargarMovimientos();
+      };
+      cargarMovimientos();
     }
   }, [partidaIniciada]);
 
