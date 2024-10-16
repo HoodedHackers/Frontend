@@ -36,12 +36,7 @@ function Partida() {
     } else {
       setJugadores([]);  // Asegura que jugadores sea un array vacío
     }
-
-    const partidaIniciada = sessionStorage.getItem("partidaIniciada");
-    if (partidaIniciada) {
-      setPartidaIniciada(true);
-    }
-  }, []);
+  }, [sessionStorage.getItem("players")]);
 
   const [timeLeft, setTimeLeft] = useState(() => {
     const storedTime = sessionStorage.getItem("timeLeft");
@@ -117,6 +112,40 @@ function Partida() {
       }
     }
   }
+
+  const { wsStartGameRef } = useContext(WebSocketContext);
+
+  // Conectar al WebSocket cuando el componente se monte
+    useEffect(() => {
+      const partidaID = sessionStorage.getItem('partida_id');
+      const identifier = sessionStorage.getItem('identifier');
+
+      if (partidaID && identifier) {
+        // Inicializar el WebSocket
+        const player_id = parseInt(sessionStorage.getItem("player_id"), 10);
+        wsStartGameRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaID}/status?player_id=${player_id}`);
+        
+        // Evento cuando se abre la conexión
+        wsStartGameRef.current.onopen = () => {
+            console.log("Conectado al WebSocket de Iniciar Partida de estado de partida");
+        };
+
+        // Evento cuando se recibe un mensaje del WebSocket
+        wsStartGameRef.current.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+            console.log("Mensaje recibido:", message);
+            if (message.status === "started") {
+                setPartidaIniciada(true); // Actualiza el estado cuando la partida se inicia
+                empezarPartida(); // Llamar a la función para iniciar la partida
+            }
+        };
+
+        // Evento cuando la conexión se cierra
+        wsStartGameRef.current.onclose = () => {
+            console.log("Conexión WebSocket de Iniciar Partida cerrada");
+        };
+      }
+    }, [wsStartGameRef.current]);
 
   return (
     <div className="container-partida">

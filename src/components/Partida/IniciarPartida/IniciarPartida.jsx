@@ -3,55 +3,13 @@ import styles from './IniciarPartida.module.css';
 import { WebSocketContext } from '../../WebSocketsProvider.jsx';
 import { PartidaContext } from '../PartidaProvider.jsx';
 
-function IniciarPartida({ empezarPartida }) {
-  
+function IniciarPartida() {
   const { wsStartGameRef } = useContext(WebSocketContext);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [partidaIniciada, setPartidaIniciada] = useState(false);
   const [jugadores, setJugadores] = useState([]); // Estado para almacenar jugadores
   const {isOwner} = useContext(PartidaContext);
-
-    // Conectar al WebSocket cuando el componente se monte
-    useEffect(() => {
-        const partidaID = sessionStorage.getItem('partida_id');
-        const identifier = sessionStorage.getItem('identifier');
-
-        if (partidaID && identifier) {
-            // Inicializar el WebSocket
-            const player_id = parseInt(sessionStorage.getItem("player_id"), 10);
-            wsStartGameRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaID}/status?player_id=${player_id}`);
-            
-            // Evento cuando se abre la conexión
-            wsStartGameRef.current.onopen = () => {
-                console.log("Conectado al WebSocket de estado de partida");
-            };
-
-            // Evento cuando se recibe un mensaje del WebSocket
-            wsStartGameRef.current.onmessage = (event) => {
-                const message = JSON.parse(event.data);
-                console.log("Mensaje recibido:", message);
-
-                if (message.status === "started") {
-                    setPartidaIniciada(true); // Actualiza el estado cuando la partida se inicia
-                    empezarPartida(); // Llamar a la función para iniciar la partida
-                }
-            };
-
-            // Evento cuando la conexión se cierra
-            wsStartGameRef.current.onclose = () => {
-                console.log("Conexión WebSocket cerrada");
-            };
-        }
-
-        // Limpiar el WebSocket cuando el componente se desmonte
-        return () => {
-            if (wsStartGameRef.current) {
-                wsStartGameRef.current.close();
-            }
-        };
-    }, []);
-
 
   const handleIniciar = async () => {
     setLoading(true);
@@ -88,7 +46,6 @@ function IniciarPartida({ empezarPartida }) {
         console.log("Mensaje enviado a través del WebSocket para notificar inicio de partida.");
       }
 
-      empezarPartida();
       console.log('Llamando a empezarPartida...');
     } catch (error) {
       console.error('Error al iniciar la partida:', error);

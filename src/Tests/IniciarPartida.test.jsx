@@ -109,7 +109,7 @@ describe('IniciarPartida Component', () => {
     render(
       <WebSocketContext.Provider value={{ wsStartGameRef }}>
         <PartidaContext.Provider value={{ isOwner: false }}>
-          <IniciarPartida empezarPartida={vi.fn()} />
+          <IniciarPartida />
         </PartidaContext.Provider>
       </WebSocketContext.Provider>
     );
@@ -128,7 +128,7 @@ describe('IniciarPartida Component', () => {
     render(
       <WebSocketContext.Provider value={{ wsStartGameRef }}>
         <PartidaContext.Provider value={{ isOwner: true }}>
-          <IniciarPartida empezarPartida={vi.fn()} />
+          <IniciarPartida />
         </PartidaContext.Provider>
       </WebSocketContext.Provider>
     );
