@@ -16,16 +16,15 @@ function Partida() {
     partidaIniciada,
     setPartidaIniciada,
     tiempoLimite,
-    jugadores,
     setJugadores,
+    jugadores = [], // Agrega una inicialización vacía aquí
     posicionJugador,
     setPosicionJugador,
     jugadorActualIndex,
     setJugadorActualIndex,
     jugando,
     setJugando,
-    isOverlayVisible,
-    partidaId
+    isOverlayVisible
   } = useContext(PartidaContext);
 
   useEffect(() => {
@@ -38,10 +37,14 @@ function Partida() {
     }
   }, [sessionStorage.getItem("players")]);
 
+  const partidaID = sessionStorage.getItem('partida_id');
+  const identifier = sessionStorage.getItem('identifier');
+  const player_id = parseInt(sessionStorage.getItem("player_id"));
   const [timeLeft, setTimeLeft] = useState(() => {
     const storedTime = sessionStorage.getItem("timeLeft");
     return storedTime !== null ? Number(storedTime) : tiempoLimite;
   });
+	const [activePlayer, setActivePlayer] = useState({});
 
   const manejarFinTurno = async () => {
     if (jugadores.length > 0) {  // Asegura que jugadores exista antes de acceder
@@ -60,8 +63,7 @@ function Partida() {
     sessionStorage.setItem("timeLeft", timeLeft);
   }, [timeLeft]);
 
-  const { wsUPRef } = useContext(WebSocketContext);
-  const { wsUCMRef } = useContext(WebSocketContext);
+  const { wsUPRef, wsStartGameRef, wsTRef } = useContext(WebSocketContext);
 
   useEffect(() => {
     try {
@@ -113,18 +115,13 @@ function Partida() {
     }
   }
 
-  const { wsStartGameRef } = useContext(WebSocketContext);
-
   // Conectar al WebSocket cuando el componente se monte
     useEffect(() => {
-      const partidaID = sessionStorage.getItem('partida_id');
-      const identifier = sessionStorage.getItem('identifier');
-
       if (partidaID && identifier) {
         // Inicializar el WebSocket
         const player_id = parseInt(sessionStorage.getItem("player_id"), 10);
         wsStartGameRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaID}/status?player_id=${player_id}`);
-        
+
         // Evento cuando se abre la conexión
         wsStartGameRef.current.onopen = () => {
             console.log("Conectado al WebSocket de Iniciar Partida de estado de partida");
@@ -146,6 +143,20 @@ function Partida() {
         };
       }
     }, [wsStartGameRef.current]);
+
+	useEffect(() => {
+		wsTRef.current = new WebSocket(`ws://localhost:8000/ws/lobby/${partidaID}/turns?player_id=${player_id}`);
+
+		wsTRef.current.onopen = () => {
+			wsTRef.current.send(JSON.stringify({request: "status"}))
+		};
+
+		wsTRef.current.onmessage = (event) => {
+			console.log("Received message:", event.data);
+			const updatedMessage = JSON.parse(event.data);
+			setActivePlayer({player_name: updatedMessage.player_name, player_id: updatedMessage.player_id});
+		};
+	}, [player_id, partidaID, wsTRef]);
 
   return (
     <div className="container-partida">
@@ -175,19 +186,17 @@ function Partida() {
       </div>
       <div className="pasar-turno-container">
         <PasarTurno
-          jugadorActual={jugadores[jugadorActualIndex]}
-          jugadores={jugadores}
           onTurnoCambiado={manejarFinTurno}
           tiempoLimite={tiempoLimite}
           setTimeLeft={setTimeLeft}
-          partidaId={partidaId}
+          disabled={activePlayer.player_id !== player_id}
         />
       </div>
       <div className="timer-container">
         {jugadores && jugadores.length > 0 && (
           <Temporizador
             tiempoLimite={tiempoLimite}
-            jugadorActual={jugadores[jugadorActualIndex]?.name}
+            jugadorActual={activePlayer.player_name}
             timeLeft={timeLeft}
             setTimeLeft={setTimeLeft}
             onFinTurno={manejarFinTurno}

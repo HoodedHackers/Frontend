@@ -1,35 +1,35 @@
+import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { PartidaProvider } from '../components/Partida/PartidaProvider.jsx';
-import TableroContainer from '../components/Partida/Tablero/TableroContainer.jsx';
+import '@testing-library/jest-dom';
+import {TableroProvider} from '../components/Partida/Tablero/TableroProvider.jsx';
+import Tablero from '../components/Partida/Tablero/TableroContainer.jsx' // Asegúrate de importar tu componente Tablero real
 
-// Mock de WebSocket
-global.WebSocket = class {
-  constructor(url) {
-    this.url = url;
-    this.onopen = null;
-    this.onmessage = null;
-    this.onerror = null;
-    this.readyState = 1; // OPEN
-  }
-  
-  close() {
-    this.readyState = 3; // CLOSED
-  }
-};
-
-describe('Tablero', () => {
-  beforeEach(() => {
+describe('Tablero Component', () => {
+  it('renders without crashing', () => {
     render(
-      <PartidaProvider>
-        <TableroContainer jugadores={[]}/>
-      </PartidaProvider>
-    ); // Renderizamos el componente sin jugadores
+      <TableroProvider>
+        <Tablero />
+      </TableroProvider>
+    );
+
+    // Verifica que se renderiza el tablero
+    const squares = screen.getAllByRole('button'); // Verificamos que hay botones, que representan los cuadrados
+    expect(squares.length).toBe(36); // Asegúrate que el número de cuadrados es 36
   });
 
-  it('se renderiza correctamente con 36 cuadrados', () => {
-    const squares = screen.getAllByRole('button'); // Asumiendo que los cuadrados son botones
-    expect(squares).toHaveLength(36);
-  });
+  it('displays squares with correct background images', () => {
+    render(
+      <TableroProvider>
+        <Tablero />
+      </TableroProvider>
+    );
 
+    const squares = screen.getAllByRole('button');
+
+    squares.forEach((square, index) => {
+      // Verificamos que cada cuadrado tiene un fondo definido
+      expect(square).toHaveStyle({ backgroundSize: 'cover' });
+      expect(square).toHaveStyle({ backgroundPosition: 'center' });
+    });
+  });
 });

@@ -21,6 +21,14 @@ const colorToImageMap = {
   '#27f178': '/Imagenes/Tablero/D.svg',
 };
 
+function numbersToSquares(numbers) {
+  let colors = ['#f3e84c',
+    '#1d53b6',
+    '#f52020',
+    '#27f178'];
+  return numbers.map((x) => colors[x - 1]);
+}
+
   function generateInitialColors() {
     const colorDistribution = [
       ...Array(9).fill('#f3e84c'), // amarillo
@@ -48,23 +56,16 @@ const colorToImageMap = {
       setTurnoActual((turnoActual + 1) % jugadoresActivos.length);
     }
   }
+  let game_id = sessionStorage.getItem("partida_id");
+  let player_id = sessionStorage.getItem("player_id");
   useEffect(() => {
-    const socket = new WebSocket('wss://echo.websocket.org');
-    
+    const socket = new WebSocket(`ws://localhost:8000/ws/lobby/${game_id}/board?player_id=${player_id}`);
+		socket.onopen = () => { socket.send(JSON.stringify({request: "status"})) };
+
     socket.onmessage = (event) => {
       console.log("Mensaje recibido:", event.data);
-      if (event.data.startsWith('{')) { // Verifica si parece un JSON
-        try {
-          const data = JSON.parse(event.data);
-          if (data.action === 'tablero_actualizado') {
-            setSquares(data.squares);
-          }
-        } catch (error) {
-          console.warn("No se pudo parsear el mensaje como JSON:", event.data);
-        }
-      } else {
-        console.warn("Mensaje recibido no es JSON:", event.data);
-      }
+			let data = JSON.parse(event.data);
+			setSquares(numbersToSquares(data.board));
     };
     
     return () => {

@@ -2,7 +2,7 @@
 
 .boton {
   padding: 10px 20px;
-  background-color: #2ddd33; /* Color verde para el botón activo */
+  background-color:#f8782e; 
   color: #fff;
   border: 2px solid black;
   cursor: pointer;
@@ -13,7 +13,7 @@
 
 /* Efecto hover */
 .boton:hover {
-  background-color: #bd0909; 
+  background-color: #f72840; 
   border: 2px solid #ffffff; 
   transform: scale(1.05); 
 }

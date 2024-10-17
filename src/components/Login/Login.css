@@ -12,15 +12,15 @@
   color: #fff;
   font-family: 'Georgia', serif;
   font-size: 3rem;
-  text-shadow: 0 0 15px #ff1eff, 0 0 20px #00ffea;
+  text-shadow: 0 0 15px #ff781e, 0 0 20px #ffffff;
   margin-bottom: 2rem;
-  margin-top: 5rem; /* Mueve el título más abajo */
+  margin-top: 5rem; 
   font-weight: 700;
   transition: text-shadow 0.3s ease;
 }
 
 .title:hover {
-  text-shadow: 0 0 20px #0ff, 0 0 30px #ff1eff, 0 0 40px #00ffea;
+  text-shadow: 0 0 20px rgb(255, 217, 0), 0 0 30px #faf9f8, 0 0 40px #ffffff;
 }
 
 .formContainer {
@@ -31,36 +31,36 @@
   margin-bottom: 2rem;
   width: 40%;
   margin-top: 100px;
-  margin-left: 50px; /* Para mover a la derecha */
-  gap: 2rem; /* Añade espacio entre los formularios */
+  margin-left: 50px; 
+  gap: 2rem; 
 }
 
 .form {
   background: rgba(0, 0, 0, 0.6);
   padding: 2.5rem;
   border-radius: 8px;
-  box-shadow: 0 0 35px #0ff;
+  box-shadow: 0 0 35px rgb(255, 255, 255);
   width: 80%;
   transition: box-shadow 0.4s ease;
-  margin-bottom: 2rem; /* Añade espacio entre formularios */
+  margin-bottom: 2rem; 
 }
 
 .input {
   padding: 14px;
   width: 100%;
   border-radius: 8px;
-  border: 2px solid #0ff;
+  border: 2px solid rgb(255, 255, 255);
   background-color: rgba(255, 255, 255, 0.1);
   color: #fff;
   font-size: 18px;
-  box-shadow: 0 0 15px #0ff;
+  box-shadow: 0 0 15px rgb(178, 247, 247);
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .input:focus {
   outline: none;
-  border-color: #ff1eff;
-  box-shadow: 0 0 25px #ff1eff; 
+  border-color: #ffb81e;
+  box-shadow: 0 0 25px #ffffff; 
 }
 
 .customButton {
@@ -72,22 +72,22 @@
   border: none;
   cursor: pointer;
   transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-  margin-top: 20px; /* Ajusta este valor para mover el botón más abajo */
+  margin-top: 20px;
 }
 
 .customButton:hover {
-  background: #0ff; /* Cambiar a un color sólido para efecto de neón */
-  box-shadow: 0 0 15px #ff1eff, 0 0 20px #00ffea;
+  background: rgb(255, 153, 0);
+  box-shadow: 0 0 15px #000000, 0 0 20px #ffffff;
 }
 
 .container {
   display: flex;
   flex-direction: row;
-  justify-content: space-between; /* Alinear elementos a los extremos */
+  justify-content: space-between; 
   align-items: center;
   gap: 2rem;
   margin-top: 2rem;
-  width: 100%; /* Asegura que el contenedor ocupe todo el ancho */
+  width: 100%; 
 }
 
 .card {
@@ -125,10 +125,6 @@
   transition: background 0.3s ease, transform 0.3s ease;
 }
 
-.custom-button:hover {
-  background: #0ff; /* Cambiar a un color sólido para efecto de neón */
-  box-shadow: 0 0 15px #ff1eff, 0 0 20px #00ffea;
-}
 
 .error {
   color: #fd0d0d; 
@@ -138,7 +134,23 @@
 }
 
 .infoContainer {
-  margin-right: 200px; /* Aumenta este valor para mover más a la izquierda */
-  max-width: 400px; /* Limitar el ancho máximo de la información */
-  flex-shrink: 0; /* Asegura que no se reduzca el tamaño de la tarjeta de información */
+  margin-right: 200px;
+  max-width: 400px; 
+  flex-shrink: 0; 
+}
+
+.custom-button-2{
+  background: linear-gradient(135deg, #aaa, #777);
+  color: #f3eeee;
+  padding: 12px 24px;
+  font-size: 1.2rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.custom-button-2:hover {
+  background: rgb(255, 153, 0);
+  box-shadow: 0 0 15px #000000, 0 0 20px #ffffff;
 }

@@ -1,78 +1,72 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import PasarTurno from "../components/Partida/PasarTurno/PasarTurno.jsx";
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import PasarTurno from '../components/Partida/PasarTurno/PasarTurno.jsx';
 
-describe("PasarTurno", () => {
-  let jugadores;
-  let jugadorActual;
-  let onTurnoCambiadoMock;
-  let setTimeLeftMock;
-  let tiempoLimite;
 
+// Función de renderizado que envuelve el componente
+const renderComponent = (props) => {
+  return render(<PasarTurno {...props} />);
+};
+
+describe('PasarTurno', () => {
   beforeEach(() => {
-    jugadores = ["Jugador 1", "Jugador 2", "Jugador 3"];
-    jugadorActual = "Jugador 1";
-    onTurnoCambiadoMock = vi.fn();
-    setTimeLeftMock = vi.fn();
-    tiempoLimite = 120; // 2 minutos
-
-    // Mock de la función fetch
-    global.fetch = vi.fn(() =>
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve({}),
-      })
-    );
+    // Simula sessionStorage
+    sessionStorage.setItem('partida_id', '1234');
+    sessionStorage.setItem('identifier', 'player1');
   });
 
-  it("debería renderizar el botón y habilitarlo para el jugador actual", () => {
-    render(
-      <PasarTurno
-        jugadorActual={jugadorActual}
-        jugadores={jugadores}
-        onTurnoCambiado={onTurnoCambiadoMock}
-        tiempoLimite={tiempoLimite}
-        setTimeLeft={setTimeLeftMock}
-      />
-    );
+  afterEach(() => {
+    // Limpia sessionStorage después de cada prueba
+    sessionStorage.clear();
+  });
 
-    const button = screen.getByText(/Terminar Turno/i);
+  it('renderiza el botón "Terminar Turno"', () => {
+    renderComponent({ onTurnoCambiado: vi.fn(), tiempoLimite: 30, setTimeLeft: vi.fn(), disabled: false });
+
+    const button = screen.getByRole('button', { name: /Terminar Turno/i });
     expect(button).toBeInTheDocument();
-    expect(button).not.toBeDisabled(); // Habilitado para el jugador actual
   });
 
-  it("debería poder cambiar el turno y enviar datos con fetch al pasar el turno", async () => {
-    render(
-      <PasarTurno
-        jugadorActual={jugadorActual}
-        jugadores={jugadores}
-        onTurnoCambiado={onTurnoCambiadoMock}
-        tiempoLimite={tiempoLimite}
-        setTimeLeft={setTimeLeftMock}
-      />
-    );
+  it('deshabilita el botón cuando la prop disabled es true', () => {
+    renderComponent({ onTurnoCambiado: vi.fn(), tiempoLimite: 30, setTimeLeft: vi.fn(), disabled: true });
 
-    const button = screen.getByText(/Terminar Turno/i);
-    fireEvent.click(button);
-
-    // Esperar a que se complete la llamada fetch
-    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
-
-    // Verificar que fetch fue llamado con los datos correctos
-    expect(global.fetch).toHaveBeenCalledWith(
-      "https://httpbin.org/post",
-      expect.objectContaining({
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jugadorActualIndex: 1 }),
-      })
-    );
-
-    // Verificar que se actualiza el turno correctamente
-    expect(onTurnoCambiadoMock).toHaveBeenCalled();
-
-    // Verificar que se reinicia el Temporizador
-    expect(setTimeLeftMock).toHaveBeenCalledWith(tiempoLimite);
+    const button = screen.getByRole('button', { name: /Terminar Turno/i });
+    expect(button).toBeDisabled();
   });
 
+  it('no llama a pasarTurno si identifier no está en sessionStorage', async () => {
+    sessionStorage.removeItem('identifier'); // Elimina el identifier
+
+    const mockOnTurnoCambiado = vi.fn();
+    const mockSetTimeLeft = vi.fn();
+
+    renderComponent({ onTurnoCambiado: mockOnTurnoCambiado, tiempoLimite: 30, setTimeLeft: mockSetTimeLeft, disabled: false });
+
+    const button = screen.getByRole('button', { name: /Terminar Turno/i });
+
+    // Simular el clic en el botón
+    await fireEvent.click(button);
+
+    // Verifica que no se llama a onTurnoCambiado
+    expect(mockOnTurnoCambiado).not.toHaveBeenCalled();
+  });
+
+  it('maneja errores de conexión correctamente', async () => {
+    const mockOnTurnoCambiado = vi.fn();
+    const mockSetTimeLeft = vi.fn();
+
+    // Mock de la respuesta de fetch para simular un error
+    global.fetch = vi.fn().mockRejectedValueOnce(new Error('Network error'));
+
+    renderComponent({ onTurnoCambiado: mockOnTurnoCambiado, tiempoLimite: 30, setTimeLeft: mockSetTimeLeft, disabled: false });
+
+    const button = screen.getByRole('button', { name: /Terminar Turno/i });
+
+    // Simular el clic en el botón
+    await fireEvent.click(button);
+
+    // Verifica que no se llama a onTurnoCambiado
+    expect(mockOnTurnoCambiado).not.toHaveBeenCalled();
+  });
 });
