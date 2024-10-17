@@ -1,6 +1,7 @@
 all: dev
 
 build:
+	npm i
 	npm run build
 
 clean:
@@ -10,6 +11,7 @@ deepclean: clean
 	rm -rf node_modules
 
 dev:
+	npm i
 	npm run dev
 
 docker-build:
