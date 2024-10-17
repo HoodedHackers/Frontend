@@ -107,3 +107,24 @@ export const CartasMovimientoMano = ({ubicacion, onMouseEnter, onMouseLeave}) =>
     </CartasMovimientoContext.Provider>
   );
 };
+
+//const [cartasReveladas, setCartasReveladas] = useState([]); 
+/*<div className={`jugador${ubicacion + 1}-container-cartas-movimiento`}>
+        {cartasDelJugador.length > 0 ? (
+          cartasDelJugador.map((carta, index) => {
+            const cartaRevelada = cartasReveladas.some(revelada => revelada.id_jugada === carta && revelada.id_jugador === jugadores[ubicacion].player_id);
+            return (
+              <div key={index}>
+                <CartaMovimiento
+                  id={isNaN(carta) ? -1 : carta} 
+                  ubicacion={ubicacion}
+                  activa={ubicacion === 0} // Solo activa para el jugador actual
+                  revelada={cartaRevelada} // Controla si la carta se muestra revelada
+                />
+              </div>
+            );
+          })
+        ) : (
+          null
+        )}
+      </div>*/
