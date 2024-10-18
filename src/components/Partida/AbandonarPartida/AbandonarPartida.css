@@ -1,38 +1,39 @@
 .abandonar-partida-boton {
-    font-size: 0.875rem;
-    color: #00d9ff;
-    cursor: pointer;
-    transition: color 0.2s ease;
-    background-color: #51f311; /* Color de fondo rojo */
-    color: white; /* Color del texto blanco */
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  background-color: #f8782e; 
+  color: white; 
+  border: 2px solid black;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
 
 .abandonar-partida-boton:active {
-  transform: scale(0.95);
+transform: scale(0.95);
 }
 
 .abandonar-partida-boton:hover {
-    background-color: #ff1f3a; /* Cambia el color al pasar el ratón */
+  background-color: #f72840; 
+  border: 2px solid #ffffff; 
+
 }
 
 .abandonar-partida-boton:disabled {
-    background-color: #cccccc; /* Color gris cuando está deshabilitado */
-    cursor: not-allowed;
+  background-color: #cccccc; 
+  cursor: not-allowed;
 }
 
 /* AbandonarPartida.css */
 .error-message {
-  opacity: 1; /* Comienza completamente visible */
-  transition: opacity 0.5s ease; /* Efecto de transición */
+opacity: 1; 
+transition: opacity 0.5s ease; 
 }
 
 .error-message.fade-out {
-  opacity: 0; /* Se desvanece */
+opacity: 0; 
 }

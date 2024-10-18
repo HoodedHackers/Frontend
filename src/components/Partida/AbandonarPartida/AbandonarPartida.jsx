@@ -3,52 +3,52 @@ import { useNavigate } from 'react-router-dom';
 import './AbandonarPartida.css';
 
 const AbandonarPartida = () => {
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null); 
+    const [loading, setLoading] = useState(false);  
     const [fadeOut, setFadeOut] = useState(false); // Estado para manejar el desvanecimiento
-    const navigate = useNavigate();
+    const navigate = useNavigate(); 
 
     const ident = sessionStorage.getItem('identifier');
     const partidaId = sessionStorage.getItem('partida_id');
 
     const manejadorAbandonarPartida = async () => {
-        setLoading(true);
-        setError(null);
+        setLoading(true);  
+        setError(null);  
         setFadeOut(false);
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/lobby/${partidaId}/exit`, {
-                method: 'POST',
+            const response = await fetch(`http://127.0.0.1:8000/api/lobby/salir/${partidaId}`, {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ identifier: ident }),
+                body: JSON.stringify({ identifier: ident }), 
             });
 
             if (response.ok) {
                 const data = await response.json();
                 if (data.players.length === 1) {
-                    alert(`¡Felicidades ${data.players[0].name}, ganaste la partida!`);
+                    alert(`¡Felicidades ${data.players[0].name}, ganaste la partida!`); 
                 }
-
+                
                 const Jugadores = JSON.parse(sessionStorage.getItem('players')) || [];
                 const jugadoresActualizados = Jugadores.filter(j => j.identifier !== ident);
 
                 sessionStorage.setItem('players', JSON.stringify(jugadoresActualizados));
 
-                navigate('/Opciones');
+                navigate('/Opciones'); 
             } else if (response.status === 404) {
-                setError('Lobby no encontrado.');
+                setError('Lobby no encontrado.');  
             } else if (response.status === 412) {
-                setError('No puedes abandonar, el juego ya ha comenzado.');
+                setError('No puedes abandonar, el juego ya ha comenzado.');  
             } else {
-                setError('Ocurrió un error inesperado.');
+                setError('Ocurrió un error inesperado.');  
             }
         } catch (error) {
-            setError('Error de conexión con el servidor.');
+            setError('Error de conexión con el servidor.');  
         } finally {
-            setLoading(false);
-            navigate('/Opciones');
+            setLoading(false); 
+            navigate('/Opciones'); // OBVIAMENTE HAY QUE CAMBIAR ESTO 
         }
     };
 
@@ -72,12 +72,12 @@ const AbandonarPartida = () => {
                     {error}
                 </p>
             )}
-
-            <button
+            
+            <button 
                 variant='contained'
                 className='abandonar-partida-boton'
                 onClick={manejadorAbandonarPartida}
-                disabled={loading}
+                disabled={loading} 
             >
                 {loading ? 'Saliendo...' : 'Abandonar Partida'}
             </button>

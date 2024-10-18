@@ -6,7 +6,7 @@
 
 .item-partida {
   display: flex;
-  align-items: center; /* Alinea los elementos hijos de manera vertical */
+  align-items: center; 
   justify-content: space-between;
   gap: 1.5rem;
   padding: 1rem;
@@ -47,20 +47,20 @@
 }
 
 .item-partida-boton {
-  margin: 0; /* Elimina cualquier margen extra */
+  margin: 0; 
   padding: 5px 10px;
   font-size: 0.875rem;
-  color: #3b82f6;
+  color: #000000;
   cursor: pointer;
-  border: 1px solid #3b82f6;
+  border: 1px solid #050505;
   border-radius: 4px;
   background-color: transparent;
   transition: all 0.3s ease;
 }
 
 .item-partida-boton:hover {
-  background-color: #3b82f6; /* Cambia el fondo al hacer hover */
-  color: #ffffff; /* Cambia el texto a blanco para contrastar */
+  background-color: #f6953b; 
+  color: #ffffff; 
 }
 
 .texto-centrado {
