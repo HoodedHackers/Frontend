@@ -15,8 +15,11 @@ function IniciarPartida() {
     setLoading(true);
     setErrorMessage('');
 
+    sessionStorage.setItem('isOwner', 'false');
+
     const partidaID = sessionStorage.getItem('partida_id');
     const identifier = sessionStorage.getItem('identifier');
+    localStorage.setItem(`partidaIniciada_${partidaID}`, 'true');
 
     try {
       let body = JSON.stringify({ identifier: identifier });

@@ -128,3 +128,66 @@ button:disabled {
   margin-top: 0;
   margin-bottom: 0;
 }
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: #c57d56; /* Color similar al contenedor del formulario */
+  padding: 20px;
+  border-radius: 12px; /* Bordes redondeados similares */
+  max-width: 500px;
+  width: 100%;
+  z-index: 1001;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra similar a los contenedores */
+  border: 1px solid #282827; /* Borde similar al formulario */
+  text-align: center; /* Alineación central */
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 24px; /* Tamaño de letra del título */
+  font-weight: bold;
+  color: #fff; /* Color del texto blanco */
+}
+
+.modal-body {
+  font-size: 18px;
+  color: #fff; /* Texto en blanco */
+  margin: 20px 0;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+}
+
+/* Botón de cierre */
+.modal-footer button {
+  background-color: #070707; /* Color de fondo similar */
+  color: #fff; /* Texto en blanco */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px; /* Bordes redondeados */
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+/* Hover del botón */
+.modal-footer button:hover {
+  background-color: #282827; /* Cambia el color al pasar el ratón */
+  transform: scale(1.05); /* Aumenta ligeramente el tamaño */
+}
