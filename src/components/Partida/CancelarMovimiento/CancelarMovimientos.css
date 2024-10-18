@@ -1,0 +1,24 @@
+    .cancelar-movimientos-btn:active {
+    background-color: #c71313; 
+  }
+  
+  .cancelar-movimientos-btn{
+    background-color: #f8782e;
+    color: white;
+    padding: 5px 10px;
+    border: #000000;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    grid-area: right; 
+    justify-self: center; 
+    position: absolute;
+    top: 90px; 
+    left: 75%; 
+  }
+  
+  .cancelar-movimientos-btn:hover {
+    background-color: #f8782e; 
+    border: 2px solid #ffffff; 
+  }

@@ -9,6 +9,7 @@ import AbandonarPartida from "./AbandonarPartida/AbandonarPartida.jsx";
 import PasarTurno from "./PasarTurno/PasarTurno.jsx";
 import Temporizador from "./Temporizador/Temporizador.jsx";
 import { WebSocketContext } from '../WebSocketsProvider.jsx';
+import CancelarMovimientos from "./CancelarMovimiento/CancelarMovimientos.jsx";
 import "./Partida.css";
 
 function Partida() {
@@ -176,6 +177,9 @@ function Partida() {
       )}
       <div className="tableroContainer">
         <TableroWithProvider />
+      </div>
+      <div className="cancelar-movimientos-container">
+        <CancelarMovimientos />
       </div>
       <div>
         {!partidaIniciada && <IniciarPartida empezarPartida={empezarPartida} />}

@@ -32,15 +32,15 @@
   cursor: not-allowed;
 }
 
-.waiting-message {
-  font-size: 12px; 
-  color: #ff4500; 
+.waitingmessage {
+  font-size: 16px; 
+  color: #fffefd; 
   text-align: center; 
   margin-top: 20px; 
   font-weight: bold; 
-  background-color: #f0f0f0; 
+  background-color: #e07f24; 
   padding: 20px; 
-  border: 2px solid #ff4500; 
+  border: 2px solid #000000; 
   border-radius: 10px; 
   display: inline-block; 
   width: auto; 
