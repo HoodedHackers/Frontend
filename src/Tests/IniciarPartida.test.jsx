@@ -1,22 +1,41 @@
-
 import { render, screen, fireEvent, act } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import IniciarPartida from '../components/Partida/IniciarPartida/IniciarPartida';
 import { WebSocketContext } from '../components/WebSocketsProvider';
 import { PartidaContext } from '../components/Partida/PartidaProvider';
 import React from 'react';
 
-// Crea un contexto mock para el WebSocket
+// Mock global para fetch
+global.fetch = vi.fn();
+
+// Mock para sessionStorage y localStorage
+Object.defineProperty(window, 'sessionStorage', {
+  value: {
+    getItem: vi.fn(),
+    setItem: vi.fn(),
+    clear: vi.fn(),
+  },
+});
+
+Object.defineProperty(window, 'localStorage', {
+  value: {
+    getItem: vi.fn(),
+    setItem: vi.fn(),
+    clear: vi.fn(),
+  },
+});
+
+// Mock para el WebSocketContext
 const mockWebSocketContext = {
   wsStartGameRef: { current: { send: vi.fn() } },
 };
 
-// Crea un contexto mock para la Partida
+// Mock para el PartidaContext
 const mockPartidaContext = {
   isOwner: true,
 };
 
-// Función de renderizado que envuelve el componente en los contextos
+// Renderiza el componente con los contextos mockeados
 const renderWithContexts = () => {
   return render(
     <WebSocketContext.Provider value={mockWebSocketContext}>
@@ -27,22 +46,31 @@ const renderWithContexts = () => {
   );
 };
 
-describe('IniciarPartida', () => {
-  it('renderiza el botón para iniciar la partida cuando es el propietario', () => {
-    renderWithContexts();
-
-    const button = screen.getByRole('button', { name: /Iniciar Partida/i });
-    expect(button).toBeInTheDocument();
+describe('IniciarPartida Component', () => {
+  beforeEach(() => {
+    // Limpiar todos los mocks antes de cada test
+    vi.clearAllMocks();
+    sessionStorage.getItem.mockImplementation((key) => {
+      if (key === 'partida_id') return '123';
+      if (key === 'identifier') return 'player1';
+      return null;
+    });
   });
 
-  it('muestra el mensaje de espera cuando no es el propietario', () => {
-    // Cambia isOwner a false
-    mockPartidaContext.isOwner = false;
+  it('debería renderizar el botón para iniciar la partida cuando el usuario es el propietario', () => {
+    renderWithContexts();
+
+    const startButton = screen.getByRole('button', { name: /Iniciar Partida/i });
+    expect(startButton).toBeInTheDocument();
+  });
+
+  it('debería mostrar el mensaje de espera cuando el usuario no es el propietario', () => {
+    mockPartidaContext.isOwner = false; // Cambiar a no propietario
 
     renderWithContexts();
 
-    const message = screen.getByText(/Esperando a que el CREADOR inicie la partida/i);
-    expect(message).toBeInTheDocument();
+    const waitingMessage = screen.getByText(/Esperando a que el CREADOR inicie la partida/i);
+    expect(waitingMessage).toBeInTheDocument();
   });
 
 });

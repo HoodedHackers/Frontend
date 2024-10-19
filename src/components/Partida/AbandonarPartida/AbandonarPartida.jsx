@@ -7,7 +7,7 @@ import { WebSocketContext, WebSocketProvider } from '../../WebSocketsProvider';
 const AbandonarPartida = () => {
     const [error, setError] = useState(null); 
     const [loading, setLoading] = useState(false);  
-    const [fadeOut, setFadeOut] = useState(false); // Estado para manejar el desvanecimiento
+    const [fadeOut, setFadeOut] = useState(false); 
     const { wsUPRef } = useContext(WebSocketContext);
     const navigate = useNavigate(); 
 

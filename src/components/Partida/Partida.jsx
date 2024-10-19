@@ -205,7 +205,7 @@ function Partida() {
   
         if (Array.isArray(players) && players.length === 1 && isPartidaOn === 'true') {
           const playerName = players[0].player_name; 
-          setModalMessage(`¡Felicitaciones ${playerName}! ¡Ganaste!`);
+          setModalMessage(`¡Felicitaciones ${playerName} Ganaste el juego!`);
           setShowModal(true);  // Mostrar el modal
           /*wsUPRef.current.close(); 
           sessionStorage.removeItem('players');
@@ -294,7 +294,6 @@ function Partida() {
         <div className="modal-overlay">
           <div className="modal">
             <div className="modal-header">
-              <h2>Importante!!</h2>
             </div>
             <div className="modal-body">
               <p>{modalMessage}</p>

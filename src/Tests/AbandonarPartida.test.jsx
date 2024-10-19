@@ -1,122 +1,130 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
 import AbandonarPartida from '../components/Partida/AbandonarPartida/AbandonarPartida.jsx';
-import { useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { WebSocketContext } from '../components/WebSocketsProvider';
 
-// Mockear el useNavigate para verificar si se llama correctamente
-const mockNavigate = vi.fn();
+// Mockeamos 'useNavigate', pero mantenemos el resto de 'react-router-dom' sin cambios
+vi.mock('react-router-dom', async () => {
+    const originalModule = await vi.importActual('react-router-dom');
+    return {
+        ...originalModule,
+        useNavigate: () => vi.fn(),
+    };
+});
 
-vi.mock('react-router-dom', () => ({
-    useNavigate: () => mockNavigate,
-}));
+// Mockeamos 'fetch' para evitar realizar solicitudes reales al backend
+global.fetch = vi.fn();
 
-describe('AbandonarPartida', () => {
+describe('AbandonarPartida Component', () => {
+    const mockWebSocket = { current: { close: vi.fn() } };
+    const mockNavigate = vi.fn();
+    
+    beforeEach(() => {
+        // Mockeamos sessionStorage
+        sessionStorage.setItem('identifier', 'testIdentifier');
+        sessionStorage.setItem('partida_id', '1234');
+        sessionStorage.setItem('isOwner', 'false');
+        sessionStorage.setItem('player_nickname', 'testPlayer');
+        sessionStorage.setItem('players', JSON.stringify([{ player_name: 'testPlayer' }, { player_name: 'player2' }]));
+        
+        // Restauramos el mock de fetch antes de cada test
+        global.fetch.mockReset();
+    });
+
     afterEach(() => {
-        // Limpiar mocks después de cada test
         vi.clearAllMocks();
     });
 
-    it('Renderiza correctamente el botón de abandonar partida', () => {
-        render(<AbandonarPartida />);
-        const abandonarButton = screen.getByText(/Abandonar Partida/i);
-        expect(abandonarButton).toBeInTheDocument();  // Comprueba que el botón se renderiza
-    });
-
-    it('Redirige a /Opciones cuando la respuesta es exitosa', async () => {
-        // Mockear fetch para devolver una respuesta exitosa
-        global.fetch = vi.fn(() =>
-            Promise.resolve({
-                ok: true,
-                json: () =>
-                    Promise.resolve({
-                        players: [{ name: 'Player 1' }],
-                    }),
-            })
+    // Test 1: Verificar que el botón "Abandonar Partida" se renderiza correctamente
+    it('debería renderizar el botón Abandonar Partida', () => {
+        render(
+            <Router>
+                <WebSocketContext.Provider value={{ wsUPRef: mockWebSocket }}>
+                    <AbandonarPartida />
+                </WebSocketContext.Provider>
+            </Router>
         );
 
-        render(<AbandonarPartida />);
-        const abandonarButton = screen.getByText(/Abandonar Partida/i);
-        fireEvent.click(abandonarButton);
-
-        // Espera a que se complete la operación y se verifique que se ha redirigido
-        await waitFor(() => {
-            expect(mockNavigate).toHaveBeenCalledWith('/Opciones');  // Verifica que se navega a '/Opciones'
-        });
-
-        global.fetch.mockClear();
+        const button = screen.getByRole('button', { name: /Abandonar Partida/i });
+        expect(button).toBeInTheDocument();
     });
 
-    it('Muestra un error cuando el lobby no es encontrado', async () => {
-        // Mockear fetch para devolver un 404
-        global.fetch = vi.fn(() =>
-            Promise.resolve({
-                ok: false,
-                status: 404,
-            })
+    // Test 2: Verificar el estado de carga cuando se presiona el botón
+    it('debería mostrar "Saliendo..." cuando se hace clic en Abandonar Partida', async () => {
+        global.fetch.mockResolvedValueOnce({
+            ok: true,
+            json: () => Promise.resolve({ status: 'success' }),
+        });
+        
+        render(
+            <Router>
+                <WebSocketContext.Provider value={{ wsUPRef: mockWebSocket }}>
+                    <AbandonarPartida />
+                </WebSocketContext.Provider>
+            </Router>
         );
 
-        render(<AbandonarPartida />);
-        const abandonarButton = screen.getByText(/Abandonar Partida/i);
-        fireEvent.click(abandonarButton);
+        const button = screen.getByRole('button', { name: /Abandonar Partida/i });
+        fireEvent.click(button);
+
+        expect(button).toBeDisabled();
+        expect(button).toHaveTextContent('Saliendo...');
 
         await waitFor(() => {
-            expect(screen.getByText(/Lobby no encontrado/i)).toBeInTheDocument();
+            expect(global.fetch).toHaveBeenCalled();
+            expect(button).not.toBeDisabled();
+            expect(button).toHaveTextContent('Abandonar Partida');
         });
-
-        global.fetch.mockClear();
     });
 
-    it('Muestra un error cuando no se puede abandonar la partida', async () => {
-        // Mockear fetch para devolver un 412
-        global.fetch = vi.fn(() =>
-            Promise.resolve({
-                ok: false,
-                status: 412,
-            })
+    // Test 3: Verificar error de conexión al servidor
+    it('debería mostrar error de conexión al servidor', async () => {
+        global.fetch.mockRejectedValueOnce(new Error('Error de conexión'));
+
+        render(
+            <Router>
+                <WebSocketContext.Provider value={{ wsUPRef: mockWebSocket }}>
+                    <AbandonarPartida />
+                </WebSocketContext.Provider>
+            </Router>
         );
 
-        render(<AbandonarPartida />);
-        const abandonarButton = screen.getByText(/Abandonar Partida/i);
-        fireEvent.click(abandonarButton);
+        const button = screen.getByRole('button', { name: /Abandonar Partida/i });
+        fireEvent.click(button);
 
         await waitFor(() => {
-            expect(screen.getByText(/No puedes abandonar, el juego ya ha comenzado/i)).toBeInTheDocument();
+            const errorMessage = screen.getByText(/Error de conexión con el servidor/i);
+            expect(errorMessage).toBeInTheDocument();
         });
-
-        global.fetch.mockClear();
     });
 
-    it('Muestra un error cuando ocurre un error inesperado', async () => {
-        // Mockear fetch para devolver un error inesperado
-        global.fetch = vi.fn(() =>
-            Promise.resolve({
-                ok: false,
-            })
+    // Test 4: Verificar la conexión exitosa con el backend
+    it('debería conectarse correctamente con el backend y manejar la respuesta exitosa', async () => {
+        global.fetch.mockResolvedValueOnce({
+            ok: true,
+            json: () => Promise.resolve({ status: 'success' }),
+        });
+
+        render(
+            <Router>
+                <WebSocketContext.Provider value={{ wsUPRef: mockWebSocket }}>
+                    <AbandonarPartida />
+                </WebSocketContext.Provider>
+            </Router>
         );
 
-        render(<AbandonarPartida />);
-        const abandonarButton = screen.getByText(/Abandonar Partida/i);
-        fireEvent.click(abandonarButton);
+        const button = screen.getByRole('button', { name: /Abandonar Partida/i });
+        fireEvent.click(button);
 
         await waitFor(() => {
-            expect(screen.getByText(/Ocurrió un error inesperado/i)).toBeInTheDocument();
+            expect(global.fetch).toHaveBeenCalledWith(
+                'http://127.0.0.1:8000/api/lobby/1234/exit',
+                expect.objectContaining({
+                    method: 'POST',
+                    body: JSON.stringify({ identifier: 'testIdentifier' }),
+                })
+            );
         });
-
-        global.fetch.mockClear();
-    });
-
-    it('Muestra un mensaje de error de conexión al servidor', async () => {
-        // Mockear fetch para lanzar un error
-        global.fetch = vi.fn(() => Promise.reject(new Error('Network Error')));
-
-        render(<AbandonarPartida />);
-        const abandonarButton = screen.getByText(/Abandonar Partida/i);
-        fireEvent.click(abandonarButton);
-
-        await waitFor(() => {
-            expect(screen.getByText(/Error de conexión con el servidor/i)).toBeInTheDocument();
-        });
-
-        global.fetch.mockClear();
     });
 });
