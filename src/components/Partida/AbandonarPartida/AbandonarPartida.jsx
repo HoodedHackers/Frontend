@@ -5,21 +5,21 @@ import { PartidaContext } from '../PartidaProvider';
 import { WebSocketContext, WebSocketProvider } from '../../WebSocketsProvider';
 
 const AbandonarPartida = () => {
-    const [error, setError] = useState(null); 
-    const [loading, setLoading] = useState(false);  
-    const [fadeOut, setFadeOut] = useState(false); 
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [fadeOut, setFadeOut] = useState(false);
     const { wsUPRef } = useContext(WebSocketContext);
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
 
     const ident = sessionStorage.getItem('identifier');
     const partidaId = sessionStorage.getItem('partida_id');
-    const isOwner = sessionStorage.getItem('isOwner'); 
+    const isOwner = sessionStorage.getItem('isOwner');
     const name = sessionStorage.getItem('player_nickname');
     let players = JSON.parse(sessionStorage.getItem('players'));
 
     const manejadorAbandonarPartida = async () => {
-        setLoading(true);  
-        setError(null);  
+        setLoading(true);
+        setError(null);
         setFadeOut(false);
 
         try {
@@ -28,7 +28,7 @@ const AbandonarPartida = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ identifier: ident }), 
+                body: JSON.stringify({ identifier: ident }),
             });
 
             if (response.ok) {
@@ -52,7 +52,7 @@ const AbandonarPartida = () => {
                     if (isOwner === 'true') {
                         const partidaID = sessionStorage.getItem('partida_id'); // Obtén el ID de la partida
                         localStorage.setItem(`hostAbandono_partida_${partidaID}`, 'true'); // Clave única por partida
-                        sessionStorage.removeItem('players');   
+                        sessionStorage.removeItem('players');
                         sessionStorage.removeItem('timeLeft');
                         sessionStorage.removeItem('partida_id');
                         sessionStorage.removeItem('isOwner');
@@ -64,9 +64,9 @@ const AbandonarPartida = () => {
                     }
 
                 } else if (response.status === 404) {
-                    setError('Lobby no encontrado.');  
+                    setError('Lobby no encontrado.');
                 } else if (response.status === 412) {
-                    setError('No puedes abandonar, el juego ya ha comenzado.');  
+                    setError('No puedes abandonar, el juego ya ha comenzado.');
                 } else {
                     setError('Ocurrió un error inesperado.');
                 }
@@ -100,12 +100,12 @@ const AbandonarPartida = () => {
                     {error}
                 </p>
             )}
-            
-            <button 
+
+            <button
                 variant='contained'
                 className='abandonar-partida-boton'
                 onClick={manejadorAbandonarPartida}
-                disabled={loading} 
+                disabled={loading}
             >
                 {loading ? 'Saliendo...' : 'Abandonar Partida'}
             </button>
