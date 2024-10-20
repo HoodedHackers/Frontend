@@ -37,9 +37,6 @@ const AbandonarPartida = () => {
                 if (data.status === "success") {
 
                     if (isOwner === 'false') {
-                        players = players.filter(player => player.player_name !== name);
-                        localStorage.setItem(`players_${partidaId}`, JSON.stringify(players));
-                        console.log('Jugadores actuales:', players);
                         sessionStorage.removeItem('players');
                         sessionStorage.removeItem('isOwner');
                         sessionStorage.removeItem('timeLeft');
@@ -50,16 +47,12 @@ const AbandonarPartida = () => {
                     }
 
                     if (isOwner === 'true') {
-                        const partidaID = sessionStorage.getItem('partida_id'); // Obtén el ID de la partida
-                        localStorage.setItem(`hostAbandono_partida_${partidaID}`, 'true'); // Clave única por partida
                         sessionStorage.removeItem('players');
                         sessionStorage.removeItem('timeLeft');
                         sessionStorage.removeItem('partida_id');
                         sessionStorage.removeItem('isOwner');
-                        localStorage.removeItem(`players_${partidaID}`);
-                        localStorage.removeItem(`hostAbandono_partida_${partidaID}`);
                         sessionStorage.removeItem('partidaIniciada');
-                        wsUPRef.current.close(); // Cerrar WebSocket para el host
+                        wsUPRef.current.close(); 
                         navigate('/Opciones');
                     }
 

@@ -49,10 +49,8 @@ function Partida() {
     return storedTime !== null ? Number(storedTime) : tiempoLimite;
   });
 	const [activePlayer, setActivePlayer] = useState({});
-  localStorage.setItem(`hostAbandono_partida_${partidaID}`, "false");
-  const players = JSON.parse(sessionStorage.getItem(`players`));
-  localStorage.setItem(`players_${partidaID}`, JSON.stringify(players));
   sessionStorage.setItem('partidaIniciada', "false");
+  const name = sessionStorage.getItem('player_nickname'); 
 
   const manejarFinTurno = async () => {
     if (jugadores.length > 0) {  // Asegura que jugadores exista antes de acceder
@@ -80,6 +78,15 @@ function Partida() {
       };
       wsUPRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
+        console.log("Mensaje recibido del WebSocket de Unirse a Partida:", data);
+        if (data.response === 'Hay un ganador') {
+          setModalMessage(`¡Felicitaciones ${name} Ganaste el juego!`);
+          setShowModal(true);
+        }
+        if (data.response === 'El host ha abandonado la partida') {
+          setModalMessage('El host ha abandonado la partida. Serás redirigido.');
+          setShowModal(true);
+        }
         if (data.players && Array.isArray(data.players)) {
           setJugadores(data.players);
           sessionStorage.setItem("players", JSON.stringify(data.players || []));
@@ -166,14 +173,14 @@ function Partida() {
 		};
 	}, [player_id, partidaID, wsTRef]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     const partidaID = sessionStorage.getItem('partida_id'); // Obtén el ID de la partida
   
     const handleStorageChange = (event) => {
         if (event.key === `hostAbandono_partida_${partidaID}` && event.newValue === 'true') {
           setModalMessage('El host ha abandonado la partida. Serás redirigido.');
           setShowModal(true);  // Mostrar el modal
-          /*wsUPRef.current.close(); 
+          wsUPRef.current.close(); 
           sessionStorage.removeItem('players');
           localStorage.removeItem(`hostAbandono_partida_${partidaID}`);
           sessionStorage.removeItem('partida_id');
@@ -181,7 +188,7 @@ function Partida() {
           sessionStorage.removeItem('timeLeft');
           localStorage.removeItem(`partidaIniciada_${partidaID}`);
           sessionStorage.removeItem('partidaIniciada');
-          navigate('/Opciones');*/
+          navigate('/Opciones');
         }
     };
   
@@ -207,7 +214,7 @@ function Partida() {
           const playerName = players[0].player_name; 
           setModalMessage(`¡Felicitaciones ${playerName} Ganaste el juego!`);
           setShowModal(true);  // Mostrar el modal
-          /*wsUPRef.current.close(); 
+          wsUPRef.current.close(); 
           sessionStorage.removeItem('players');
           localStorage.removeItem(`hostAbandono_partida_${partidaID}`);
           sessionStorage.removeItem('partida_id');
@@ -216,7 +223,7 @@ function Partida() {
           localStorage.removeItem(`players_${partidaID}`);
           sessionStorage.removeItem('partidaIniciada');
           localStorage.removeItem(`partidaIniciada_${partidaID}`);
-          navigate('/Opciones');*/
+          navigate('/Opciones');
         }
       }
     };
@@ -228,19 +235,16 @@ function Partida() {
       // Limpiar el listener cuando el componente se desmonte
       window.removeEventListener('storage', handleStorageChange);
     };
-  }, []);
+  }, []);*/
 
   const handleCloseModal = () => {
     const partidaID = sessionStorage.getItem('partida_id');
     wsUPRef.current.close();
     sessionStorage.removeItem('players');
-    localStorage.removeItem(`hostAbandono_partida_${partidaID}`);
     sessionStorage.removeItem('partida_id');
     sessionStorage.removeItem('isOwner');
     sessionStorage.removeItem('timeLeft');
-    localStorage.removeItem(`partidaIniciada_${partidaID}`);
     sessionStorage.removeItem('partidaIniciada');
-    localStorage.removeItem(`players_${partidaID}`);
     setShowModal(false);  // Cerrar el modal
     navigate('/Opciones');
   };
