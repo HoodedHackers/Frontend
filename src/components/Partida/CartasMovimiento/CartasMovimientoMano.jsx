@@ -7,7 +7,7 @@ export const CartasMovimientoContext = createContext();
 
 export const CartasMovimientoMano = ({ubicacion}) => {
   const [seleccionada, setSeleccionada] = useState(null);
-  const { jugadores, partidaIniciada } = useContext(PartidaContext);
+  const { jugadores, partidaIniciada, jugadorActualId, cartaMovimientoActualId } = useContext(PartidaContext);
 
   const setearCartaMovimientos = (jugadores, dataMovimientos = null) => {
     return jugadores.map((jugador, index) => {
@@ -79,24 +79,12 @@ export const CartasMovimientoMano = ({ubicacion}) => {
       <div className={`jugador${ubicacion + 1}-container-cartas-movimiento`}>
         {cartasDelJugador.length > 0 ? (
           cartasDelJugador.map((carta, index) => (
-            ubicacion === 0 ? (
               <div key={index}>
                 <CartaMovimiento
                   id={isNaN(carta) ? -1 : carta} 
                   ubicacion={ubicacion}
-                  activa={false}
                 />
               </div>
-            ) : (
-              <div 
-                key={index}
-              >
-                <CartaMovimiento
-                  id={isNaN(carta) ? -1 : carta} 
-                  ubicacion={ubicacion}
-                />
-              </div>
-            )
           ))
         ) : (
           null

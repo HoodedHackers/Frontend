@@ -11,6 +11,7 @@ import Temporizador from "./Temporizador/Temporizador.jsx";
 import { WebSocketContext } from '../WebSocketsProvider.jsx';
 import "./Partida.css";
 import { useNavigate } from "react-router-dom";
+import { set } from "react-hook-form";
 
 function Partida() {
   const navigate = useNavigate();
@@ -28,7 +29,11 @@ function Partida() {
     setJugadorActualIndex,
     jugando,
     setJugando,
-    isOverlayVisible
+    isOverlayVisible,
+    jugadorActualId,
+    setJugadorActualId,
+    cartaMovimientoActualId,
+    setCartaMovimientoActualId
   } = useContext(PartidaContext);
 
   useEffect(() => {
@@ -178,6 +183,10 @@ function Partida() {
 
       wsUCMRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
+        sessionStorage.setItem("jugadorActualId", data.player_id);
+        setJugadorActualId(data.player_id);
+        sessionStorage.setItem("cartaMovimientoActualId", data.card_id);
+        setCartaMovimientoActualId(data.card_id);
         console.log("Mensaje recibido del WebSocket de Usar Carta de Movimiento:", data);
       }
 
