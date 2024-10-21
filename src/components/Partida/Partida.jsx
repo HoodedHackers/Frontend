@@ -306,7 +306,7 @@ function Partida() {
               nombre={jugador.player_name}
               ubicacion={`jugador${index + 1}`}
             />
-            <CartasMovimientoMano ubicacion={index} />
+            <CartasMovimientoMano ubicacion={index} jugadorId={jugador.player_id} />
             <MazoCartaFigura ubicacion={index} />
           </div>
         ))

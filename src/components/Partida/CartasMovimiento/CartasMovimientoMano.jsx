@@ -5,7 +5,7 @@ import './CartasMovimientoMano.css';
 
 export const CartasMovimientoContext = createContext();
 
-export const CartasMovimientoMano = ({ubicacion}) => {
+export const CartasMovimientoMano = ({ubicacion, jugadorId}) => {
   const [seleccionada, setSeleccionada] = useState(null);
   const { jugadores, partidaIniciada, jugadorActualId, cartaMovimientoActualId } = useContext(PartidaContext);
 
@@ -69,6 +69,10 @@ export const CartasMovimientoMano = ({ubicacion}) => {
   // Verifica si cartaMovimientos tiene el jugador en la ubicación y si tiene cartas
   const cartasDelJugador = cartaMovimientos[ubicacion]?.all_cards || [];
 
+  useEffect(() => {
+    
+  }, [jugadorActualId, cartaMovimientoActualId]);
+
   return (
     <CartasMovimientoContext.Provider 
       value={{
@@ -83,6 +87,7 @@ export const CartasMovimientoMano = ({ubicacion}) => {
                 <CartaMovimiento
                   id={isNaN(carta) ? -1 : carta} 
                   ubicacion={ubicacion}
+                  index={index}
                 />
               </div>
           ))

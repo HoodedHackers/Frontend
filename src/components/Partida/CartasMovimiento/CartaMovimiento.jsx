@@ -4,7 +4,7 @@ import { CartasMovimientoContext } from "./CartasMovimientoMano.jsx";
 import { WebSocketContext } from "../../WebSocketsProvider.jsx";
 import "./CartaMovimiento.css";
 
-const CartaMovimiento = ({ id, ubicacion }) => {
+const CartaMovimiento = ({ id, ubicacion, index }) => {
   const Images = [
     "/Imagenes/Movimiento/back-mov.svg",
     "/Imagenes/Movimiento/mov1.svg",
@@ -32,6 +32,7 @@ const CartaMovimiento = ({ id, ubicacion }) => {
       const message = {
         player_identifier: sessionStorage.getItem("identifier"),
         card_id: id,
+        index: index
       };
       wsUCMRef.current.send(JSON.stringify(message));
       console.log("Se envió la Carta de Movimiento elegida.");
