@@ -79,11 +79,11 @@ function Partida() {
       wsUPRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
         console.log("Mensaje recibido del WebSocket de Unirse a Partida:", data);
-        if (data.response === 'Hay un ganador') {
+        if (data.response === player_id) {
           setModalMessage(`¡Felicitaciones ${name} Ganaste el juego!`);
           setShowModal(true);
         }
-        if (data.response === 'El host ha abandonado la partida') {
+        if (data === 'el host ha abandonado la partida') {
           setModalMessage('El host ha abandonado la partida. Serás redirigido.');
           setShowModal(true);
         }
