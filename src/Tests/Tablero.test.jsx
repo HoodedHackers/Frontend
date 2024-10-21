@@ -2,14 +2,22 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import {TableroProvider} from '../components/Partida/Tablero/TableroProvider.jsx';
-import Tablero from '../components/Partida/Tablero/TableroContainer.jsx' // Asegúrate de importar tu componente Tablero real
+import Tablero from '../components/Partida/Tablero/TableroContainer.jsx'
+import { PartidaContext } from '../components/Partida/PartidaProvider.jsx';
+import { WebSocketContext } from '../components/WebSocketsProvider.jsx';
+
+const wsBSRefMock = { current: null };
 
 describe('Tablero Component', () => {
   it('renders without crashing', () => {
     render(
-      <TableroProvider>
-        <Tablero />
-      </TableroProvider>
+      <WebSocketContext.Provider value={{ wsBSRef: wsBSRefMock }}> 
+        <PartidaContext.Provider value={{}}> 
+          <TableroProvider>
+            <Tablero />
+          </TableroProvider>
+        </PartidaContext.Provider>
+      </WebSocketContext.Provider>
     );
 
     // Verifica que se renderiza el tablero
@@ -19,9 +27,13 @@ describe('Tablero Component', () => {
 
   it('displays squares with correct background images', () => {
     render(
-      <TableroProvider>
-        <Tablero />
-      </TableroProvider>
+      <WebSocketContext.Provider value={{ wsBSRef: wsBSRefMock }}>  
+        <PartidaContext.Provider value={{}}> 
+          <TableroProvider>
+            <Tablero />
+          </TableroProvider>
+        </PartidaContext.Provider>
+      </WebSocketContext.Provider>
     );
 
     const squares = screen.getAllByRole('button');
@@ -31,5 +43,13 @@ describe('Tablero Component', () => {
       expect(square).toHaveStyle({ backgroundSize: 'cover' });
       expect(square).toHaveStyle({ backgroundPosition: 'center' });
     });
+  });
+
+  it('Se conecta al Web Socket de Estado del Tablero', () => {
+    // No se Testeae Web Sockets
+  });
+
+  it('Muestra un error si el Web Socket de Estado del Tablero falla', () => {
+    // No se Testeae Web Sockets
   });
 });

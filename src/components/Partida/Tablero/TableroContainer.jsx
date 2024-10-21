@@ -3,13 +3,13 @@ import { TableroContext, TableroProvider } from './TableroProvider.jsx';
 import { PartidaContext } from '../PartidaProvider.jsx';
 import './TableroContainer.css';
 
-function Square({ color, onClick, isSelected }) {
+function Square({ color, onClick, isSelected, isHighlighted }) {
   const { colorToImageMap } = useContext(TableroContext);
   const { jugando } = useContext(PartidaContext);
   
   return (
     <button
-      className={`${isSelected ? 'square selected' : 'square'}`} 
+      className={`square ${isSelected ? 'selected' : ''} ${isHighlighted ? 'highlighted' : ''}`} 
       style={{
         backgroundImage: `url(${colorToImageMap[color]})`,
         backgroundSize: 'cover',
@@ -28,12 +28,13 @@ function Tablero() {
     <>
       {[0, 6, 12, 18, 24, 30].map(rowStart => (
         <div className="boardRow" key={rowStart}>
-          {squares.slice(rowStart, rowStart + 6).map((color, i) => (
+          {squares.slice(rowStart, rowStart + 6).map(({color, highlighted}, i) => (
             <Square
               key={i + rowStart}
               color={color}
               onClick={() => handleSquareClick(rowStart + i)}
               isSelected={selectedIndex === rowStart + i}
+              isHighlighted={highlighted}
             />
           ))}
         </div>
