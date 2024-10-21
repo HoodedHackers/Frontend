@@ -189,9 +189,8 @@ function Partida() {
         setJugadorActualId(data.player_id);
         sessionStorage.setItem("cartaMovimientoActualId", data.card_id);
         setCartaMovimientoActualId(data.card_id);
-        // HARDOCDEADO, cambiar el 1 por data.index
-        sessionStorage.setItem("cartaMovimientoActualIndex", 1);
-        setCartaMovimientoActualIndex(1);
+        sessionStorage.setItem("cartaMovimientoActualIndex", data.index);
+        setCartaMovimientoActualIndex(data.index);
         console.log("Mensaje recibido del WebSocket de Usar Carta de Movimiento:", data);
       }
 

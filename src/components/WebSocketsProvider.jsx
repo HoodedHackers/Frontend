@@ -8,6 +8,7 @@ export const WebSocketProvider = ({ children }) => {
     const wsUCMRef = useRef(null); // WebSocket de Usar Carta de Movimiento
     const wsStartGameRef = useRef(null); // WebSocket para iniciar partida
     const wsTRef = useRef(null); // WebSocket para pasar turno
+    const wsBSRef = useRef(null); // WebSocket para el Estado del Tablero (Board State)
 
   return (
     <WebSocketContext.Provider
@@ -16,8 +17,8 @@ export const WebSocketProvider = ({ children }) => {
         wsUPRef,
         wsUCMRef,
         wsStartGameRef,
-        wsTRef
-
+        wsTRef,
+        wsBSRef,
       }}
     >
       {children}
