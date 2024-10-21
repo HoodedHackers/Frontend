@@ -69,8 +69,6 @@ export const CartasMovimientoMano = ({ubicacion}) => {
   // Verifica si cartaMovimientos tiene el jugador en la ubicación y si tiene cartas
   const cartasDelJugador = cartaMovimientos[ubicacion]?.all_cards || [];
 
-  
-
   return (
     <CartasMovimientoContext.Provider 
       value={{

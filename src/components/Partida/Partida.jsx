@@ -49,7 +49,6 @@ function Partida() {
     return storedTime !== null ? Number(storedTime) : tiempoLimite;
   });
 	const [activePlayer, setActivePlayer] = useState({});
-  sessionStorage.setItem('partidaIniciada', "false");
   const name = sessionStorage.getItem('player_nickname');
 
   const manejarFinTurno = async () => {
@@ -152,7 +151,6 @@ function Partida() {
               const message = JSON.parse(event.data);
               console.log("Mensaje recibido:", message);
               if (message.status === "started") {
-                  setPartidaIniciada(true); // Actualiza el estado cuando la partida se inicia
                   empezarPartida(); // Llamar a la función para iniciar la partida
               }
           };
@@ -180,7 +178,7 @@ function Partida() {
 
       wsUCMRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        console.log("Mensaje recibido del WebSocket de Usar Carta de Movimiento:", message);
+        console.log("Mensaje recibido del WebSocket de Usar Carta de Movimiento:", data);
       }
 
       // Manejar apertura del WebSocket
