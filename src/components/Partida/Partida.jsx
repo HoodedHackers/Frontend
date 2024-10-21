@@ -33,7 +33,9 @@ function Partida() {
     jugadorActualId,
     setJugadorActualId,
     cartaMovimientoActualId,
-    setCartaMovimientoActualId
+    setCartaMovimientoActualId,
+    cartaMovimientoActualIndex,
+    setCartaMovimientoActualIndex,
   } = useContext(PartidaContext);
 
   useEffect(() => {
@@ -187,6 +189,9 @@ function Partida() {
         setJugadorActualId(data.player_id);
         sessionStorage.setItem("cartaMovimientoActualId", data.card_id);
         setCartaMovimientoActualId(data.card_id);
+        // HARDOCDEADO, cambiar el 1 por data.index
+        sessionStorage.setItem("cartaMovimientoActualIndex", 1);
+        setCartaMovimientoActualIndex(1);
         console.log("Mensaje recibido del WebSocket de Usar Carta de Movimiento:", data);
       }
 
