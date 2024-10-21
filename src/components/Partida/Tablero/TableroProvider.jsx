@@ -97,7 +97,7 @@ function numbersToSquares(colores, posicionesResaltadas) {
           identifier: identifier, // UUID del jugador
           origin_tile: origen, // Posición de origen
           dest_tile: destino, // Posición de destino
-          card_mov_id: cartaMovimientoActualId , // ID de la carta
+          card_mov_id: cartaMovimientoActualId, // ID de la carta
           index_hand: cartaMovimientoActualIndex, // Índice de la carta en la mano
         }),
       });
