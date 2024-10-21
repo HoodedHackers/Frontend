@@ -36,25 +36,13 @@ const AbandonarPartida = () => {
 
                 if (data.status === "success") {
 
-                    if (isOwner === 'false') {
-                        sessionStorage.removeItem('players');
-                        sessionStorage.removeItem('isOwner');
-                        sessionStorage.removeItem('timeLeft');
-                        sessionStorage.removeItem('partidaIniciada');
-                        sessionStorage.removeItem('partida_id');
-                        wsUPRef.current.close();
-                        navigate('/Opciones');
-                    }
-
-                    if (isOwner === 'true') {
-                        sessionStorage.removeItem('players');
-                        sessionStorage.removeItem('timeLeft');
-                        sessionStorage.removeItem('partida_id');
-                        sessionStorage.removeItem('isOwner');
-                        sessionStorage.removeItem('partidaIniciada');
-                        wsUPRef.current.close(); 
-                        navigate('/Opciones');
-                    }
+                    sessionStorage.removeItem('players');
+                    sessionStorage.removeItem('timeLeft');
+                    sessionStorage.removeItem('partida_id');
+                    sessionStorage.removeItem('isOwner');
+                    sessionStorage.removeItem('partidaIniciada');
+                    wsUPRef.current.close(); 
+                    navigate('/Opciones');
 
                 } else if (response.status === 404) {
                     setError('Lobby no encontrado.');
