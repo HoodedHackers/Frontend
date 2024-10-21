@@ -75,6 +75,25 @@ function Partida() {
     sessionStorage.setItem("timeLeft", timeLeft);
   }, [timeLeft]);
 
+  function reorderPlayers (players) {
+    if (players && Array.isArray(players)) {
+      const posicionJugador = players.findIndex(jugador => jugador.player_id === parseInt(sessionStorage.getItem("player_id"), 10));
+      setPosicionJugador(posicionJugador);
+      if (posicionJugador !== -1) {
+        let playersAux = players[0];
+        players[0] = players[posicionJugador];
+        players[posicionJugador] = playersAux;
+        sessionStorage.setItem("players", JSON.stringify(players));
+      } else {
+        console.log("Jugador no encontrado");
+        players = [];
+        sessionStorage.removeItem("players");
+      }
+      return players;
+    }
+    return null;
+  }
+
   const { wsUPRef, wsStartGameRef, wsTRef, wsUCMRef } = useContext(WebSocketContext);
 
   useEffect(() => {
@@ -94,8 +113,15 @@ function Partida() {
           setShowModal(true);
         }
         if (data.players && Array.isArray(data.players)) {
-          setJugadores(data.players);
-          sessionStorage.setItem("players", JSON.stringify(data.players || []));
+          if (partidaIniciada) {
+            const jugadoresOrdenados = reorderPlayers(data.players);
+            setJugadores(jugadoresOrdenados);
+            sessionStorage.setItem("players", JSON.stringify(jugadoresOrdenados));
+          }
+          else {
+            setJugadores(data.players);
+            sessionStorage.setItem("players", JSON.stringify(data.players) || []);
+          }
           console.log("Jugadores recibidos del WebSocket de Unirse a Partida");
         }
       };
@@ -115,25 +141,11 @@ function Partida() {
     }
   }, [wsUPRef.current]);
 
-
   function empezarPartida() {
-    const jugadores = JSON.parse(sessionStorage.getItem("players"));
-    if (jugadores && Array.isArray(jugadores)) {
-      const posicionJugador = jugadores.findIndex(jugador => jugador.player_id === parseInt(sessionStorage.getItem("player_id"), 10));
-      setPosicionJugador(posicionJugador);
-      if (posicionJugador !== -1) {
-        let jugadoresAux = jugadores[0];
-        jugadores[0] = jugadores[posicionJugador];
-        jugadores[posicionJugador] = jugadoresAux;
-        sessionStorage.setItem("players", JSON.stringify(jugadores));
-        sessionStorage.setItem('partidaIniciada', "true");
-        setPartidaIniciada(true);
-        console.log("Partida iniciada");
-      } else {
-        console.log("Jugador no encontrado");
-        sessionStorage.removeItem("players");
-      }
-    }
+    sessionStorage.setItem('partidaIniciada', "true");
+    setPartidaIniciada(true);
+    reorderPlayers(JSON.parse(sessionStorage.getItem("players")));
+    console.log("Partida iniciada");
   }
 
   // Conectar al WebSocket cuando el componente se monte
@@ -158,7 +170,7 @@ function Partida() {
               const message = JSON.parse(event.data);
               console.log("Mensaje recibido:", message);
               if (message.status === "started") {
-                  empezarPartida(); // Llamar a la función para iniciar la partida
+                empezarPartida(); // Llamar a la función para iniciar la partida
               }
           };
   
@@ -185,6 +197,7 @@ function Partida() {
 
       wsUCMRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
+
         sessionStorage.setItem("jugadorActualId", data.player_id);
         setJugadorActualId(data.player_id);
         sessionStorage.setItem("cartaMovimientoActualId", data.card_id);
