@@ -1,6 +1,5 @@
-// TableroContext.jsx
 import React, { createContext, useState, useEffect } from 'react';
-import { } from '../PartidaProvider';
+import {PartidaContext} from '../PartidaProvider';
 
 
 // Crear el contexto
@@ -12,6 +11,7 @@ export const TableroProvider = ({ children }) => {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [turnoActual, setTurnoActual] = useState(0);
   const [jugadoresActivos, setJugadoresActivos] = useState([true, true, true, true]);
+  const {cartaMovimientoActualId, cartaMovimientoActualIndex} = useContext(PartidaContext);
 
 
   // Colores disponibles
@@ -67,26 +67,17 @@ export const TableroProvider = ({ children }) => {
       setSelectedIndex(null);
       setTurnoActual((turnoActual + 1) % jugadoresActivos.length); // Actualizar el estado
 
-      // Obtener el ID de la carta en uso y el identifier (esto debería estar definido en tu lógica)
-      const cartaId = sessionStorage.getItem("cartaMovimientoActualId");
-      const indexCarta = sessionStorage.getItem("cartaMovimientoActualIndex");
+      // Obtener el ID de la carta en uso y el identifier (esto debería estar de
       const identifier = sessionStorage.getItem("identifier");
-      const index_hand = sessionStorage.getItem("index");
 
-      // Mostrar el movimiento en consola
-      // Mostrar el movimiento en consola
-      console.log(`Movimiento realizado por Jugador ${identifier}:`);
-      console.log(`Origen: ${origen}, Destino: ${destino}`);
-      console.log(`ID de carta seleccionada: ${cartaId}, Índice de carta: ${indexCarta}`);
-      console.log(`Nuevo estado de los cuadrados:`, newSquares);
 
       // Enviar la información al backend
-      enviarMovimiento(identifier, origen, destino, cartaId, indexCarta);
+      enviarMovimiento(identifier, origen, destino);
     }
   }
 
   // Función para enviar el movimiento al backend
-  async function enviarMovimiento(identifier, origen, destino, cartaId, indexCarta) {
+  async function enviarMovimiento(identifier, origen, destino){
     const game_id = sessionStorage.getItem("partida_id");
 
     try {
@@ -99,8 +90,8 @@ export const TableroProvider = ({ children }) => {
           identifier: identifier, // UUID del jugador
           origin_tile: origen, // Posición de origen
           dest_tile: destino, // Posición de destino
-          card_mov_id: cartaId, // ID de la carta
-          index_hand: indexCarta, // Índice de la carta en la mano
+          card_mov_id: cartaMovimientoActualId, // ID de la carta
+          index_hand: cartaMovimientoActualIndex, // Índice de la carta en la mano
         }),
       });
 
