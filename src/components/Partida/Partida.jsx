@@ -11,6 +11,7 @@ import Temporizador from "./Temporizador/Temporizador.jsx";
 import { WebSocketContext } from '../WebSocketsProvider.jsx';
 import "./Partida.css";
 import { useNavigate } from "react-router-dom";
+import { set } from "react-hook-form";
 
 function Partida() {
   const navigate = useNavigate();
@@ -28,7 +29,13 @@ function Partida() {
     setJugadorActualIndex,
     jugando,
     setJugando,
-    isOverlayVisible
+    isOverlayVisible,
+    jugadorActualId,
+    setJugadorActualId,
+    cartaMovimientoActualId,
+    setCartaMovimientoActualId,
+    cartaMovimientoActualIndex,
+    setCartaMovimientoActualIndex,
   } = useContext(PartidaContext);
 
   useEffect(() => {
@@ -49,7 +56,6 @@ function Partida() {
     return storedTime !== null ? Number(storedTime) : tiempoLimite;
   });
 	const [activePlayer, setActivePlayer] = useState({});
-  sessionStorage.setItem('partidaIniciada', "false");
   const name = sessionStorage.getItem('player_nickname');
 
   const manejarFinTurno = async () => {
@@ -152,7 +158,6 @@ function Partida() {
               const message = JSON.parse(event.data);
               console.log("Mensaje recibido:", message);
               if (message.status === "started") {
-                  setPartidaIniciada(true); // Actualiza el estado cuando la partida se inicia
                   empezarPartida(); // Llamar a la función para iniciar la partida
               }
           };
@@ -177,6 +182,18 @@ function Partida() {
       wsUCMRef.current = new WebSocket(
         `ws://127.0.0.1:8000/ws/lobby/${partidaID}/select?player_id=${player_id}`,
       );
+
+      wsUCMRef.current.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        sessionStorage.setItem("jugadorActualId", data.player_id);
+        setJugadorActualId(data.player_id);
+        sessionStorage.setItem("cartaMovimientoActualId", data.card_id);
+        setCartaMovimientoActualId(data.card_id);
+        // HARDOCDEADO, cambiar el 1 por data.index
+        sessionStorage.setItem("cartaMovimientoActualIndex", 1);
+        setCartaMovimientoActualIndex(1);
+        console.log("Mensaje recibido del WebSocket de Usar Carta de Movimiento:", data);
+      }
 
       // Manejar apertura del WebSocket
       wsUCMRef.current.onopen = () => {
@@ -294,7 +311,7 @@ function Partida() {
               nombre={jugador.player_name}
               ubicacion={`jugador${index + 1}`}
             />
-            <CartasMovimientoMano ubicacion={index} />
+            <CartasMovimientoMano ubicacion={index} jugadorId={jugador.player_id} />
             <MazoCartaFigura ubicacion={index} />
           </div>
         ))
