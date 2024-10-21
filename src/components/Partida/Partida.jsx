@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 
 function Partida() {
   const navigate = useNavigate();
-  const [showModal, setShowModal] = useState(false); 
+  const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const {
     partidaIniciada,
@@ -50,7 +50,7 @@ function Partida() {
   });
 	const [activePlayer, setActivePlayer] = useState({});
   sessionStorage.setItem('partidaIniciada', "false");
-  const name = sessionStorage.getItem('player_nickname'); 
+  const name = sessionStorage.getItem('player_nickname');
 
   const manejarFinTurno = async () => {
     if (jugadores.length > 0) {  // Asegura que jugadores exista antes de acceder
@@ -69,7 +69,7 @@ function Partida() {
     sessionStorage.setItem("timeLeft", timeLeft);
   }, [timeLeft]);
 
-  const { wsUPRef, wsStartGameRef, wsTRef } = useContext(WebSocketContext);
+  const { wsUPRef, wsStartGameRef, wsTRef, wsUCMRef } = useContext(WebSocketContext);
 
   useEffect(() => {
     try {
@@ -159,6 +159,26 @@ function Partida() {
       }
     }, [wsStartGameRef.current]);
 
+    // Conectar al WebSocket de Usar Carta de Movimiento
+    useEffect(() => {
+      try {
+        wsUCMRef.current = new WebSocket(
+          `ws://127.0.0.1:8000/ws/lobby/${partidaID}/select?player_id=${player_id}`,
+        );
+
+        // Manejar errores
+        wsUCMRef.current.onerror = (error) => {
+          wsUCMRef.current = null;
+          throw new Error(
+            "Error en WebSocket de Usar Carta de Movimiento: ",
+            error,
+          );
+        };
+      } catch (error) {
+        console.error(error);
+      }
+    }, [partidaID, player_id, wsUCMRef]);
+
 	useEffect(() => {
 		wsTRef.current = new WebSocket(`ws://localhost:8000/ws/lobby/${partidaID}/turns?player_id=${player_id}`);
 
@@ -175,12 +195,12 @@ function Partida() {
 
   /*useEffect(() => {
     const partidaID = sessionStorage.getItem('partida_id'); // Obtén el ID de la partida
-  
+
     const handleStorageChange = (event) => {
         if (event.key === `hostAbandono_partida_${partidaID}` && event.newValue === 'true') {
           setModalMessage('El host ha abandonado la partida. Serás redirigido.');
           setShowModal(true);  // Mostrar el modal
-          wsUPRef.current.close(); 
+          wsUPRef.current.close();
           sessionStorage.removeItem('players');
           localStorage.removeItem(`hostAbandono_partida_${partidaID}`);
           sessionStorage.removeItem('partida_id');
@@ -191,10 +211,10 @@ function Partida() {
           navigate('/Opciones');
         }
     };
-  
+
     // Añadir el listener para cambios en localStorage
     window.addEventListener('storage', handleStorageChange);
-  
+
     return () => {
         // Limpiar el listener cuando el componente se desmonte
         window.removeEventListener('storage', handleStorageChange);
@@ -204,17 +224,17 @@ function Partida() {
   useEffect(() => {
     const partidaID = sessionStorage.getItem('partida_id'); // Obtén el ID de la partida
     const isPartidaOn = localStorage.getItem(`partidaIniciada_${partidaID}`); // Obtén el estado de la partida
-    
+
     const handleStorageChange = (event) => {
       if (event.key === `players_${partidaID}`) {
         const players = JSON.parse(localStorage.getItem(`players_${partidaID}`)); // Obtener el arreglo desde localStorage
         const isPartidaOn = localStorage.getItem(`partidaIniciada_${partidaID}`); // Obtén el estado de la partida
-  
+
         if (Array.isArray(players) && players.length === 1 && isPartidaOn === 'true') {
-          const playerName = players[0].player_name; 
+          const playerName = players[0].player_name;
           setModalMessage(`¡Felicitaciones ${playerName} Ganaste el juego!`);
           setShowModal(true);  // Mostrar el modal
-          wsUPRef.current.close(); 
+          wsUPRef.current.close();
           sessionStorage.removeItem('players');
           localStorage.removeItem(`hostAbandono_partida_${partidaID}`);
           sessionStorage.removeItem('partida_id');
@@ -227,10 +247,10 @@ function Partida() {
         }
       }
     };
-  
+
     // Añadir el listener para cambios en localStorage
     window.addEventListener('storage', handleStorageChange);
-  
+
     return () => {
       // Limpiar el listener cuando el componente se desmonte
       window.removeEventListener('storage', handleStorageChange);
