@@ -5,39 +5,23 @@ import './CartasMovimientoMano.css';
 
 export const CartasMovimientoContext = createContext();
 
-export const CartasMovimientoMano = ({ubicacion, onMouseEnter, onMouseLeave}) => {
+export const CartasMovimientoMano = ({ubicacion, jugadorId}) => {
   const [seleccionada, setSeleccionada] = useState(null);
-  const { jugadores, partidaIniciada } = useContext(PartidaContext);
+  const [cartasDelJugador, setCartasDelJugador] = useState([]);
+  const { partidaIniciada, jugadorActualId, cartaMovimientoActualId, cartaMovimientoActualIndex } = useContext(PartidaContext);
 
-  const setearCartaMovimientos = (jugadores, dataMovimientos = null) => {
-    return jugadores.map((jugador, index) => {
-      if (index === 0 && dataMovimientos && partidaIniciada) {
-        // Si es el primer jugador y los datos de movimientos están disponibles
-        return {
-          player_id: jugador.player_id,
-          all_cards: dataMovimientos.all_cards, // Usa los datos recibidos
-        };
-      } else {
-        // Para el resto de los jugadores
-        return {
-          player_id: jugador.player_id,
-          all_cards: [-1, -1, -1]
-        };
-      }
-    });
-  }
-  
-  const [cartaMovimientos, setCartaMovimientos] = useState(() => setearCartaMovimientos(jugadores));
 
-  // Actualiza las cartas de movimiento cuando los jugadores cambian
+  // Actualiza las cartas de movimiento al comenzar la partida
   useEffect(() => {
     if (partidaIniciada) {
-      // Obtener los movimientos para el primer jugador
       const cargarMovimientos = async () => {
-      const dataMovimientos = await obtenerMovimientos();
-      setCartaMovimientos(setearCartaMovimientos(jugadores, dataMovimientos));
+        const dataMovimientos = await obtenerMovimientos();
+        setCartasDelJugador(dataMovimientos.all_cards);
       };
       cargarMovimientos();
+    }
+    else {
+      setCartasDelJugador([-1,-1,-1]);
     }
   }, [partidaIniciada]);
 
@@ -66,11 +50,6 @@ export const CartasMovimientoMano = ({ubicacion, onMouseEnter, onMouseLeave}) =>
     }
   };
 
-  // Verifica si cartaMovimientos tiene el jugador en la ubicación y si tiene cartas
-  const cartasDelJugador = cartaMovimientos[ubicacion]?.all_cards || [];
-
-  
-
   return (
     <CartasMovimientoContext.Provider 
       value={{
@@ -84,20 +63,39 @@ export const CartasMovimientoMano = ({ubicacion, onMouseEnter, onMouseLeave}) =>
             ubicacion === 0 ? (
               <div key={index}>
                 <CartaMovimiento
-                  id={isNaN(carta) ? -1 : carta} 
+                  id={carta} 
                   ubicacion={ubicacion}
-                  activa={false}
+                  index={index}
                 />
               </div>
             ) : (
-              <div 
-                key={index}
-              >
-                <CartaMovimiento
-                  id={isNaN(carta) ? -1 : carta} 
-                  ubicacion={ubicacion}
-                />
-              </div>
+              jugadorId === jugadorActualId ? (
+                cartaMovimientoActualIndex === index ? (
+                  <div key={index}>
+                    <CartaMovimiento
+                      id={cartaMovimientoActualId} 
+                      ubicacion={ubicacion}
+                      index={index}
+                    />
+                  </div>
+                ) : (
+                  <div key={index}>
+                    <CartaMovimiento
+                      id={-1} 
+                      ubicacion={ubicacion}
+                      index={index}
+                    />
+                  </div>
+                )
+              ) : (
+                <div key={index}>
+                  <CartaMovimiento
+                    id={-1} 
+                    ubicacion={ubicacion}
+                    index={index}
+                  />
+                </div>
+              )
             )
           ))
         ) : (

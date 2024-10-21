@@ -4,7 +4,7 @@ import { CartasMovimientoContext } from "./CartasMovimientoMano.jsx";
 import { WebSocketContext } from "../../WebSocketsProvider.jsx";
 import "./CartaMovimiento.css";
 
-const CartaMovimiento = ({ id, ubicacion }) => {
+const CartaMovimiento = ({ id, ubicacion, index }) => {
   const Images = [
     "/Imagenes/Movimiento/back-mov.svg",
     "/Imagenes/Movimiento/mov1.svg",
@@ -16,8 +16,6 @@ const CartaMovimiento = ({ id, ubicacion }) => {
     "/Imagenes/Movimiento/mov7.svg",
   ];
 
-  const [isActive, setIsActive] = useState(false);
-
   const { jugando, setJugando, handleMouseEnter, handleMouseLeave } =
     useContext(PartidaContext);
 
@@ -25,14 +23,16 @@ const CartaMovimiento = ({ id, ubicacion }) => {
 
   const { wsUCMRef } = useContext(WebSocketContext);
 
+  const isActive = id === seleccionada;
+
   const usarCartaMovimiento = () => {
-    if (!jugando || seleccionada === id || seleccionada === null) {
-      setIsActive(!isActive);
+    setJugando(true);
+    if (seleccionada != id) {
       setSeleccionada(id);
-      setJugando(!jugando);
       const message = {
         player_identifier: sessionStorage.getItem("identifier"),
         card_id: id,
+        index: index
       };
       wsUCMRef.current.send(JSON.stringify(message));
       console.log("Se envió la Carta de Movimiento elegida.");
