@@ -8,6 +8,7 @@ export const TableroContext = createContext();
 // Proveedor del contexto
 export const TableroProvider = ({ children }) => {
   const [squares, setSquares] = useState(generateInitialColors());
+  const [figurasEnTablero, setFigurasEnTablero] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [turnoActual, setTurnoActual] = useState(0);
   const [jugadoresActivos, setJugadoresActivos] = useState([true, true, true, true]);
@@ -69,6 +70,15 @@ function numbersToSquares(colores, posicionesResaltadas) {
     );
   }
 
+  function extractFiguresData(possibleFigures) {
+    return possibleFigures.flatMap(player =>
+      player.moves.map(move => ({
+        tiles: move.tiles,    // Arreglo de enteros (posiciones)
+        fig_id: move.fig_id,  // ID de la figura
+      }))
+    );
+  }  
+
   useEffect(() => {
     let game_id = sessionStorage.getItem("partida_id");
     let player_id = sessionStorage.getItem("player_id");
@@ -82,14 +92,19 @@ function numbersToSquares(colores, posicionesResaltadas) {
       wsBSRef.current.onopen = () => { wsBSRef.current.send(JSON.stringify({request: "status"})) };
   
       wsBSRef.current.onmessage = (event) => {
-        //console.log("Mensaje recibido por el WebSocket de Estado del Tablero: ", event.data);
-        //let data = JSON.parse(event.data);
-        //const extractedTiles = extractHiglightedTiles(data.possible_figures);
-        //setSquares(numbersToSquares(data.board, data.possible_figures.));
-        setSquares(numbersToSquares(
-          [1,2,1,2,4,3,1,3,2,2,2,1,1,4,4,2,1,4,1,2,1,3,3,4,1,4,3,4,3,4,2,3,3,3,2,4], // HARDCODEADO
-          [0,3,6,8,9,10,12,15,17,18,23,24,26,29,31,32,33,35]) // HARDCODEADO
-        ); 
+        console.log("Mensaje recibido por el WebSocket de Estado del Tablero: ", event.data);
+        let data = JSON.parse(event.data);
+        const extractedTiles = extractHighlightedTiles(data.possible_figures);
+        const figurasEnTablero = extractFiguresData(data.possible_figures);
+        sessionStorage.setItem("figurasEnTablero", JSON.stringify(figurasEnTablero));
+        setFigurasEnTablero(figurasEnTablero);
+        setSquares(numbersToSquares(data.board, extractedTiles));
+
+        //pa' proba'
+        //setSquares(numbersToSquares(
+        //  [1,2,1,2,4,3,1,3,2,2,2,1,1,4,4,2,1,4,1,2,1,3,3,4,1,4,3,4,3,4,2,3,3,3,2,4],
+        //  [0,3,6,8,9,10,12,15,17,18,23,24,26,29,31,32,33,35])
+        //); 
       };
     } catch (error) {
       console.error("Error al conectar al WebSocket de Estado del Tablero:", error);
@@ -101,11 +116,13 @@ function numbersToSquares(colores, posicionesResaltadas) {
     <TableroContext.Provider
       value={{
         squares,
+        setSquares,
         selectedIndex,
         turnoActual,
         handleSquareClick,
-        setSquares,
-        colorToImageMap
+        colorToImageMap,
+        figurasEnTablero,
+        setFigurasEnTablero
       }}
     >
       {children}
