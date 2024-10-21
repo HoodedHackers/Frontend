@@ -1,6 +1,7 @@
 // TableroContext.jsx
-import React, { createContext, useState, useEffect } from 'react';
-import { WebSocketContext } from '../../WebwsBS.currentsProvider.jsx';
+import React, { createContext, useState, useEffect, useContext } from 'react';
+import { WebSocketContext } from '../../WebSocketsProvider.jsx';
+import { set } from 'react-hook-form';
 
 // Crear el contexto
 export const TableroContext = createContext();
@@ -67,13 +68,14 @@ function numbersToSquares(numbers) {
     }
 
     try {
-      wsBSRef.current = new WebwsBS.current(`ws://localhost:8000/ws/lobby/${game_id}/board?player_id=${player_id}`);
+      wsBSRef.current = new WebSocket(`ws://localhost:8000/ws/lobby/${game_id}/board?player_id=${player_id}`);
       wsBSRef.current.onopen = () => { wsBSRef.current.send(JSON.stringify({request: "status"})) };
   
       wsBSRef.current.onmessage = (event) => {
-        console.log("Mensaje recibido por el WebSocket de Estado del Tablero: ", event.data);
-        let data = JSON.parse(event.data);
-        setSquares(numbersToSquares(data.board));
+        //console.log("Mensaje recibido por el WebSocket de Estado del Tablero: ", event.data);
+        //let data = JSON.parse(event.data);
+        //setSquares(numbersToSquares(data.board));
+        setSquares(numbersToSquares([1,2,1,2,4,3,1,3,2,2,2,1,1,4,4,2,1,4,1,2,1,3,3,4,1,4,3,4,3,4,2,3,3,3,2,4])); // HARDCODEADO
       };
     } catch (error) {
       console.error("Error al conectar al WebSocket de Estado del Tablero:", error);

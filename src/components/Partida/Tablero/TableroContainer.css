@@ -16,9 +16,26 @@
 }
 
 .square.selected {
-  border: 3px solid #fcf8f8;
+  animation: neonGlow 2s infinite; /* Animación del resplandor */
+
+}
+
+.square.highlighted {
+    border: 3px solid #fcf8f8;
 }
 
 .boardRow {
   display: flex;
+}
+
+@keyframes neonGlow {
+  0% {
+    box-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff, 0 0 30px #ffff00;
+  }
+  50% {
+    box-shadow: 0 0 20px #00ffff, 0 0 30px #ffff00, 0 0 40px #ff00ff;
+  }
+  100% {
+    box-shadow: 0 0 10px #ffff00, 0 0 20px #ff00ff, 0 0 30px #00ffff;
+  }
 }
