@@ -1,5 +1,6 @@
 // TableroContext.jsx
 import React, { createContext, useState, useEffect } from 'react';
+import { WebSocketContext } from '../../WebwsBS.currentsProvider.jsx';
 
 // Crear el contexto
 export const TableroContext = createContext();
@@ -10,6 +11,7 @@ export const TableroProvider = ({ children }) => {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [turnoActual, setTurnoActual] = useState(0);
   const [jugadoresActivos, setJugadoresActivos] = useState([true, true, true, true]);
+  const { wsBSRef } = useContext(WebSocketContext);
 
 
   // Colores disponibles
@@ -56,22 +58,28 @@ function numbersToSquares(numbers) {
       setTurnoActual((turnoActual + 1) % jugadoresActivos.length);
     }
   }
+
   let game_id = sessionStorage.getItem("partida_id");
   let player_id = sessionStorage.getItem("player_id");
   useEffect(() => {
-    const socket = new WebSocket(`ws://localhost:8000/ws/lobby/${game_id}/board?player_id=${player_id}`);
-		socket.onopen = () => { socket.send(JSON.stringify({request: "status"})) };
+    if (wsBSRef.current && wsBSRef.current.readyState !== WebSocket.CLOSED) {
+      return;
+    }
 
-    socket.onmessage = (event) => {
-      console.log("Mensaje recibido:", event.data);
-			let data = JSON.parse(event.data);
-			setSquares(numbersToSquares(data.board));
-    };
+    try {
+      wsBSRef.current = new WebwsBS.current(`ws://localhost:8000/ws/lobby/${game_id}/board?player_id=${player_id}`);
+      wsBSRef.current.onopen = () => { wsBSRef.current.send(JSON.stringify({request: "status"})) };
+  
+      wsBSRef.current.onmessage = (event) => {
+        console.log("Mensaje recibido por el WebSocket de Estado del Tablero: ", event.data);
+        let data = JSON.parse(event.data);
+        setSquares(numbersToSquares(data.board));
+      };
+    } catch (error) {
+      console.error("Error al conectar al WebSocket de Estado del Tablero:", error);
+    }
     
-    return () => {
-      socket.close();
-    };
-  }, []);
+  }, [wsBSRef.current]);
   
   return (
     <TableroContext.Provider
