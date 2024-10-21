@@ -79,11 +79,11 @@ function Partida() {
       wsUPRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
         console.log("Mensaje recibido del WebSocket de Unirse a Partida:", data);
-        if (data.response === 'Hay un ganador') {
+        if (data.response === player_id) {
           setModalMessage(`¡Felicitaciones ${name} Ganaste el juego!`);
           setShowModal(true);
         }
-        if (data.response === 'El host ha abandonado la partida') {
+        if (data === 'el host ha abandonado la partida') {
           setModalMessage('El host ha abandonado la partida. Serás redirigido.');
           setShowModal(true);
         }
@@ -177,6 +177,11 @@ function Partida() {
       wsUCMRef.current = new WebSocket(
         `ws://127.0.0.1:8000/ws/lobby/${partidaID}/select?player_id=${player_id}`,
       );
+
+      wsUCMRef.current.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log("Mensaje recibido del WebSocket de Usar Carta de Movimiento:", message);
+      }
 
       // Manejar apertura del WebSocket
       wsUCMRef.current.onopen = () => {

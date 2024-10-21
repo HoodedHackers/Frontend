@@ -5,7 +5,7 @@ import './CartasMovimientoMano.css';
 
 export const CartasMovimientoContext = createContext();
 
-export const CartasMovimientoMano = ({ubicacion, onMouseEnter, onMouseLeave}) => {
+export const CartasMovimientoMano = ({ubicacion}) => {
   const [seleccionada, setSeleccionada] = useState(null);
   const { jugadores, partidaIniciada } = useContext(PartidaContext);
 
