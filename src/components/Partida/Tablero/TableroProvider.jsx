@@ -1,4 +1,3 @@
-// TableroContext.jsx
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { WebSocketContext } from '../../WebSocketsProvider.jsx';
 import { set } from 'react-hook-form';
@@ -24,12 +23,15 @@ const colorToImageMap = {
   '#27f178': '/Imagenes/Tablero/D.svg',
 };
 
-function numbersToSquares(numbers) {
+function numbersToSquares(colores, posicionesResaltadas) {
   let colors = ['#f3e84c',
     '#1d53b6',
     '#f52020',
     '#27f178'];
-  return numbers.map((x) => colors[x - 1]);
+    return colores.map((x, index) => ({
+      color: colors[x - 1], // Asignar el color basado en el número
+      highlighted: posicionesResaltadas.includes(index), // Verificar si la posición está resaltada
+    }));
 }
 
   function generateInitialColors() {
@@ -60,9 +62,17 @@ function numbersToSquares(numbers) {
     }
   }
 
-  let game_id = sessionStorage.getItem("partida_id");
-  let player_id = sessionStorage.getItem("player_id");
+  // Función para extraer todas las fichas resaltas
+  function extractHighlightedTiles(possibleFigures) {
+    return possibleFigures.flatMap(player =>
+      player.moves.flatMap(move => move.tiles)
+    );
+  }
+
   useEffect(() => {
+    let game_id = sessionStorage.getItem("partida_id");
+    let player_id = sessionStorage.getItem("player_id");
+
     if (wsBSRef.current && wsBSRef.current.readyState !== WebSocket.CLOSED) {
       return;
     }
@@ -74,8 +84,12 @@ function numbersToSquares(numbers) {
       wsBSRef.current.onmessage = (event) => {
         //console.log("Mensaje recibido por el WebSocket de Estado del Tablero: ", event.data);
         //let data = JSON.parse(event.data);
-        //setSquares(numbersToSquares(data.board));
-        setSquares(numbersToSquares([1,2,1,2,4,3,1,3,2,2,2,1,1,4,4,2,1,4,1,2,1,3,3,4,1,4,3,4,3,4,2,3,3,3,2,4])); // HARDCODEADO
+        //const extractedTiles = extractHiglightedTiles(data.possible_figures);
+        //setSquares(numbersToSquares(data.board, data.possible_figures.));
+        setSquares(numbersToSquares(
+          [1,2,1,2,4,3,1,3,2,2,2,1,1,4,4,2,1,4,1,2,1,3,3,4,1,4,3,4,3,4,2,3,3,3,2,4], // HARDCODEADO
+          [0,3,6,8,9,10,12,15,17,18,23,24,26,29,31,32,33,35]) // HARDCODEADO
+        ); 
       };
     } catch (error) {
       console.error("Error al conectar al WebSocket de Estado del Tablero:", error);

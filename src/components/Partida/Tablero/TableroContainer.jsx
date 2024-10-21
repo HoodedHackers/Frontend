@@ -28,13 +28,13 @@ function Tablero() {
     <>
       {[0, 6, 12, 18, 24, 30].map(rowStart => (
         <div className="boardRow" key={rowStart}>
-          {squares.slice(rowStart, rowStart + 6).map((color, i) => (
+          {squares.slice(rowStart, rowStart + 6).map(({color, highlighted}, i) => (
             <Square
               key={i + rowStart}
               color={color}
               onClick={() => handleSquareClick(rowStart + i)}
               isSelected={selectedIndex === rowStart + i}
-              isHighlighted={true}
+              isHighlighted={highlighted}
             />
           ))}
         </div>
