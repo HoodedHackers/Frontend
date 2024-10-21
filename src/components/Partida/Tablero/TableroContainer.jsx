@@ -1,9 +1,11 @@
 import React, { useContext } from 'react';
-import { TableroContext, TableroProvider } from './TableroProvider.jsx'; // Asegúrate de que la ruta es correcta
-import './TableroContainer.css'; // Cambia a CSS normal
+import { TableroContext, TableroProvider } from './TableroProvider.jsx';
+import { PartidaContext } from '../PartidaProvider.jsx';
+import './TableroContainer.css';
 
 function Square({ color, onClick, isSelected }) {
   const { colorToImageMap } = useContext(TableroContext);
+  const { jugando } = useContext(PartidaContext);
   
   return (
     <button
@@ -14,6 +16,7 @@ function Square({ color, onClick, isSelected }) {
         backgroundPosition: 'center', 
       }}
       onClick={onClick}
+      disabled={!jugando}
     />
   );
 }
@@ -24,7 +27,7 @@ function Tablero() {
   return (
     <>
       {[0, 6, 12, 18, 24, 30].map(rowStart => (
-        <div className="boardRow" key={rowStart}> {/* Cambia de styles.boardRow a clase normal */}
+        <div className="boardRow" key={rowStart}>
           {squares.slice(rowStart, rowStart + 6).map((color, i) => (
             <Square
               key={i + rowStart}
