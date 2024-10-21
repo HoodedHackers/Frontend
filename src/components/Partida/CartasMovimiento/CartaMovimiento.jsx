@@ -30,12 +30,14 @@ const CartaMovimiento = ({ id, ubicacion }) => {
       setIsActive(!isActive);
       setSeleccionada(id);
       setJugando(!jugando);
-      const message = {
-        player_identifier: sessionStorage.getItem("identifier"),
-        card_id: id,
-      };
-      wsUCMRef.current.send(JSON.stringify(message));
-      console.log("Se envió la Carta de Movimiento elegida.");
+      if (!jugando) {
+        const message = {
+          player_identifier: sessionStorage.getItem("identifier"),
+          card_id: id,
+        };
+        wsUCMRef.current.send(JSON.stringify(message));
+        console.log("Se envió la Carta de Movimiento elegida.");
+      }
     }
   };
 
