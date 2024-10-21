@@ -41,8 +41,15 @@ function Partida() {
   useEffect(() => {
     const jugadoresParseados = JSON.parse(sessionStorage.getItem("players"));
     if (jugadoresParseados && Array.isArray(jugadoresParseados)) {
-      setJugadores(jugadoresParseados);
-      console.log("Jugadores actuales:", jugadoresParseados);
+      if (partidaIniciada) {
+        const jugadoresOrdenados = reorderPlayers(jugadoresParseados);
+        setJugadores(jugadoresOrdenados);
+        sessionStorage.setItem("players", JSON.stringify(jugadoresOrdenados));
+      }
+      else {
+        setJugadores(jugadoresParseados);
+        sessionStorage.setItem("players", JSON.stringify(jugadoresParseados));
+      }
     } else {
       setJugadores([]);  // Asegura que jugadores sea un array vacío
     }
@@ -113,15 +120,8 @@ function Partida() {
           setShowModal(true);
         }
         if (data.players && Array.isArray(data.players)) {
-          if (partidaIniciada) {
-            const jugadoresOrdenados = reorderPlayers(data.players);
-            setJugadores(jugadoresOrdenados);
-            sessionStorage.setItem("players", JSON.stringify(jugadoresOrdenados));
-          }
-          else {
             setJugadores(data.players);
             sessionStorage.setItem("players", JSON.stringify(data.players) || []);
-          }
           console.log("Jugadores recibidos del WebSocket de Unirse a Partida");
         }
       };

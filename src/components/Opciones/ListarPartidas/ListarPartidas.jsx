@@ -44,7 +44,7 @@ function ListarPartidas() {
       // Navegar a la partida
       setTimeout(() => {
         navigate(`/Partida/${partidaID}`);
-      }, 500);
+      }, 1000);
 
     } catch (error) {
       console.error(error);
