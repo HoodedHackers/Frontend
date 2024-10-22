@@ -26,6 +26,8 @@ export const PartidaProvider = ({ children }) => {
 
   const [cartaMovimientoActualIndex, setCartaMovimientoActualIndex] = useState({});
 
+  const [mazo, setMazo] = useState([]);
+
   const handleMouseEnter = () => {
     setIsOverlayVisible(true);
   };
@@ -58,7 +60,9 @@ export const PartidaProvider = ({ children }) => {
         cartaMovimientoActualId,
         setCartaMovimientoActualId,
         cartaMovimientoActualIndex,
-        setCartaMovimientoActualIndex
+        setCartaMovimientoActualIndex,
+        mazo,
+        setMazo
       }}
     >
       {children}
