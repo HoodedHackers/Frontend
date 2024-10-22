@@ -18,6 +18,8 @@ let cartaMovimientosMock = [
   { player_id: 1, all_cards: [30, 21, 43] }
 ];
 
+const cantidadCartasMovimientoJugadorActual = 3;
+
 describe('Cartas de Movimiento', () => {
 
   afterEach(() => {
@@ -33,7 +35,7 @@ describe('Cartas de Movimiento', () => {
     // Renderiza el componente con los datos simulados
     render(
       <WebSocketProvider>
-        <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
+        <PartidaContext.Provider value={{ jugadores, partidaIniciada, cantidadCartasMovimientoJugadorActual }}>
           <CartasMovimientoMano 
             ubicacion={0}
           />
@@ -60,7 +62,7 @@ describe('Cartas de Movimiento', () => {
     // Renderiza el componente
     render(
       <WebSocketProvider>
-        <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
+        <PartidaContext.Provider value={{ jugadores, partidaIniciada, cantidadCartasMovimientoJugadorActual }}>
           <CartasMovimientoMano 
             ubicacion={0}
           />
@@ -128,7 +130,7 @@ describe('Cartas de Movimiento', () => {
     // Renderiza el componente
     render(
       <WebSocketProvider>
-        <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
+        <PartidaContext.Provider value={{ jugadores, partidaIniciada, cantidadCartasMovimientoJugadorActual }}>
           <CartasMovimientoMano 
             ubicacion={0}
           />
@@ -159,7 +161,7 @@ describe('Cartas de Movimiento', () => {
     // Renderiza el componente
     render(
       <WebSocketProvider>
-        <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
+        <PartidaContext.Provider value={{ jugadores, partidaIniciada, cantidadCartasMovimientoJugadorActual }}>
           <CartasMovimientoMano 
             ubicacion={0}
           />
@@ -192,7 +194,7 @@ describe('Cartas de Movimiento', () => {
     // Renderiza el componente
     render(
       <WebSocketProvider>
-        <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
+        <PartidaContext.Provider value={{ jugadores, partidaIniciada, cantidadCartasMovimientoJugadorActual }}>
           <CartasMovimientoMano 
             ubicacion={0}
           />
