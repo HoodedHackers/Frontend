@@ -14,8 +14,6 @@ export const TableroProvider = ({ children }) => {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [turnoActual, setTurnoActual] = useState(0);
   const [jugadoresActivos, setJugadoresActivos] = useState([true, true, true, true]);
-  const {cartaMovimientoActualId, cartaMovimientoActualIndex} = useContext(PartidaContext);
-  const {wsBSRef} = useContext(WebSocketContext);
 
 
   // Colores disponibles
@@ -97,7 +95,7 @@ function numbersToSquares(colores, posicionesResaltadas) {
           identifier: identifier, // UUID del jugador
           origin_tile: origen, // Posición de origen
           dest_tile: destino, // Posición de destino
-          card_mov_id: cartaMovimientoActualId , // ID de la carta
+          card_mov_id: cartaMovimientoActualId, // ID de la carta
           index_hand: cartaMovimientoActualIndex, // Índice de la carta en la mano
         }),
       });
