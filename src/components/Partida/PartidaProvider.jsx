@@ -28,6 +28,8 @@ export const PartidaProvider = ({ children }) => {
 
   const [cantidadCartasMovimientoJugadorActual, setCantidadCartasMovimientoJugadorActual] = useState(null);
 
+  const [movimientosRealizados, setMovimientosRealizados] = useState([]);
+
   const handleMouseEnter = () => {
     setIsOverlayVisible(true);
   };
@@ -62,7 +64,9 @@ export const PartidaProvider = ({ children }) => {
         cartaMovimientoActualIndex,
         setCartaMovimientoActualIndex,
         cantidadCartasMovimientoJugadorActual,
-        setCantidadCartasMovimientoJugadorActual
+        setCantidadCartasMovimientoJugadorActual,
+        movimientosRealizados, 
+        setMovimientosRealizados
       }}
     >
       {children}
