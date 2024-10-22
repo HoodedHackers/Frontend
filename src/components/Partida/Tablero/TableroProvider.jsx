@@ -10,7 +10,28 @@ export const TableroContext = createContext();
 // Proveedor del contexto
 export const TableroProvider = ({ children }) => {
   const [squares, setSquares] = useState(generateInitialColors());
-  const [figurasEnTablero, setFigurasEnTablero] = useState([]);
+  const [figurasEnTablero, setFigurasEnTablero] = useState([]); 
+  //  [
+  //    {
+  //      "player_id": int,
+  //      "moves": [
+  //          {
+  //              "tiles": [int],
+  //              "fig_id": int
+  //          }
+  //      ]
+  //    },
+  //    {
+  //      "player_id": int,
+  //      "moves": [
+  //          {
+  //              "tiles": [int],
+  //              "fig_id": int
+  //          }
+  //      ]
+  //    }
+  //  ...
+  //  ]
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [turnoActual, setTurnoActual] = useState(0);
   const [jugadoresActivos, setJugadoresActivos] = useState([true, true, true, true]);
@@ -119,15 +140,6 @@ function numbersToSquares(colores, posicionesResaltadas) {
     );
   }
 
-  function extractFiguresData(possibleFigures) {
-    return possibleFigures.flatMap(player =>
-      player.moves.map(move => ({
-        tiles: move.tiles,    // Arreglo de enteros (posiciones)
-        fig_id: move.fig_id,  // ID de la figura
-      }))
-    );
-  }  
-
   useEffect(() => {
     let game_id = sessionStorage.getItem("partida_id");
     let player_id = sessionStorage.getItem("player_id");
@@ -144,9 +156,8 @@ function numbersToSquares(colores, posicionesResaltadas) {
         console.log("Mensaje recibido por el WebSocket de Estado del Tablero: ", event.data);
         let data = JSON.parse(event.data);
         const extractedTiles = extractHighlightedTiles(data.possible_figures);
-        const figurasEnTablero = extractFiguresData(data.possible_figures);
-        sessionStorage.setItem("figurasEnTablero", JSON.stringify(figurasEnTablero));
-        setFigurasEnTablero(figurasEnTablero);
+        sessionStorage.setItem("figurasEnTablero", JSON.stringify(data.possible_figures));
+        setFigurasEnTablero(data.possible_figures);
         setSquares(numbersToSquares(data.board, extractedTiles));
 
         //pa' proba'
