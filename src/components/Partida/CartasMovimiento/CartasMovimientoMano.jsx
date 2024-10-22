@@ -67,19 +67,7 @@ export const CartasMovimientoMano = ({ubicacion, jugadorId}) => {
         {cartasDelJugador.length > 0 ? (
           cartasDelJugador.map((carta, index) => (
             ubicacion === 0 ? (
-              jugadorId === jugadorActualId ? (
-                ((index + 1) <= cantidadCartasMovimientoJugadorActual) || cantidadCartasMovimientoJugadorActual === null ? (
-                  <div key={index}>
-                    <CartaMovimiento
-                      id={carta} 
-                      ubicacion={ubicacion}
-                      index={index}
-                    />
-                  </div>
-                ) : (
-                  null
-                )
-              ) : (
+              ((index + 1) <= cantidadCartasMovimientoJugadorActual) || cantidadCartasMovimientoJugadorActual === null ? (
                 <div key={index}>
                   <CartaMovimiento
                     id={carta} 
@@ -87,19 +75,21 @@ export const CartasMovimientoMano = ({ubicacion, jugadorId}) => {
                     index={index}
                   />
                 </div>
-              ) 
+              ) : (
+                null
+              )
             ) : (
               jugadorId === jugadorActualId ? (
-                (index + 1) <= cantidadCartasMovimientoJugadorActual ? (
-                  cartaMovimientoActualIndex === index ? (
-                    <div key={index}>
-                      <CartaMovimiento
-                        id={cartaMovimientoActualId} 
-                        ubicacion={ubicacion}
-                        index={index}
-                      />
-                    </div>
-                  ) : (
+                cartaMovimientoActualIndex === index ? (
+                  <div key={index}>
+                    <CartaMovimiento
+                      id={cartaMovimientoActualId} 
+                      ubicacion={ubicacion}
+                      index={index}
+                    />
+                  </div>
+                ) : (
+                  (index + 1) <= cantidadCartasMovimientoJugadorActual ? (
                     <div key={index}>
                       <CartaMovimiento
                         id={-1} 
@@ -107,9 +97,9 @@ export const CartasMovimientoMano = ({ubicacion, jugadorId}) => {
                         index={index}
                       />
                     </div>
+                  ) : (
+                    null
                   )
-                ) : (
-                  null
                 )
               ) : (
                 <div key={index}>
