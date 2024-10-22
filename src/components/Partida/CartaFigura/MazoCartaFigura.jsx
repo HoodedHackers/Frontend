@@ -1,40 +1,99 @@
-import React, { useEffect, useContext, useRef } from 'react';
+import React, { useEffect, useContext } from 'react';
 import CartaFigura from './CartaFigura'; 
 import { PartidaContext } from '../PartidaProvider.jsx';
 import './MazoCartaFigura.css'; 
-import { WebSocketContext } from '../../WebSocketsProvider.jsx';
 
 function MazoCartaFigura ({ubicacion}) {
-  const { handleMouseEnter, handleMouseLeave, partidaIniciada, mazo } = useContext(PartidaContext);
-  const { wsCFRef } = useContext(WebSocketContext);
-  const playerId = sessionStorage.getItem('player_id');
-  const partidaId = sessionStorage.getItem('partida_id');
+  const [mazo, setMazo] = React.useState([
+    { player: 1, cards_out: [{ card_id: 30, card_name: "Soy Figura" },
+      { card_id: 21, card_name: "Soy Figura" },
+      { card_id: 42, card_name: "Soy Figura" }] 
+    },
+    { player: 2, cards_out: [{ card_id: 31, card_name: "Soy Figura" },
+      { card_id: 22, card_name: "Soy Figura" },
+      { card_id: 43, card_name: "Soy Figura" }] 
+    },
+    { player: 3, cards_out: [{ card_id: 32, card_name: "Soy Figura" }, 
+      { card_id: 23, card_name: "Soy Figura" }, 
+      { card_id: 44, card_name: "Soy Figura" }] 
+    },
+    { player: 4, cards_out: [{ card_id: 33, card_name: "Soy Figura" }, 
+      { card_id: 24, card_name: "Soy Figura" },
+      { card_id: 45, card_name: "Soy Figura" }] 
+    },
+  ]); 
+  
+  const { handleMouseEnter, handleMouseLeave } = useContext(PartidaContext);
+  const [partidaId, setPartidaId] = React.useState(null);
+  const [jugadores, setJugadores] = React.useState([]);
 
+  // Efecto para obtener partidaId y jugadores desde sessionStorage solo cuando el componente se monta
   useEffect(() => {
-    if (partidaIniciada) {   
-      // Manejar la apertura de la conexión WebSocket
-      wsCFRef.current.send(JSON.stringify({ receive: 'cards'}));
+    const PartidaId = sessionStorage.getItem('partida_id');
+    const Jugadores = JSON.parse(sessionStorage.getItem('players'));
+
+    if (PartidaId && Jugadores) {
+      setPartidaId(PartidaId);
+      setJugadores(Jugadores);
+      console.log(sessionStorage.getItem('partida_id'));
+      console.log(JSON.parse(sessionStorage.getItem('players')));
     }
-  }, [partidaIniciada]);
 
-  console.log(mazo);
-  const cartasDelJugador = mazo[ubicacion]?.cards || [];
+  }, []); 
 
+  // Función para obtener las cartas desde el backend
+  const obtenerMazo = async () => {
 
-return (
-  <div className={`container-cartas-figura grupo-${ubicacion + 1}`}>
-    {cartasDelJugador.length > 0 ? (
-      cartasDelJugador.map((cartaId, index) => (
-        <div key={index} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-          <CartaFigura tipo={cartaId} /> 
-        </div>
-      ))
-    ) : (
-      null
-    )}
-  </div>
-);
+    try {
+      const solicitudJSON = {
+        game_id: partidaId,      
+        players: jugadores.map(j => j.identifier) 
+      };
 
-}
+      const response = await fetch('http://127.0.0.1:8000/api/partida/en_curso', { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(solicitudJSON), 
+      });
+
+      if (response.ok) {
+        const data = await response.json(); 
+        console.log('Mazo de cartas:', data); 
+        setMazo(data.all_cards); 
+      }
+      
+    } catch (error) {
+      console.error('Error al obtener el mazo de cartas:', error); 
+    }
+  };
+
+  // Efecto para obtener las cartas una vez que tengamos partidaId y jugadores
+  useEffect(() => {
+    if (partidaId && jugadores.length > 0) {
+      console.log('PartidaId actualizado:', partidaId);
+      console.log('Jugadores actualizados:', jugadores);
+      obtenerMazo(); 
+    }
+  }, [partidaId, jugadores]);
+
+  // Verifica si cartaMovimientos tiene el jugador en la ubicación y si tiene cartas
+  const cartasDelJugador = mazo[ubicacion]?.cards_out || [];
+
+  return (
+    <div className={`container-cartas-figura grupo-${ubicacion + 1}`}>
+      {cartasDelJugador.length > 0 ? (
+        cartasDelJugador.map((carta) => (
+          <div key={carta.card_id} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+            <CartaFigura tipo={(carta.card_id % 25) + 1} />
+          </div>
+        ))
+      ) : (
+        null
+      )}
+    </div>
+  );
+};
 
 export default MazoCartaFigura;
