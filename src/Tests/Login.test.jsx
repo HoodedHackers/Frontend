@@ -105,5 +105,5 @@ describe("Login Component", () => {
     await waitFor(() => {
       expect(screen.getByText(/El campo no puede estar vacío./i)).toBeInTheDocument();
     });
-  });
+});
 });

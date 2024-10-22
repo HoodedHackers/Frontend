@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import styles from "./temporizador.module.css";
+import "./Temporizador.css"; // Importa tu archivo CSS normal
 
 const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
   const [timeLeft, setTimeLeft] = useState(
-    () => Number(localStorage.getItem("timeLeft")) || tiempoLimite
+    () => Number(sessionStorage.getItem("timeLeft")) || tiempoLimite
   );
   const audioRef = useRef(null);
   const [audioPlayed, setAudioPlayed] = useState(false);
@@ -12,31 +12,21 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
   const socketRef = useRef(null);
   useEffect(() => {
     // Conectar al WebSocket
-    socketRef.current = new WebSocket("ws://httpbin.org/post");
+    socketRef.current = new WebSocket("http://127.0.0.1:8000/ws/timer");
 
     // Manejar la conexión abierta
     socketRef.current.onopen = () => {
       console.log("Conexión WebSocket abierta");
-
-      // Enviar mensaje para iniciar el temporizador
+      // Enviar mensaje para iniciar el Temporizador
       const startMessage = { action: "start" };
       socketRef.current.send(JSON.stringify(startMessage));
-      console.log("Mensaje enviado al backend para iniciar el temporizador.");
+      console.log("Mensaje enviado al backend para iniciar el Temporizador.");
     };
 
     // Manejar mensajes entrantes
     socketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
-
-      // Si recibimos la información de tiempo restante
-      if (data.timeLeft !== undefined) {
-        setTimeLeft(data.timeLeft);
-      }
-
-      // Si se recibe un nuevo turno
-      if (data.jugadorActualIndex !== undefined) {
-        setJugadorActualIndex(data.jugadorActualIndex);
-      }
+      console.log(data);
     };
 
     // Manejar errores
@@ -53,8 +43,8 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
   }, []);
 
   useEffect(() => {
-    setTimeLeft(tiempoLimite); // Reiniciar el temporizador cuando cambie el jugador
-  
+    setTimeLeft(tiempoLimite); // Reiniciar el Temporizador cuando cambie el jugador
+
     const countdown = setInterval(() => {
       setTimeLeft((prevTime) => {
         if (prevTime > 0) {
@@ -69,16 +59,16 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
           // Establece un retraso antes de llamar a onFinTurno
           setTimeout(() => {
             onFinTurno(); 
-            setTimeLeft(tiempoLimite); // Reinicia el temporizador al valor original
+            setTimeLeft(tiempoLimite); // Reinicia el Temporizador al valor original
             setAudioPlayed(false); // Reinicia el estado de audio
           }, 1000); // Cambiar a 1000 ms (1 segundo)
           return 0; // Evitar valores negativos
         }
       });
     }, 1000);
-  
+
     return () => clearInterval(countdown);
-  }, [audioPlayed, onFinTurno, tiempoLimite, jugadorActual]); 
+  }, [audioPlayed, onFinTurno, tiempoLimite, jugadorActual]);
 
   useEffect(() => {
     const audioElement = audioRef.current;
@@ -100,18 +90,6 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
     };
   }, []);
 
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      localStorage.setItem("timeLeft", timeLeft);
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [timeLeft]);
-
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
 
@@ -122,32 +100,17 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
     return "#ffffff"; // Blanco por defecto
   };
 
-  // Función que divide un nombre en partes de 16 caracteres
-  function dividirNombre(nombre) {
-    const partes = [];
-    let posicion = 0;
-    while (posicion < nombre.length) {
-      const corte = nombre.substr(posicion, 16);
-      partes.push(corte);
-      posicion += 16;
-    }
-
-    return partes;
-  }
-
-  const timerClass = timeLeft <= 10 ? styles["timer-warning-active"] : "";
+  const timerClass = timeLeft <= 10 ? "timer-warning-active" : "";
 
   return (
-    <div className={styles.rectangulo}>
-      <span className={`${styles["timer-text"]} ${timerClass}`} style={{ color: getColor() }}>
+    <div className="rectangulo">
+      <span className={`timer-text ${timerClass}`} style={{ color: getColor() }}>
         {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
       </span>
       <audio ref={audioRef} src="/dun-dun-dun.mp3" preload="auto" />
-      <div className={styles.turnIndicator}>
+      <div className="turnIndicator">
         <p>
-          Turno: <strong>{dividirNombre(jugadorActual).map((parte, index) => (
-            <span key={index}>{parte}<br /></span>
-          ))}</strong>
+          Turno: <strong>{jugadorActual}</strong>
         </p>
       </div>
     </div>
@@ -155,3 +118,5 @@ const Temporizador = ({ tiempoLimite, jugadorActual, onFinTurno }) => {
 };
 
 export default Temporizador;
+
+

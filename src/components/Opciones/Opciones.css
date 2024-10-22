@@ -1,12 +1,11 @@
 /* Contenedor que envuelve el formulario y la lista */
-
 .titulo-container {
     position: absolute;
-    top: 20px; /* Espacio desde el borde superior */
+    top: 20px; 
     left: 50%;
-    transform: translateX(-50%); /* Centra el título horizontalmente */
-    width: 100%; /* Abarca todo el ancho */
-    text-align: center; /* Alinea el texto al centro */
+    transform: translateX(-50%); 
+    width: 100%; 
+    text-align: center; 
 }
 
 /* Estilo del título */
@@ -20,43 +19,41 @@
 }
 
 .titulo-opciones:hover {
-    color: #070707; /* Cambia el color al pasar el ratón */
-    transform: scale(1.1); /* Agranda ligeramente el título */
+    color: #070707; 
+    transform: scale(1.1); 
 }
-
 
 .opciones-container {
     display: flex;
-    align-items: center; /* Centrado vertical */
-    height: 100vh; /* Altura total de la pantalla */
-    padding: 0 20px; /* Añadir padding para evitar colisiones */
-    gap: 20px; /* Espacio entre el formulario y la lista */
-    background: linear-gradient(135deg, #e98787, #110202);
+    align-items: center; 
+    height: 100vh; 
+    padding: 0 20px; 
+    gap: 20px; 
+    background: linear-gradient(135deg, #868585, #181717); 
 }
 
 /* Contenedor del formulario */
 .form-container {
-    flex: 1; /* Ocupa un tercio de la pantalla */
-    max-width: 30%; /* Máximo 30% de la pantalla */
-    height: 100%; /* Ocupa todo el alto disponible */
+    flex: 1; 
+    max-width: 30%; 
     max-height: 80vh;
-    background-color: #494848;
+    background-color: #c57d56; 
     padding: 20px;
-    border: 1px solid #444; 
+    border: 1px solid #282827; 
     border-radius: 12px; 
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     box-sizing: border-box; 
-    display: flex; /* Asegura que el contenido del formulario se adapte */
-    flex-direction: column; /* Mantiene la disposición vertical del contenido */
-    justify-content: center; /* Centra el contenido verticalmente */
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
 }
 
 /* Contenedor de la lista */
 .list-container {
-    flex: 2; /* Ocupa los dos tercios restantes */
+    flex: 2; 
     max-height: 80vh;
     overflow-y: auto;
-    background-color: white;
+    background-color: #c57d56;
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
     padding: 1rem;
     position: fixed;
@@ -67,3 +64,4 @@
     border-radius: 0.75rem;
     margin-right: 1.5rem;
 }
+

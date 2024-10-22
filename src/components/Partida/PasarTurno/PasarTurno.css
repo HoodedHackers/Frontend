@@ -1,0 +1,25 @@
+/* PasarTurno.css */
+
+.boton {
+  padding: 10px 20px;
+  background-color:#f8782e; 
+  color: #fff;
+  border: 2px solid black;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, transform 0.2s ease; 
+  margin-left: 20px; 
+}
+
+/* Efecto hover */
+.boton:hover {
+  background-color: #f72840; 
+  border: 2px solid #ffffff; 
+  transform: scale(1.05); 
+}
+
+.botonDeshabilitado {
+  background-color: #ccc; 
+  cursor: not-allowed;
+  border: 2px solid black; 
+}

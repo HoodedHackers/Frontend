@@ -1,0 +1,21 @@
+.carta-figura {
+  width: 5vw;
+  display: flex; /* Asegura que el contenido se alinee dentro del contenedor */
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */ 
+  margin: 0 5px; /* Espaciado entre las cartas */
+  transition: transform 0.3s ease; /* Transición suave para el efecto de hover */
+  z-index: 0; /* Asegura que la carta esté en el frente al hacer hover */
+}
+
+.carta-figura:hover {
+  transform: scale(1.5); /* Aumenta el tamaño de la carta al hacer hover */
+  position: relative; /* Cambiar posición para centrado */
+  z-index: 1; /* Asegura que la carta esté por encima del fondo */
+}
+
+.carta-figura-img {
+  max-width: 100%; /* Asegúrate de que la imagen no exceda el contenedor */
+  max-height: 100%; /* Asegúrate de que la imagen no exceda el contenedor */
+  object-fit: contain; /* Asegura que la imagen se mantenga en proporción */
+}

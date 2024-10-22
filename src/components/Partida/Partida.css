@@ -1,7 +1,8 @@
 .container-partida {
+  position: relative;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
   width: 100%; 
   height: 100vh; 
   background: radial-gradient(circle, #121213, #3a3a3b, #8a878b, #474647); 
@@ -41,6 +42,7 @@
   left: 50%; /* Centrado horizontalmente */
   transform: translateX(-50%); /* Ajuste para centrar horizontalmente */
   padding-bottom: 10px; /* Padding de 10 píxeles en la parte superior */
+  text-align: center;
 }
 
 .jugador2 {
@@ -49,6 +51,7 @@
   left: 50%; /* Centrado horizontalmente */
   transform: translateX(-50%); /* Ajuste para centrar horizontalmente */
   padding-top: 10px; /* Padding de 10 píxeles en la parte superior */
+  text-align: center;
 }
 
 .jugador3 {
@@ -57,6 +60,8 @@
   left: 0; /* A la izquierda */
   transform: translateY(-50%); /* Ajusta la posición para centrar verticalmente */
   padding-left: 10px; /* Padding de 10 píxeles en el borde izquierdo */
+  max-width: 15svh;
+  text-align: left;
 }
 
 .jugador4 {
@@ -65,13 +70,15 @@
   right: 0; /* A la izquierda */
   transform: translateY(-50%); /* Ajusta la posición para centrar verticalmente */
   padding-right: 10px; /* Padding de 10 píxeles en el borde izquierdo */
+  max-width: 15svh;
+  text-align: right;
 }
 
 .abandonar-partida-container {
   position: absolute; /* Permite colocar el contenedor en una posición específica */
   bottom: 20px; /* Distancia desde el borde inferior */
   left: 20px; /* Distancia desde el borde izquierdo */
-  z-index: 11; /* Asegúrate de que el botón esté encima de otros elementos */
+  z-index: 1;
 }
 
 .pasar-turno-container {
@@ -80,17 +87,7 @@
   position: absolute; 
   top: 30px; /* Ajusta esta propiedad según sea necesario */
   left: 20px; /* Mueve el contenedor hacia la izquierda */
-}
-
-.startButton {
-  z-index: 20; /* Asegúrate de que el botón esté encima de la superposición */
-  padding: 10px 20px;
-  font-size: 18px;
-  cursor: pointer;
-  background-color: #4CAF50; /* Color de fondo */
-  color: white; /* Color del texto */
-  border: none;
-  border-radius: 5px;
+  z-index: 0;
 }
   
 button:disabled {
@@ -106,7 +103,17 @@ button:disabled {
   width: 100%; 
   height: 100%; 
   background: rgba(0, 0, 0, 0.5); /* Color de fondo oscuro con opacidad */
-  z-index: 0; /* Detrás de otros elementos */
+  z-index: 0;
+}
+
+.overlay-supremo {
+  position: absolute;
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  background: rgba(0, 0, 0, 0.5); /* Color de fondo oscuro con opacidad */
+  z-index: 2;
 }
 
 .timer-container {
@@ -117,7 +124,70 @@ button:disabled {
   display: flex;
   justify-content: center; /* Centrar contenido */
   align-items: center; /* Alinear verticalmente el contenido */
-  flex-direction: row; /* Cambiar a fila para alinear el botón al lado del temporizador */
+  flex-direction: row; /* Cambiar a fila para alinear el botón al lado del Temporizador */
   margin-top: 0;
   margin-bottom: 0;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: #c57d56; /* Color similar al contenedor del formulario */
+  padding: 20px;
+  border-radius: 12px; /* Bordes redondeados similares */
+  max-width: 500px;
+  width: 100%;
+  z-index: 1001;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Sombra similar a los contenedores */
+  border: 1px solid #282827; /* Borde similar al formulario */
+  text-align: center; /* Alineación central */
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 24px; /* Tamaño de letra del título */
+  font-weight: bold;
+  color: #fff; /* Color del texto blanco */
+}
+
+.modal-body {
+  font-size: 18px;
+  color: #fff; /* Texto en blanco */
+  margin: 20px 0;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+}
+
+/* Botón de cierre */
+.modal-footer button {
+  background-color: #070707; /* Color de fondo similar */
+  color: #fff; /* Texto en blanco */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px; /* Bordes redondeados */
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+/* Hover del botón */
+.modal-footer button:hover {
+  background-color: #282827; /* Cambia el color al pasar el ratón */
+  transform: scale(1.05); /* Aumenta ligeramente el tamaño */
 }

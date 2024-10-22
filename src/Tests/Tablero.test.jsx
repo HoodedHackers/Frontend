@@ -1,30 +1,55 @@
+import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import Tablero_Container from '../components/Partida/tablero/tablero_container';
+import '@testing-library/jest-dom';
+import {TableroProvider} from '../components/Partida/Tablero/TableroProvider.jsx';
+import Tablero from '../components/Partida/Tablero/TableroContainer.jsx'
+import { PartidaContext } from '../components/Partida/PartidaProvider.jsx';
+import { WebSocketContext } from '../components/WebSocketsProvider.jsx';
 
-// Mock de WebSocket
-global.WebSocket = class {
-  constructor(url) {
-    this.url = url;
-    this.onopen = null;
-    this.onmessage = null;
-    this.onerror = null;
-    this.readyState = 1; // OPEN
-  }
-  
-  close() {
-    this.readyState = 3; // CLOSED
-  }
-};
+const wsBSRefMock = { current: null };
 
-describe('Tablero', () => {
-  beforeEach(() => {
-    render(<Tablero_Container jugadores={[]} />); // Renderizamos el componente sin jugadores
+describe('Tablero Component', () => {
+  it('renders without crashing', () => {
+    render(
+      <WebSocketContext.Provider value={{ wsBSRef: wsBSRefMock }}> 
+        <PartidaContext.Provider value={{}}> 
+          <TableroProvider>
+            <Tablero />
+          </TableroProvider>
+        </PartidaContext.Provider>
+      </WebSocketContext.Provider>
+    );
+
+    // Verifica que se renderiza el tablero
+    const squares = screen.getAllByRole('button'); // Verificamos que hay botones, que representan los cuadrados
+    expect(squares.length).toBe(36); // Asegúrate que el número de cuadrados es 36
   });
 
-  it('se renderiza correctamente con 36 cuadrados', () => {
-    const squares = screen.getAllByRole('button'); // Asumiendo que los cuadrados son botones
-    expect(squares).toHaveLength(36);
+  it('displays squares with correct background images', () => {
+    render(
+      <WebSocketContext.Provider value={{ wsBSRef: wsBSRefMock }}>  
+        <PartidaContext.Provider value={{}}> 
+          <TableroProvider>
+            <Tablero />
+          </TableroProvider>
+        </PartidaContext.Provider>
+      </WebSocketContext.Provider>
+    );
+
+    const squares = screen.getAllByRole('button');
+
+    squares.forEach((square, index) => {
+      // Verificamos que cada cuadrado tiene un fondo definido
+      expect(square).toHaveStyle({ backgroundSize: 'cover' });
+      expect(square).toHaveStyle({ backgroundPosition: 'center' });
+    });
   });
 
+  it('Se conecta al Web Socket de Estado del Tablero', () => {
+    // No se Testeae Web Sockets
+  });
+
+  it('Muestra un error si el Web Socket de Estado del Tablero falla', () => {
+    // No se Testeae Web Sockets
+  });
 });

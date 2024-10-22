@@ -1,147 +1,386 @@
-import React, { useEffect } from "react";
-import Jugador from "./jugador/jugador.jsx";
-import ContainerCartasMovimiento from "./carta_movimiento/container_cartas_movimiento.jsx";
-import Tablero_Container from "./tablero/tablero_container.jsx";
-import Mazo_Carta_Figura from "./carta_figura/mazo_carta_figura.jsx";
-import Iniciar_Partida from "./iniciar_partida/iniciar_partida.jsx";
-import Abandonar_Partida from "./abandonar_partida/abandonar_partida.jsx";
-import Pasar_Turno from "./pasar_turno/pasar_turno.jsx";
-import Temporizador from "./temporizador/temporizador.jsx";
-import "./Partida.css"; 
+import React, { useContext, useEffect, useState } from "react";
+import { PartidaContext, PartidaProvider } from './PartidaProvider.jsx';
+import Jugador from "./Jugador/Jugador.jsx";
+import { CartasMovimientoMano } from "./CartasMovimiento/CartasMovimientoMano.jsx";
+import TableroWithProvider from "./Tablero/TableroContainer.jsx";
+import MazoCartaFigura from "./CartaFigura/MazoCartaFigura.jsx";
+import IniciarPartida from "./IniciarPartida/IniciarPartida.jsx";
+import AbandonarPartida from "./AbandonarPartida/AbandonarPartida.jsx";
+import CancelarMovimiento from "./CancelarMovimiento/CancelarMovimientos.jsx";
+import PasarTurno from "./PasarTurno/PasarTurno.jsx";
+import Temporizador from "./Temporizador/Temporizador.jsx";
+import { WebSocketContext } from '../WebSocketsProvider.jsx';
+import "./Partida.css";
+import { useNavigate } from "react-router-dom";
 
 function Partida() {
-  const tiempoLimite = 120; // 2 minutos
-  const [jugadores, setJugadores] = React.useState([
-    { id: 1, name: "Jugador1" },
-    { id: 2, name: "Jugador2" },
-    { id: 3, name: "Jugador3" },
-    { id: 4, name: "Jugador4" }
-  ]);
+  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const {
+    partidaIniciada,
+    setPartidaIniciada,
+    tiempoLimite,
+    setJugadores,
+    jugadores,
+    posicionJugador,
+    setPosicionJugador,
+    setJugadorActualIndex,
+    setJugando,
+    isOverlayVisible,
+    setJugadorActualId,
+    setCartaMovimientoActualId,
+    setCartaMovimientoActualIndex,
+    mazo,
+    setMazo,
+    cantidadCartasMovimientoJugadorActual,
+    setCantidadCartasMovimientoJugadorActual
+  } = useContext(PartidaContext);
 
+  useEffect(() => {
+    const jugadoresParseados = JSON.parse(sessionStorage.getItem("players"));
+    if (jugadoresParseados && Array.isArray(jugadoresParseados)) {
+      if (partidaIniciada) {
+        const jugadoresOrdenados = reorderPlayers(jugadoresParseados);
+        setJugadores(jugadoresOrdenados);
+        sessionStorage.setItem("players", JSON.stringify(jugadoresOrdenados));
+      }
+      else {
+        setJugadores(jugadoresParseados);
+        sessionStorage.setItem("players", JSON.stringify(jugadoresParseados));
+      }
+    } else {
+      setJugadores([]);  // Asegura que jugadores sea un array vacío
+    }
+  }, [sessionStorage.getItem("players")]);
 
-  const [jugadorActualIndex, setJugadorActualIndex] = React.useState(() => {
-    const storedIndex = localStorage.getItem("jugadorActualIndex");
-    return storedIndex !== null ? Number(storedIndex) : 0;
+  const partidaID = sessionStorage.getItem('partida_id');
+  const identifier = sessionStorage.getItem('identifier');
+  const player_id = parseInt(sessionStorage.getItem("player_id"));
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const storedTime = sessionStorage.getItem("timeLeft");
+    return storedTime !== null ? Number(storedTime) : tiempoLimite;
   });
-  
-  const jugadorActual = jugadores[jugadorActualIndex]; // Obtener el jugador actual
-  const [timeLeft, setTimeLeft] = React.useState(() => {
-    const storedTime = localStorage.getItem("timeLeft");
-    return storedTime !== null ? Number(storedTime) : tiempoLimite; // Usar el tiempo almacenado o el límite inicial
-  }); 
-  
-  const [partidaIniciada, setPartidaIniciada] = React.useState(() => {
-    const storedPartidaIniciada = localStorage.getItem("partidaIniciada");
-    return storedPartidaIniciada === "true"; // Convertir a booleano
-  }); // Estado para el inicio de la partida
-
-  // Estado para manejar si el overlay debe mostrarse
-  const [isOverlayVisible, setIsOverlayVisible] = React.useState(false);
-  
-  // Funciones para manejar el mouse sobre las cartas
-  const handleMouseEnter = () => {
-    setIsOverlayVisible(true);
-  };
-  
-  const handleMouseLeave = () => {
-    setIsOverlayVisible(false);
-  };
+	const [activePlayer, setActivePlayer] = useState({});
+  const name = sessionStorage.getItem('player_nickname');
 
   const manejarFinTurno = async () => {
-    const nuevoIndex = (jugadorActualIndex + 1) % jugadores.length;
-    setJugadorActualIndex(nuevoIndex);
-    localStorage.setItem("jugadorActualIndex", nuevoIndex); // Guarda el nuevo índice en localStorage
+    if (jugadores.length > 0) {  // Asegura que jugadores exista antes de acceder
+      const nuevoIndex = (posicionJugador + 1) % jugadores.length;
+      setJugadorActualIndex(nuevoIndex);
+      setPosicionJugador(nuevoIndex);
+      sessionStorage.setItem("posicion_jugador", nuevoIndex);
+      setTimeLeft(tiempoLimite);
+      sessionStorage.setItem("timeLeft", tiempoLimite);
 
-    // Reiniciar el temporizador y guardarlo en localStorage
-    setTimeLeft(tiempoLimite);
-    localStorage.setItem("timeLeft", tiempoLimite); // Guardar el tiempo inicial
-
-    // Enviar actualización del turno al backend
-    try {
-      const response = await fetch("https://httpbin.org/post", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ jugadorActualIndex: nuevoIndex }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Error al actualizar el turno en el servidor");
-      }
-    } catch (error) {
-      console.error("Error en la conexión al servidor:", error);
+      setJugando(false);
     }
   };
 
-  // Callback para iniciar la partida
-  const manejarInicioPartida = () => {
-    setPartidaIniciada(true);
-    localStorage.setItem("partidaIniciada", "true"); // Guardar el estado en localStorage
-  };
-
   useEffect(() => {
-    // Limpieza al desmontar el componente, si es necesario
-    return () => {
-      localStorage.removeItem("partidaIniciada"); // Opcional, si quieres resetear esto cuando se desmonte
-    };
-  }, []);
-
-  useEffect(() => {
-    // Guardar el tiempo restante en localStorage cada vez que cambie
-    localStorage.setItem("timeLeft", timeLeft);
+    sessionStorage.setItem("timeLeft", timeLeft);
   }, [timeLeft]);
+
+  function reorderPlayers (players) {
+    if (players && Array.isArray(players)) {
+      const posicionJugador = players.findIndex(jugador => jugador.player_id === parseInt(sessionStorage.getItem("player_id"), 10));
+      console.log(posicionJugador);
+      setPosicionJugador(posicionJugador);
+      if (posicionJugador !== -1) {
+        let playersAux = players[0];
+        players[0] = players[posicionJugador];
+        players[posicionJugador] = playersAux;
+        sessionStorage.setItem("players", JSON.stringify(players));
+      } else {
+        console.log("Jugador no encontrado");
+        players = [];
+        sessionStorage.removeItem("players");
+      }
+      return players;
+    }
+    return null;
+  }
+
+  const { wsUPRef, wsStartGameRef, wsTRef, wsUCMRef, wsCFRef } = useContext(WebSocketContext);
+
+  useEffect(() => {
+    try {
+      wsUPRef.current.onopen = () => {
+        console.log("Conexión con el WebSocket de Unirse a Partida abierta");
+      };
+      wsUPRef.current.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log("Mensaje recibido del WebSocket de Unirse a Partida:", data);
+        if (data.response === player_id) {
+          setModalMessage(`¡Felicitaciones ${name} Ganaste el juego!`);
+          setShowModal(true);
+        }
+        if (data === 'el host ha abandonado la partida') {
+          setModalMessage('El host ha abandonado la partida. Serás redirigido.');
+          setShowModal(true);
+        }
+        if (data.players && Array.isArray(data.players)) {
+            setJugadores(data.players);
+            sessionStorage.setItem("players", JSON.stringify(data.players) || []);
+          console.log("Jugadores recibidos del WebSocket de Unirse a Partida");
+        }
+      };
+      wsUPRef.current.onerror = (error) => {
+        console.error("Error en el WebSocket de Unirse a Partida:", error);
+      };
+      wsUPRef.current.onclose = () => {
+        console.log("Conexión WebSocket de Unirse a Partida cerrada por el servidor");
+      };
+    } catch (error) {
+      console.error(error);
+      if (wsUPRef.current) {
+        wsUPRef.current.close();
+        wsUPRef.current = null;
+        console.log("WebSocket de Unirse a Partida cerrado");
+      }
+    }
+  }, [wsUPRef.current]);
+
+  function empezarPartida() {
+    sessionStorage.setItem('partidaIniciada', "true");
+    setPartidaIniciada(true);
+    reorderPlayers(JSON.parse(sessionStorage.getItem("players")));
+    //reorderFigs(JSON.parse(sessionStorage.getItem("figs")));
+    console.log("Partida iniciada");
+  }
+
+  // Conectar al WebSocket cuando el componente se monte
+    useEffect(() => {
+      if (wsStartGameRef.current && wsStartGameRef.current.readyState !== WebSocket.CLOSED) {
+        return;
+      }
+
+      try {
+        if (partidaID && identifier) {
+          // Inicializar el WebSocket
+          const player_id = parseInt(sessionStorage.getItem("player_id"), 10);
+          wsStartGameRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaID}/status?player_id=${player_id}`);
+  
+          // Evento cuando se abre la conexión
+          wsStartGameRef.current.onopen = () => {
+              console.log("Conectado al WebSocket de Iniciar Partida de estado de partida");
+          };
+  
+          // Evento cuando se recibe un mensaje del WebSocket
+          wsStartGameRef.current.onmessage = (event) => {
+              const message = JSON.parse(event.data);
+              console.log("Mensaje recibido:", message);
+              if (message.status === "started") {
+                empezarPartida(); // Llamar a la función para iniciar la partida
+              }
+          };
+  
+          // Evento cuando la conexión se cierra
+          wsStartGameRef.current.onclose = () => {
+              console.log("Conexión WebSocket de Iniciar Partida cerrada");
+          };
+        }
+      } catch (error) {
+        console.error("Error al conectar al WebSocket de Iniciar Partida:", error);
+      }
+    }, [wsStartGameRef.current]);
+
+// Conectar al WebSocket de Usar Carta de Movimiento
+  useEffect(() => {
+    if (wsUCMRef.current && wsUCMRef.current.readyState !== WebSocket.CLOSED) {
+      return;
+    }
+
+    try {
+      wsUCMRef.current = new WebSocket(
+        `ws://127.0.0.1:8000/ws/lobby/${partidaID}/select?player_id=${player_id}`,
+      );
+
+      wsUCMRef.current.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.action === "select") {
+          sessionStorage.setItem("jugadorActualId", data.player_id);
+          setJugadorActualId(data.player_id);
+          sessionStorage.setItem("cartaMovimientoActualId", data.card_id);
+          setCartaMovimientoActualId(data.card_id);
+          sessionStorage.setItem("cartaMovimientoActualIndex", data.index);
+          setCartaMovimientoActualIndex(data.index);
+        }
+        else if (data.action === "use_card" || data.action === "recover_card") {
+          setJugando(false);
+        }
+        else {
+          throw new Error("Acción no reconocida."); 
+        }
+
+        sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", data.len - 1);
+        setCantidadCartasMovimientoJugadorActual(data.len) - 1;
+        console.log("Mensaje recibido del WebSocket de Usar Carta de Movimiento:", data);
+      }
+
+      // Manejar apertura del WebSocket
+      wsUCMRef.current.onopen = () => {
+        console.log("WebSocket de Usar Carta de Movimiento conectado.");
+      };
+
+      // Manejar errores
+      wsUCMRef.current.onerror = (error) => {
+        console.error("Error en WebSocket de Usar Carta de Movimiento:", error);
+        wsUCMRef.current = null; // Resetear la referencia si falla la conexión
+      };
+
+    } catch (error) {
+      console.error("Error al conectar al WebSocket de Usar Carta de Movimiento:", error);
+    }
+  }, [wsUCMRef.current]);
+
+
+	useEffect(() => {
+		wsTRef.current = new WebSocket(`ws://localhost:8000/ws/lobby/${partidaID}/turns?player_id=${player_id}`);
+
+		wsTRef.current.onopen = () => {
+			wsTRef.current.send(JSON.stringify({request: "status"}))
+		};
+
+		wsTRef.current.onmessage = (event) => {
+			console.log("Received message:", event.data);
+			const updatedMessage = JSON.parse(event.data);
+			setActivePlayer({player_name: updatedMessage.player_name, player_id: updatedMessage.player_id});
+		};
+	}, [player_id, partidaID, wsTRef]);
+
+  useEffect(() => {
+    if (wsCFRef.current && wsCFRef.current.readyState !== WebSocket.CLOSED) {
+      return;
+    }
+    try {
+      // Crear la conexión WebSocket
+      wsCFRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaID}/figs?player_id=${player_id}`);
+
+      // Manejar mensajes recibidos del WebSocket
+      wsCFRef.current.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        if (data) {
+          setMazo((prevMazo) => {
+            // Verifica si el player_id ya está en el estado anterior
+            const existingPlayer = prevMazo.find(item => item.player_id === data.player_id);
+  
+            if (existingPlayer) {
+              // Si ya existe, actualiza las cartas para ese player_id
+              return prevMazo.map(item => 
+                item.player_id === data.player_id 
+                ? { ...item, cards: data.cards }
+                : item
+              );
+            } else {
+              // Si no existe, agrega el nuevo player_id con sus cartas
+              return [...prevMazo, data];
+            }
+          });
+          sessionStorage.setItem("figs", JSON.stringify(mazo));
+        }
+      };
+
+
+      // Manejar errores en la conexión
+      wsCFRef.current.onerror = (error) => {
+        console.error('Error en WebSocket:', error);
+      };
+
+      // Manejar la desconexión del WebSocket
+      wsCFRef.current.onclose = () => {
+        console.log('Conexión WebSocket cerrada');
+      };
+
+    } catch (error) {
+      console.error('Error al conectar con el WebSocket:', error);
+    }
+  }, [wsCFRef.current, partidaIniciada]);
+  
+  const handleCloseModal = () => {
+    const partidaID = sessionStorage.getItem('partida_id');
+    wsUPRef.current.close();
+    sessionStorage.removeItem('players');
+    sessionStorage.removeItem('partida_id');
+    sessionStorage.removeItem('isOwner');
+    sessionStorage.removeItem('timeLeft');
+    sessionStorage.removeItem('partidaIniciada');
+    setShowModal(false);
+    navigate('/Opciones');
+  };
 
   return (
     <div className="container-partida">
-      {jugadores.map((jugador, index) => (
-        <div key={jugador.id}>
-          <Jugador nombre={jugador.name} ubicacion={`jugador${index + 1}`} />
-          <ContainerCartasMovimiento
-            ubicacion={index}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave} 
-          />
-          <Mazo_Carta_Figura
-            ubicacion={index}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-          />
-        </div>
-      ))}
+      {Array.isArray(jugadores) && jugadores.length > 0 ? (
+        jugadores.map((jugador, index) => (
+          <div key={jugador.player_id}>
+            <Jugador
+              nombre={jugador.player_name}
+              ubicacion={`jugador${index + 1}`}
+            />
+            <CartasMovimientoMano ubicacion={index} jugadorId={jugador.player_id} />
+            <MazoCartaFigura ubicacion={index} />
+          </div>
+        ))
+      ) : (
+        <p>No hay jugadores en la partida.</p>
+      )}
       <div className="tableroContainer">
-        <Tablero_Container jugadores={[]} />
-      </div>
-      <div >
-        <Mazo_Carta_Figura />
+        <TableroWithProvider />
       </div>
       <div>
-      {!partidaIniciada && <Iniciar_Partida onIniciar={manejarInicioPartida} />}
+        {!partidaIniciada && <IniciarPartida empezarPartida={empezarPartida} />}
       </div>
       <div className="abandonar-partida-container">
-        <Abandonar_Partida />
+        {isOverlayVisible && <div className="overlay-supremo"></div>}
+        <AbandonarPartida />
       </div>
+      <div className="cancelar-movimientos-container">
+      <CancelarMovimiento jugadorActual={activePlayer} />
+    </div>
       <div className="pasar-turno-container">
-        <Pasar_Turno
-          jugadorActual={jugadorActual}
-          jugadores={jugadores}
+        <PasarTurno
           onTurnoCambiado={manejarFinTurno}
           tiempoLimite={tiempoLimite}
           setTimeLeft={setTimeLeft}
+          disabled={activePlayer.player_id !== player_id}
         />
       </div>
       <div className="timer-container">
-        <Temporizador
-          tiempoLimite={tiempoLimite}
-          jugadorActual={jugadorActual.name}
-          timeLeft={timeLeft} // Pasar el tiempo restante al temporizador
-          setTimeLeft={setTimeLeft} // Pasar la función para actualizar el tiempo
-          onFinTurno={manejarFinTurno}
-        />
+        {jugadores && jugadores.length > 0 && (
+          <Temporizador
+            tiempoLimite={tiempoLimite}
+            jugadorActual={activePlayer.player_name}
+            timeLeft={timeLeft}
+            setTimeLeft={setTimeLeft}
+            onFinTurno={manejarFinTurno}
+          />
+        )}
       </div>
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <div className="modal-header">
+            </div>
+            <div className="modal-body">
+              <p>{modalMessage}</p>
+            </div>
+            <div className="modal-footer">
+              <button onClick={handleCloseModal}>Cerrar</button>
+            </div>
+          </div>
+        </div>
+      )}
       {isOverlayVisible && <div className="overlay"></div>}
     </div>
   );
 }
 
-export default Partida;
+export default function PartidaWithProvider() {
+  return (
+    <PartidaProvider>
+      <Partida />
+    </PartidaProvider>
+  );
+}

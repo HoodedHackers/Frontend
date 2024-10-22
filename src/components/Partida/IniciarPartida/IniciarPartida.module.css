@@ -1,0 +1,47 @@
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+
+.startButton {
+  padding: 15px 30px;
+  font-size: 22px;
+  background-color: #f8782e; 
+  color: rgb(255, 255, 255); 
+  border: 2px solid black; 
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, border 0.3s; 
+}
+
+.startButton:hover {
+  background-color: #f72840; 
+  border: 3px solid black; 
+}
+
+.startButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.waiting-message {
+  font-size: 12px; 
+  color: #ff4500; 
+  text-align: center; 
+  margin-top: 20px; 
+  font-weight: bold; 
+  background-color: #f0f0f0; 
+  padding: 20px; 
+  border: 2px solid #ff4500; 
+  border-radius: 10px; 
+  display: inline-block; 
+  width: auto; 
+}
