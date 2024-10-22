@@ -8,7 +8,13 @@ export const CartasMovimientoContext = createContext();
 export const CartasMovimientoMano = ({ubicacion, jugadorId}) => {
   const [seleccionada, setSeleccionada] = useState(null);
   const [cartasDelJugador, setCartasDelJugador] = useState([]);
-  const { partidaIniciada, jugadorActualId, cartaMovimientoActualId, cartaMovimientoActualIndex } = useContext(PartidaContext);
+  const {
+    partidaIniciada,
+    jugadorActualId, 
+    cartaMovimientoActualId, 
+    cartaMovimientoActualIndex ,
+    cantidadCartasMovimientoJugadorActual
+  } = useContext(PartidaContext);
 
 
   // Actualiza las cartas de movimiento al comenzar la partida
@@ -61,13 +67,17 @@ export const CartasMovimientoMano = ({ubicacion, jugadorId}) => {
         {cartasDelJugador.length > 0 ? (
           cartasDelJugador.map((carta, index) => (
             ubicacion === 0 ? (
-              <div key={index}>
-                <CartaMovimiento
-                  id={carta} 
-                  ubicacion={ubicacion}
-                  index={index}
-                />
-              </div>
+              ((index + 1) <= cantidadCartasMovimientoJugadorActual) || cantidadCartasMovimientoJugadorActual === null ? (
+                <div key={index}>
+                  <CartaMovimiento
+                    id={carta} 
+                    ubicacion={ubicacion}
+                    index={index}
+                  />
+                </div>
+              ) : (
+                null
+              )
             ) : (
               jugadorId === jugadorActualId ? (
                 cartaMovimientoActualIndex === index ? (
@@ -79,13 +89,17 @@ export const CartasMovimientoMano = ({ubicacion, jugadorId}) => {
                     />
                   </div>
                 ) : (
-                  <div key={index}>
-                    <CartaMovimiento
-                      id={-1} 
-                      ubicacion={ubicacion}
-                      index={index}
-                    />
-                  </div>
+                  (index + 1) <= cantidadCartasMovimientoJugadorActual ? (
+                    <div key={index}>
+                      <CartaMovimiento
+                        id={-1} 
+                        ubicacion={ubicacion}
+                        index={index}
+                      />
+                    </div>
+                  ) : (
+                    null
+                  )
                 )
               ) : (
                 <div key={index}>
