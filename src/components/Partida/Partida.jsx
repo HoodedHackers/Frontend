@@ -6,12 +6,12 @@ import TableroWithProvider from "./Tablero/TableroContainer.jsx";
 import MazoCartaFigura from "./CartaFigura/MazoCartaFigura.jsx";
 import IniciarPartida from "./IniciarPartida/IniciarPartida.jsx";
 import AbandonarPartida from "./AbandonarPartida/AbandonarPartida.jsx";
+import CancelarMovimiento from "./CancelarMovimiento/CancelarMovimientos.jsx";
 import PasarTurno from "./PasarTurno/PasarTurno.jsx";
 import Temporizador from "./Temporizador/Temporizador.jsx";
 import { WebSocketContext } from '../WebSocketsProvider.jsx';
 import "./Partida.css";
 import { useNavigate } from "react-router-dom";
-import { set } from "react-hook-form";
 
 function Partida() {
   const navigate = useNavigate();
@@ -22,22 +22,19 @@ function Partida() {
     setPartidaIniciada,
     tiempoLimite,
     setJugadores,
-    jugadores = [], // Agrega una inicialización vacía aquí
+    jugadores,
     posicionJugador,
     setPosicionJugador,
-    jugadorActualIndex,
     setJugadorActualIndex,
-    jugando,
     setJugando,
     isOverlayVisible,
-    jugadorActualId,
     setJugadorActualId,
-    cartaMovimientoActualId,
     setCartaMovimientoActualId,
-    cartaMovimientoActualIndex,
     setCartaMovimientoActualIndex,
     mazo,
     setMazo,
+    cantidadCartasMovimientoJugadorActual,
+    setCantidadCartasMovimientoJugadorActual
   } = useContext(PartidaContext);
 
   useEffect(() => {
@@ -201,13 +198,23 @@ function Partida() {
 
       wsUCMRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
+        if (data.action === "select") {
+          sessionStorage.setItem("jugadorActualId", data.player_id);
+          setJugadorActualId(data.player_id);
+          sessionStorage.setItem("cartaMovimientoActualId", data.card_id);
+          setCartaMovimientoActualId(data.card_id);
+          sessionStorage.setItem("cartaMovimientoActualIndex", data.index);
+          setCartaMovimientoActualIndex(data.index);
+        }
+        else if (data.action === "use_card" || data.action === "recover_card") {
+          setJugando(false);
+        }
+        else {
+          throw new Error("Acción no reconocida."); 
+        }
 
-        sessionStorage.setItem("jugadorActualId", data.player_id);
-        setJugadorActualId(data.player_id);
-        sessionStorage.setItem("cartaMovimientoActualId", data.card_id);
-        setCartaMovimientoActualId(data.card_id);
-        sessionStorage.setItem("cartaMovimientoActualIndex", data.index);
-        setCartaMovimientoActualIndex(data.index);
+        sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", data.len);
+        setCantidadCartasMovimientoJugadorActual(data.len);
         console.log("Mensaje recibido del WebSocket de Usar Carta de Movimiento:", data);
       }
 
@@ -290,48 +297,7 @@ function Partida() {
       console.error('Error al conectar con el WebSocket:', error);
     }
   }, [wsCFRef.current, partidaIniciada]);
-
-  /*function reorderFigs (figs) {
-    if (figs && Array.isArray(figs)) {
-      const posicionJugador = figs.findIndex(figura => figura.player_id === parseInt(sessionStorage.getItem("player_id"), 10));
-      console.log(posicionJugador);
-      setPosicionJugador(posicionJugador);
-      if (posicionJugador !== -1) {
-        let figsAux = figs[0];
-        console.log(figsAux);
-        figs[0] = figs[posicionJugador];
-        console.log(figs[0]);
-        figs[posicionJugador] = figsAux;
-        console.log(figs[posicionJugador]);
-        sessionStorage.setItem("figs", JSON.stringify(figs));
-        console.log(figs);
-      } else {
-        console.log("Jugador no encontrado");
-        figs = [];
-        sessionStorage.removeItem("figs");
-      }
-      return figs;
-    }
-    return null;
-  }*/
-
-  /*useEffect(() => {
-    const figurasParseados = JSON.parse(sessionStorage.getItem("figs"));
-    if (figurasParseados && Array.isArray(figurasParseados)) {
-      if (partidaIniciada) {
-        const figsOrdenados = reorderFigs(figurasParseados);
-        setMazo(figsOrdenados);
-        sessionStorage.setItem("figs", JSON.stringify(figsOrdenados));
-      }
-      else {
-        setMazo(figurasParseados);
-        sessionStorage.setItem("figs", JSON.stringify(figurasParseados));
-      }
-    } else {
-      setMazo([]);  // Asegura que jugadores sea un array vacío
-    }
-  }, [sessionStorage.getItem("figs")]);*/
-
+  
   const handleCloseModal = () => {
     const partidaID = sessionStorage.getItem('partida_id');
     wsUPRef.current.close();
@@ -370,6 +336,9 @@ function Partida() {
         {isOverlayVisible && <div className="overlay-supremo"></div>}
         <AbandonarPartida />
       </div>
+      <div className="cancelar-movimientos-container">
+      <CancelarMovimiento jugadorActual={activePlayer} />
+    </div>
       <div className="pasar-turno-container">
         <PasarTurno
           onTurnoCambiado={manejarFinTurno}

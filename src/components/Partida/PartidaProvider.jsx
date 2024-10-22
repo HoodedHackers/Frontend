@@ -26,6 +26,10 @@ export const PartidaProvider = ({ children }) => {
 
   const [cartaMovimientoActualIndex, setCartaMovimientoActualIndex] = useState({});
 
+  const [cantidadCartasMovimientoJugadorActual, setCantidadCartasMovimientoJugadorActual] = useState(null);
+
+  const [movimientosRealizados, setMovimientosRealizados] = useState([]);
+  
   const [mazo, setMazo] = useState([]);
 
   const handleMouseEnter = () => {
@@ -61,6 +65,10 @@ export const PartidaProvider = ({ children }) => {
         setCartaMovimientoActualId,
         cartaMovimientoActualIndex,
         setCartaMovimientoActualIndex,
+        cantidadCartasMovimientoJugadorActual,
+        setCantidadCartasMovimientoJugadorActual,
+        movimientosRealizados, 
+        setMovimientosRealizados,
         mazo,
         setMazo
       }}
