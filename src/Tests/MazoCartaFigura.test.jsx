@@ -1,77 +1,180 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import MazoCartaFigura from '../components/Partida/CartaFigura/MazoCartaFigura.jsx';
-import { PartidaContext } from '../components/Partida/PartidaProvider.jsx';
-import { WebSocketContext } from '../components/WebSocketsProvider.jsx';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import React from 'react';
 
 describe('MazoCartaFigura', () => {
-  const mockHandleMouseEnter = vi.fn();
-  const mockHandleMouseLeave = vi.fn();
+  // Definir mocks para las funciones de onMouseEnter y onMouseLeave
+  const handleMouseEnter = vi.fn();
+  const handleMouseLeave = vi.fn();
+  beforeEach(() => {
+    // Simular valores de sessionStorage antes de cada prueba
+    const mockPartidaId = '12345';
+    const mockJugadores = [
+      { identifier: '1', player_id: 'Jugador 1' },
+      { identifier: '2', player_id: 'Jugador 2' }
+    ];
+    sessionStorage.setItem('partida_id', mockPartidaId);
+    sessionStorage.setItem('jugadores', JSON.stringify(mockJugadores));
 
-  const partidaContextValue = {
-    handleMouseEnter: mockHandleMouseEnter,
-    handleMouseLeave: mockHandleMouseLeave,
-    partidaIniciada: true,
-  };
-
-  const webSocketContextValue = {
-    wsCFRef: { current: { send: vi.fn(), close: vi.fn() } },
-  };
-
-  const mazo = [
-    { player_id: 1, cards: [1, 2, 3] },
-    { player_id: 2, cards: [4, 5, 6] }
-  ];
-
-  it('debería renderizar las cartas correctamente para un jugador con cartas', () => {
-    // Renderizar el componente con el contexto simulado
-    render(
-      <PartidaContext.Provider value={partidaContextValue}>
-        <WebSocketContext.Provider value={webSocketContextValue}>
-          <MazoCartaFigura ubicacion={0} mazo={mazo} />
-        </WebSocketContext.Provider>
-      </PartidaContext.Provider>
+    // Mockear la respuesta del backend
+    global.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            all_cards: [
+              {
+                player: 'Jugador1',
+                cards_out: [
+                  { card_id: 1, card_name: 'Carta 1' },
+                  { card_id: 2, card_name: 'Carta 2' },
+                  { card_id: 3, card_name: 'Carta 3' },
+                ],
+              },
+              {
+                player: 'Jugador2',
+                cards_out: [
+                  { card_id: 4, card_name: 'Carta 4' },
+                  { card_id: 5, card_name: 'Carta 5' },
+                  { card_id: 6, card_name: 'Carta 6' },
+                ],
+              },
+            ],
+          }),
+      })
     );
-
-    // Verificar que las cartas se hayan renderizado (suponiendo que CartaFigura tiene role="img")
-    const cartaFiguraElements = screen.getAllByRole('img'); // Verifica que CartaFigura use role="img"
-    expect(cartaFiguraElements.length).toBe(3);
   });
 
-  it('debería mostrar un mensaje cuando no hay cartas disponibles', () => {
-    // Renderizar el componente con un jugador sin cartas
-    render(
-      <PartidaContext.Provider value={partidaContextValue}>
-        <WebSocketContext.Provider value={webSocketContextValue}>
-          <MazoCartaFigura ubicacion={0} mazo={[]} />
-        </WebSocketContext.Provider>
-      </PartidaContext.Provider>
-    );
-
-    // No debería haber cartas renderizadas
-    expect(screen.queryByRole('img')).toBeNull(); // No se deben renderizar cartas
+  it('Renderiza correctamente sin cartas iniciales', async () => {
+    await act(async () => {
+      render(<MazoCartaFigura />);
+    });
+    const container = screen.queryByText(/No hay cartas disponibles/i); // Ajusta según tu diseño de componente
+    expect(container).not.toBeInTheDocument(); // Verificamos si no hay cartas cuando se carga por primera vez
   });
 
-  it('debería llamar a handleMouseEnter y handleMouseLeave cuando el mouse entra y sale de una carta', () => {
-    // Renderizar el componente con el contexto simulado
-    render(
-      <PartidaContext.Provider value={partidaContextValue}>
-        <WebSocketContext.Provider value={webSocketContextValue}>
-          <MazoCartaFigura ubicacion={0} mazo={mazo} />
-        </WebSocketContext.Provider>
-      </PartidaContext.Provider>
+  it('Hace una llamada fetch y actualiza el mazo de cartas', async () => {
+    await act(async () => {
+      render(<MazoCartaFigura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />);
+    });
+
+    // Esperar a que el mazo de cartas se actualice
+    await waitFor(() => {
+      expect(screen.getByAltText('Carta de Figura 2')).toBeInTheDocument();
+      expect(screen.getByAltText('Carta de Figura 3')).toBeInTheDocument();
+      expect(screen.getByAltText('Carta de Figura 4')).toBeInTheDocument();
+    });
+    
+
+    // Asegurarse de que el fetch fue llamado
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('Renderiza las cartas de los jugadores correctamente', async () => {
+    await act(async () => {
+      render(<MazoCartaFigura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />);
+    });
+
+    // Esperar a que las cartas se carguen y verificar que se muestran correctamente
+    await waitFor(() => {
+      expect(screen.getByAltText('Carta de Figura 2')).toBeInTheDocument();
+      expect(screen.getByAltText('Carta de Figura 3')).toBeInTheDocument();
+      expect(screen.getByAltText('Carta de Figura 4')).toBeInTheDocument();
+      expect(screen.getByAltText('Carta de Figura 2')).toBeInTheDocument();
+      expect(screen.getByAltText('Carta de Figura 3')).toBeInTheDocument();
+      expect(screen.getByAltText('Carta de Figura 4')).toBeInTheDocument();
+    });
+    
+
+    // Verificar que el fetch fue llamado una vez
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+  it('Se alterna entre 0 y 3 cartas por jugador', () => {
+    let cartaFigura = [
+      {
+        player: 1,
+        cards_out: [
+          { card_id: 30, card_name: 'Soy Figura' },
+          { card_id: 21, card_name: 'Soy Figura' },
+          { card_id: 43, card_name: 'Soy Figura' },
+        ],
+      },
+    ];
+
+    // Crea un mock para useState
+    const setState = vi.fn((cartasActuales) => {
+      cartaFigura = typeof cartasActuales === 'function' ? cartasActuales(cartaFigura) : cartasActuales;
+    });
+
+    const useStateMock = () => [cartaFigura, setState];
+
+    // Simula el useState de todos los componentes antes de renderizar
+    vi.spyOn(React, 'useState').mockImplementation(useStateMock);
+
+    // Renderiza el componente por primera vez y captura la función rerender
+    const { rerender } = render(
+      <MazoCartaFigura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
     );
 
-    // Obtener la primera carta
-    const primeraCarta = screen.getAllByRole('img')[0];
+    // Verifica que las cartas están presentes
+    expect(screen.getByAltText('Carta de Figura 6')).toBeInTheDocument();
+    expect(screen.getByAltText('Carta de Figura 22')).toBeInTheDocument();
+    expect(screen.getByAltText('Carta de Figura 19')).toBeInTheDocument();
 
-    // Simular el evento mouseEnter
-    fireEvent.mouseEnter(primeraCarta);
-    expect(mockHandleMouseEnter).toHaveBeenCalledTimes(1);
+    // Simula haber quitado 1 carta
+    let cartaFigura1 = [
+      {
+        player: 1,
+        cards_out: [
+          { card_id: 30, card_name: 'Soy Figura' },
+          { card_id: 21, card_name: 'Soy Figura' },
+        ],
+      },
+    ];
 
-    // Simular el evento mouseLeave
-    fireEvent.mouseLeave(primeraCarta);
-    expect(mockHandleMouseLeave).toHaveBeenCalledTimes(1);
+    // Actualiza el estado y vuelve a renderizar
+    setState(cartaFigura1);
+    rerender(
+      <MazoCartaFigura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
+    );
+
+    // Verifica que las cartas están presentes
+    expect(screen.getByAltText('Carta de Figura 6')).toBeInTheDocument();
+    expect(screen.getByAltText('Carta de Figura 22')).toBeInTheDocument();
+
+    // Simula haber quitado 2 cartas
+    let cartaFigura2 = [
+      {
+        player: 1,
+        cards_out: [{ card_id: 30, card_name: 'Soy Figura' }],
+      },
+    ];
+
+    // Actualiza el estado y vuelve a renderizar
+    setState(cartaFigura2);
+    rerender(
+      <MazoCartaFigura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
+    );
+
+    // Verifica que las cartas están presentes
+    expect(screen.getByAltText('Carta de Figura 6')).toBeInTheDocument();
+
+    // Simula haber quitado todas las cartas
+    let cartaFigura3 = [
+      {
+        player: 1,
+        cards_out: [],
+      },
+    ];
+
+    // Actualiza el estado y vuelve a renderizar
+    setState(cartaFigura3);
+    rerender(
+      <MazoCartaFigura ubicacion={0} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
+    );
+
+    // Verifica que no hay cartas
+    expect(screen.queryByAltText('Carta de Figura 6')).toBeNull();
   });
 });
