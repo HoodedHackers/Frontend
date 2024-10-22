@@ -1,41 +1,41 @@
 .boardContainer {
-  grid-area: board;
-  display: grid;
-  place-items: center;
-  border: 6px solid; 
-  border-image: linear-gradient(to bottom right, #cccccc, #999999) 1;
-  box-sizing: border-box;
-}
-
-.square {
-  width: 40px; 
-  height: 40px;
-  cursor: pointer;
-  border-radius: 8px; 
-  margin: 0;
-}
-
-.square.selected {
-  animation: neonGlow 2s infinite; /* Animación del resplandor */
-
-}
-
-.square.highlighted {
-    border: 3px solid #fcf8f8;
-}
-
-.boardRow {
-  display: flex;
-}
-
-@keyframes neonGlow {
-  0% {
-    box-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff, 0 0 30px #ffff00;
+    grid-area: board;
+    display: grid;
+    place-items: center;
+    border: 6px solid; 
+    border-image: linear-gradient(to bottom right, #cccccc, #999999) 1;
+    box-sizing: border-box;
   }
-  50% {
-    box-shadow: 0 0 20px #00ffff, 0 0 30px #ffff00, 0 0 40px #ff00ff;
+  
+  .square {
+    width: 40px; 
+    height: 40px;
+    cursor: pointer;
+    border-radius: 8px; 
+    margin: 0;
   }
-  100% {
-    box-shadow: 0 0 10px #ffff00, 0 0 20px #ff00ff, 0 0 30px #00ffff;
+  
+  .square.selected {
+    animation: neonGlow 2s infinite; /* Animación del resplandor */
+  
   }
-}
+  
+  .square.highlighted {
+      border: 3px solid #fcf8f8;
+  }
+  
+  .boardRow {
+    display: flex;
+  }
+  
+  @keyframes neonGlow {
+    0% {
+      box-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff, 0 0 30px #ffff00;
+    }
+    50% {
+      box-shadow: 0 0 20px #00ffff, 0 0 30px #ffff00, 0 0 40px #ff00ff;
+    }
+    100% {
+      box-shadow: 0 0 10px #ffff00, 0 0 20px #ff00ff, 0 0 30px #00ffff;
+    }
+  }
