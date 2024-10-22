@@ -11,7 +11,6 @@ import Temporizador from "./Temporizador/Temporizador.jsx";
 import { WebSocketContext } from '../WebSocketsProvider.jsx';
 import "./Partida.css";
 import { useNavigate } from "react-router-dom";
-import { set } from "react-hook-form";
 
 function Partida() {
   const navigate = useNavigate();
@@ -22,22 +21,17 @@ function Partida() {
     setPartidaIniciada,
     tiempoLimite,
     setJugadores,
-    jugadores = [], // Agrega una inicialización vacía aquí
+    jugadores,
     posicionJugador,
     setPosicionJugador,
-    jugadorActualIndex,
     setJugadorActualIndex,
-    jugando,
     setJugando,
     isOverlayVisible,
-    jugadorActualId,
     setJugadorActualId,
-    cartaMovimientoActualId,
     setCartaMovimientoActualId,
-    cartaMovimientoActualIndex,
     setCartaMovimientoActualIndex,
     cantidadCartasMovimientoJugadorActual,
-    setCantidadCartasMovimientoJugadorActual,
+    setCantidadCartasMovimientoJugadorActual
   } = useContext(PartidaContext);
 
   useEffect(() => {
@@ -208,13 +202,14 @@ function Partida() {
           setCartaMovimientoActualIndex(data.index);
         }
         else if (data.action === "use_card" || data.action === "recover_card") {
-          sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", data.len);
-          setCantidadCartasMovimientoJugadorActual(data.len);
           setJugando(false);
         }
         else {
-          console.warn("Acción no reconocida.", data);
+          throw new Error("Acción no reconocida."); 
         }
+
+        sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", data.len);
+        setCantidadCartasMovimientoJugadorActual(data.len);
         console.log("Mensaje recibido del WebSocket de Usar Carta de Movimiento:", data);
       }
 

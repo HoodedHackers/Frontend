@@ -67,32 +67,40 @@ export const CartasMovimientoMano = ({ubicacion, jugadorId}) => {
         {cartasDelJugador.length > 0 ? (
           cartasDelJugador.map((carta, index) => (
             ubicacion === 0 ? (
-              <div key={index}>
-                <CartaMovimiento
-                  id={carta} 
-                  ubicacion={ubicacion}
-                  index={index}
-                />
-              </div>
+              ((index + 1) <= cantidadCartasMovimientoJugadorActual) || cantidadCartasMovimientoJugadorActual === null ? (
+                <div key={index}>
+                  <CartaMovimiento
+                    id={carta} 
+                    ubicacion={ubicacion}
+                    index={index}
+                  />
+                </div>
+              ) : (
+                null
+              )
             ) : (
               jugadorId === jugadorActualId ? (
-                Array.from({ length: cantidadCartasMovimientoJugadorActual }).map((_, index) => (
+                cartaMovimientoActualIndex === index ? (
                   <div key={index}>
-                    {cartaMovimientoActualIndex === index ? (
-                      <CartaMovimiento
-                        id={cartaMovimientoActualId}
-                        ubicacion={ubicacion}
-                        index={index}
-                      />
-                    ) : (
-                      <CartaMovimiento
-                        id={-1}
-                        ubicacion={ubicacion}
-                        index={index}
-                      />
-                    )}
+                    <CartaMovimiento
+                      id={cartaMovimientoActualId} 
+                      ubicacion={ubicacion}
+                      index={index}
+                    />
                   </div>
-                ))
+                ) : (
+                  (index + 1) <= cantidadCartasMovimientoJugadorActual ? (
+                    <div key={index}>
+                      <CartaMovimiento
+                        id={-1} 
+                        ubicacion={ubicacion}
+                        index={index}
+                      />
+                    </div>
+                  ) : (
+                    null
+                  )
+                )
               ) : (
                 <div key={index}>
                   <CartaMovimiento
