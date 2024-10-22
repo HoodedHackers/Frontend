@@ -181,7 +181,7 @@ function Partida() {
       }
     }, [wsStartGameRef.current]);
 
-// Conectar al WebSocket de Usar Carta de Movimiento
+  // Conectar al WebSocket de Usar Carta de Movimiento
   useEffect(() => {
     if (wsUCMRef.current && wsUCMRef.current.readyState !== WebSocket.CLOSED) {
       return;
@@ -194,13 +194,23 @@ function Partida() {
 
       wsUCMRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
+        if (data.action === "select") {
+          sessionStorage.setItem("jugadorActualId", data.player_id);
+          setJugadorActualId(data.player_id);
+          sessionStorage.setItem("cartaMovimientoActualId", data.card_id);
+          setCartaMovimientoActualId(data.card_id);
+          sessionStorage.setItem("cartaMovimientoActualIndex", data.index);
+          setCartaMovimientoActualIndex(data.index);
+        }
+        else if (data.action === "use_card" || data.action === "recover_card") {
+          setJugando(false);
+        }
+        else {
+          throw new Error("Acción no reconocida."); 
+        }
 
-        sessionStorage.setItem("jugadorActualId", data.player_id);
-        setJugadorActualId(data.player_id);
-        sessionStorage.setItem("cartaMovimientoActualId", data.card_id);
-        setCartaMovimientoActualId(data.card_id);
-        sessionStorage.setItem("cartaMovimientoActualIndex", data.index);
-        setCartaMovimientoActualIndex(data.index);
+        sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", data.len);
+        setCantidadCartasMovimientoJugadorActual(data.len);
         console.log("Mensaje recibido del WebSocket de Usar Carta de Movimiento:", data);
       }
 

@@ -11,6 +11,7 @@ export const TableroContext = createContext();
 export const TableroProvider = ({ children }) => {
   const [squares, setSquares] = useState(generateInitialColors());
   const [figurasEnTablero, setFigurasEnTablero] = useState([]); 
+  // figurasEnTablero es un arreglo de objetos con la siguiente estructura:
   //  [
   //    {
   //      "player_id": int,
