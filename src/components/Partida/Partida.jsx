@@ -11,7 +11,6 @@ import Temporizador from "./Temporizador/Temporizador.jsx";
 import { WebSocketContext } from '../WebSocketsProvider.jsx';
 import "./Partida.css";
 import { useNavigate } from "react-router-dom";
-import { set } from "react-hook-form";
 
 function Partida() {
   const navigate = useNavigate();
@@ -22,22 +21,16 @@ function Partida() {
     setPartidaIniciada,
     tiempoLimite,
     setJugadores,
-    jugadores = [], // Agrega una inicialización vacía aquí
+    jugadores,
     posicionJugador,
     setPosicionJugador,
-    jugadorActualIndex,
     setJugadorActualIndex,
-    jugando,
     setJugando,
     isOverlayVisible,
-    jugadorActualId,
     setJugadorActualId,
     cartaMovimientoActualId,
     setCartaMovimientoActualId,
-    cartaMovimientoActualIndex,
     setCartaMovimientoActualIndex,
-    mazo,
-    setMazo,
     cantidadCartasMovimientoJugadorActual,
     setCantidadCartasMovimientoJugadorActual
   } = useContext(PartidaContext);
@@ -201,23 +194,13 @@ function Partida() {
 
       wsUCMRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        if (data.action === "select") {
-          sessionStorage.setItem("jugadorActualId", data.player_id);
-          setJugadorActualId(data.player_id);
-          sessionStorage.setItem("cartaMovimientoActualId", data.card_id);
-          setCartaMovimientoActualId(data.card_id);
-          sessionStorage.setItem("cartaMovimientoActualIndex", data.index);
-          setCartaMovimientoActualIndex(data.index);
-        }
-        else if (data.action === "use_card" || data.action === "recover_card") {
-          setJugando(false);
-        }
-        else {
-          throw new Error("Acción no reconocida."); 
-        }
 
-        sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", data.len);
-        setCantidadCartasMovimientoJugadorActual(data.len);
+        sessionStorage.setItem("jugadorActualId", data.player_id);
+        setJugadorActualId(data.player_id);
+        sessionStorage.setItem("cartaMovimientoActualId", data.card_id);
+        setCartaMovimientoActualId(data.card_id);
+        sessionStorage.setItem("cartaMovimientoActualIndex", data.index);
+        setCartaMovimientoActualIndex(data.index);
         console.log("Mensaje recibido del WebSocket de Usar Carta de Movimiento:", data);
       }
 
