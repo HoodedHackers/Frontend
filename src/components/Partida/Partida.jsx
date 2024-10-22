@@ -31,6 +31,8 @@ function Partida() {
     setJugadorActualId,
     setCartaMovimientoActualId,
     setCartaMovimientoActualIndex,
+    mazo,
+    setMazo,
     cantidadCartasMovimientoJugadorActual,
     setCantidadCartasMovimientoJugadorActual
   } = useContext(PartidaContext);
@@ -82,6 +84,7 @@ function Partida() {
   function reorderPlayers (players) {
     if (players && Array.isArray(players)) {
       const posicionJugador = players.findIndex(jugador => jugador.player_id === parseInt(sessionStorage.getItem("player_id"), 10));
+      console.log(posicionJugador);
       setPosicionJugador(posicionJugador);
       if (posicionJugador !== -1) {
         let playersAux = players[0];
@@ -98,7 +101,7 @@ function Partida() {
     return null;
   }
 
-  const { wsUPRef, wsStartGameRef, wsTRef, wsUCMRef } = useContext(WebSocketContext);
+  const { wsUPRef, wsStartGameRef, wsTRef, wsUCMRef, wsCFRef } = useContext(WebSocketContext);
 
   useEffect(() => {
     try {
@@ -142,6 +145,7 @@ function Partida() {
     sessionStorage.setItem('partidaIniciada', "true");
     setPartidaIniciada(true);
     reorderPlayers(JSON.parse(sessionStorage.getItem("players")));
+    //reorderFigs(JSON.parse(sessionStorage.getItem("figs")));
     console.log("Partida iniciada");
   }
 
@@ -245,6 +249,55 @@ function Partida() {
 		};
 	}, [player_id, partidaID, wsTRef]);
 
+  useEffect(() => {
+    if (wsCFRef.current && wsCFRef.current.readyState !== WebSocket.CLOSED) {
+      return;
+    }
+    try {
+      // Crear la conexión WebSocket
+      wsCFRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaID}/figs?player_id=${player_id}`);
+
+      // Manejar mensajes recibidos del WebSocket
+      wsCFRef.current.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        if (data) {
+          setMazo((prevMazo) => {
+            // Verifica si el player_id ya está en el estado anterior
+            const existingPlayer = prevMazo.find(item => item.player_id === data.player_id);
+  
+            if (existingPlayer) {
+              // Si ya existe, actualiza las cartas para ese player_id
+              return prevMazo.map(item => 
+                item.player_id === data.player_id 
+                ? { ...item, cards: data.cards }
+                : item
+              );
+            } else {
+              // Si no existe, agrega el nuevo player_id con sus cartas
+              return [...prevMazo, data];
+            }
+          });
+          sessionStorage.setItem("figs", JSON.stringify(mazo));
+        }
+      };
+
+
+      // Manejar errores en la conexión
+      wsCFRef.current.onerror = (error) => {
+        console.error('Error en WebSocket:', error);
+      };
+
+      // Manejar la desconexión del WebSocket
+      wsCFRef.current.onclose = () => {
+        console.log('Conexión WebSocket cerrada');
+      };
+
+    } catch (error) {
+      console.error('Error al conectar con el WebSocket:', error);
+    }
+  }, [wsCFRef.current, partidaIniciada]);
+  
   const handleCloseModal = () => {
     const partidaID = sessionStorage.getItem('partida_id');
     wsUPRef.current.close();
@@ -253,7 +306,7 @@ function Partida() {
     sessionStorage.removeItem('isOwner');
     sessionStorage.removeItem('timeLeft');
     sessionStorage.removeItem('partidaIniciada');
-    setShowModal(false);  // Cerrar el modal
+    setShowModal(false);
     navigate('/Opciones');
   };
 
