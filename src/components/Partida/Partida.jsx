@@ -209,8 +209,8 @@ function Partida() {
           throw new Error("Acción no reconocida."); 
         }
 
-        sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", data.len);
-        setCantidadCartasMovimientoJugadorActual(data.len);
+        sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", data.len - 1);
+        setCantidadCartasMovimientoJugadorActual(data.len) - 1;
         console.log("Mensaje recibido del WebSocket de Usar Carta de Movimiento:", data);
       }
 
