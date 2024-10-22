@@ -8,7 +8,13 @@ export const CartasMovimientoContext = createContext();
 export const CartasMovimientoMano = ({ubicacion, jugadorId}) => {
   const [seleccionada, setSeleccionada] = useState(null);
   const [cartasDelJugador, setCartasDelJugador] = useState([]);
-  const { partidaIniciada, jugadorActualId, cartaMovimientoActualId, cartaMovimientoActualIndex } = useContext(PartidaContext);
+  const {
+    partidaIniciada,
+    jugadorActualId, 
+    cartaMovimientoActualId, 
+    cartaMovimientoActualIndex ,
+    cantidadCartasMovimientoJugadorActual
+  } = useContext(PartidaContext);
 
 
   // Actualiza las cartas de movimiento al comenzar la partida
@@ -70,23 +76,23 @@ export const CartasMovimientoMano = ({ubicacion, jugadorId}) => {
               </div>
             ) : (
               jugadorId === jugadorActualId ? (
-                cartaMovimientoActualIndex === index ? (
+                Array.from({ length: cantidadCartasMovimientoJugadorActual }).map((_, index) => (
                   <div key={index}>
-                    <CartaMovimiento
-                      id={cartaMovimientoActualId} 
-                      ubicacion={ubicacion}
-                      index={index}
-                    />
+                    {cartaMovimientoActualIndex === index ? (
+                      <CartaMovimiento
+                        id={cartaMovimientoActualId}
+                        ubicacion={ubicacion}
+                        index={index}
+                      />
+                    ) : (
+                      <CartaMovimiento
+                        id={-1}
+                        ubicacion={ubicacion}
+                        index={index}
+                      />
+                    )}
                   </div>
-                ) : (
-                  <div key={index}>
-                    <CartaMovimiento
-                      id={-1} 
-                      ubicacion={ubicacion}
-                      index={index}
-                    />
-                  </div>
-                )
+                ))
               ) : (
                 <div key={index}>
                   <CartaMovimiento
