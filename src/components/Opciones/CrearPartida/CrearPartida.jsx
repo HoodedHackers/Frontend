@@ -79,7 +79,7 @@ export default function CrearPartida() {
 
                 setTimeout(() => {
                     navigate(`/Partida/${partidaId}`);
-                }, 500);
+                }, 1000);
             } else {
                 const errorData = await response.json();
                 console.error('Error al crear la partida:', errorData.detail);
