@@ -6,12 +6,12 @@ import TableroWithProvider from "./Tablero/TableroContainer.jsx";
 import MazoCartaFigura from "./CartaFigura/MazoCartaFigura.jsx";
 import IniciarPartida from "./IniciarPartida/IniciarPartida.jsx";
 import AbandonarPartida from "./AbandonarPartida/AbandonarPartida.jsx";
-import CancelarMovimiento from "./CancelarMovimiento/CancelarMovimientos.jsx";
 import PasarTurno from "./PasarTurno/PasarTurno.jsx";
 import Temporizador from "./Temporizador/Temporizador.jsx";
 import { WebSocketContext } from '../WebSocketsProvider.jsx';
 import "./Partida.css";
 import { useNavigate } from "react-router-dom";
+import { set } from "react-hook-form";
 
 function Partida() {
   const navigate = useNavigate();
@@ -22,14 +22,19 @@ function Partida() {
     setPartidaIniciada,
     tiempoLimite,
     setJugadores,
-    jugadores,
+    jugadores = [], // Agrega una inicialización vacía aquí
     posicionJugador,
     setPosicionJugador,
+    jugadorActualIndex,
     setJugadorActualIndex,
+    jugando,
     setJugando,
     isOverlayVisible,
+    jugadorActualId,
     setJugadorActualId,
+    cartaMovimientoActualId,
     setCartaMovimientoActualId,
+    cartaMovimientoActualIndex,
     setCartaMovimientoActualIndex,
     cantidadCartasMovimientoJugadorActual,
     setCantidadCartasMovimientoJugadorActual
@@ -194,23 +199,13 @@ function Partida() {
 
       wsUCMRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        if (data.action === "select") {
-          sessionStorage.setItem("jugadorActualId", data.player_id);
-          setJugadorActualId(data.player_id);
-          sessionStorage.setItem("cartaMovimientoActualId", data.card_id);
-          setCartaMovimientoActualId(data.card_id);
-          sessionStorage.setItem("cartaMovimientoActualIndex", data.index);
-          setCartaMovimientoActualIndex(data.index);
-        }
-        else if (data.action === "use_card" || data.action === "recover_card") {
-          setJugando(false);
-        }
-        else {
-          throw new Error("Acción no reconocida."); 
-        }
 
-        sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", data.len);
-        setCantidadCartasMovimientoJugadorActual(data.len);
+        sessionStorage.setItem("jugadorActualId", data.player_id);
+        setJugadorActualId(data.player_id);
+        sessionStorage.setItem("cartaMovimientoActualId", data.card_id);
+        setCartaMovimientoActualId(data.card_id);
+        sessionStorage.setItem("cartaMovimientoActualIndex", data.index);
+        setCartaMovimientoActualIndex(data.index);
         console.log("Mensaje recibido del WebSocket de Usar Carta de Movimiento:", data);
       }
 
@@ -283,9 +278,6 @@ function Partida() {
         {isOverlayVisible && <div className="overlay-supremo"></div>}
         <AbandonarPartida />
       </div>
-      <div className="cancelar-movimientos-container">
-      <CancelarMovimiento jugadorActual={activePlayer} />
-    </div>
       <div className="pasar-turno-container">
         <PasarTurno
           onTurnoCambiado={manejarFinTurno}
