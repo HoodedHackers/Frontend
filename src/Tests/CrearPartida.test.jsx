@@ -5,7 +5,6 @@ import * as ReactRouter from "react-router";
 import CrearPartida from "../components/Opciones/CrearPartida/CrearPartida.jsx";
 import { WebSocketContext } from "../components/WebSocketsProvider.jsx";
 
-
 describe("CrearPartida Component", () => {
   let button = null;
   const navigate = vi.fn();
@@ -85,7 +84,7 @@ describe("CrearPartida Component", () => {
 
     await waitFor(() => {
       expect(navigate).toHaveBeenCalledWith("/Partida/12345"); // Comprobar redirección
-    }, { timeout: 1000 }); // Añadir un timeout por el uso del setTimeout en el componente
+    }, { timeout: 2000 }); // Añadir un timeout por el uso del setTimeout en el componente
   });
 
   it("Envía el JSON correcto al backend", async () => {

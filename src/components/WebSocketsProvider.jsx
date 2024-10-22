@@ -18,7 +18,7 @@ export const WebSocketProvider = ({ children }) => {
         wsUCMRef,
         wsStartGameRef,
         wsTRef,
-        wsBSRef,
+        wsBSRef
       }}
     >
       {children}

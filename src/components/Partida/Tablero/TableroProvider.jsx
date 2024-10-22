@@ -14,6 +14,8 @@ export const TableroProvider = ({ children }) => {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [turnoActual, setTurnoActual] = useState(0);
   const [jugadoresActivos, setJugadoresActivos] = useState([true, true, true, true]);
+  const { cartaMovimientoActualId, cartaMovimientoActualIndex } = useContext(PartidaContext);
+  const { wsBSRef } = useContext(WebSocketContext);
 
 
   // Colores disponibles
@@ -74,7 +76,6 @@ function numbersToSquares(colores, posicionesResaltadas) {
 
       // Obtener el ID de la carta en uso y el identifier (esto debería estar de
       const identifier = sessionStorage.getItem("identifier");
-
 
       // Enviar la información al backend
       enviarMovimiento(identifier, origen, destino);
