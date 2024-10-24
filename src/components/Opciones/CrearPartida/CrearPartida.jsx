@@ -7,8 +7,8 @@ export default function CrearPartida() {
     const { wsUPRef } = useContext(WebSocketContext); 
     const [partidaDatos, setPartidaDatos] = useState({
         nombre: '',
-        min_jugadores: '',
-        max_jugadores: ''
+        min_jugadores: '2',
+        max_jugadores: '2'
     })
 
     const navigate = useNavigate();

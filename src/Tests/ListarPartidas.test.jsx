@@ -76,7 +76,7 @@ describe('ListarPartidas Component', () => {
     );
 
     // Verificar que se muestra un mensaje indicando que no hay partidas
-    const message = screen.getByText(/No hay partidas disponibles en este momento. Por favor, intente crear una partida./i);
+    const message = screen.getByText(/No se encontraron partidas, pruebe con otro nombre o número de jugadores./i);
     expect(message).toBeInTheDocument();
   });
 
@@ -117,30 +117,6 @@ describe('ListarPartidas Component', () => {
     expect(screen.getByText('Partida Mati')).toBeInTheDocument();
   });
 
-  it('Se conecta con el WebSocket de Listar Partidas', async () => {
-    //const socketMock = createWebSocketMock(); // Crear el mock del WebSocket
-  //
-    //// Mockear el constructor del WebSocket para que devuelva nuestro mock
-    //global.WebSocket = vi.fn(() => socketMock);
-//
-    //const consoleLogMock = vi.spyOn(console, 'log').mockImplementation(() => {})
-  //
-    //render(
-    //  <WebSocketProvider>
-    //    <ListarPartidas />
-    //  </WebSocketProvider>
-    //);
-  //
-    //// Simular que la conexión se abre
-    //socketMock.triggerOpen();
-  //
-    //// Verificar que se registró la conexión en el log
-    //await waitFor(() => {
-    //  expect(consoleLogMock).toHaveBeenCalledWith("WebSocket de Listar Partida conectado");
-    //});
-  });
-  
-
   it('Muestra un error si el WebSocket de Listar Partidas falla', () => {
 
   });
@@ -170,3 +146,4 @@ describe('ListarPartidas Component', () => {
   });
 
 });
+
