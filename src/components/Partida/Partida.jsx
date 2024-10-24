@@ -32,7 +32,9 @@ function Partida() {
     setCartaMovimientoActualId,
     setCartaMovimientoActualIndex,
     cantidadCartasMovimientoJugadorActual,
-    setCantidadCartasMovimientoJugadorActual
+    setCantidadCartasMovimientoJugadorActual,
+    mazo,
+    setMazo,
   } = useContext(PartidaContext);
 
   useEffect(() => {
@@ -98,7 +100,7 @@ function Partida() {
     return null;
   }
 
-  const { wsUPRef, wsStartGameRef, wsTRef, wsUCMRef } = useContext(WebSocketContext);
+  const { wsUPRef, wsStartGameRef, wsTRef, wsUCMRef, wsCFRef } = useContext(WebSocketContext);
 
   useEffect(() => {
     try {
@@ -245,69 +247,35 @@ function Partida() {
 		};
 	}, [player_id, partidaID, wsTRef]);
 
-  /*useEffect(() => {
-    const partidaID = sessionStorage.getItem('partida_id'); // Obtén el ID de la partida
-
-    const handleStorageChange = (event) => {
-        if (event.key === `hostAbandono_partida_${partidaID}` && event.newValue === 'true') {
-          setModalMessage('El host ha abandonado la partida. Serás redirigido.');
-          setShowModal(true);  // Mostrar el modal
-          wsUPRef.current.close();
-          sessionStorage.removeItem('players');
-          localStorage.removeItem(`hostAbandono_partida_${partidaID}`);
-          sessionStorage.removeItem('partida_id');
-          sessionStorage.removeItem('isOwner');
-          sessionStorage.removeItem('timeLeft');
-          localStorage.removeItem(`partidaIniciada_${partidaID}`);
-          sessionStorage.removeItem('partidaIniciada');
-          navigate('/Opciones');
-        }
-    };
-
-    // Añadir el listener para cambios en localStorage
-    window.addEventListener('storage', handleStorageChange);
-
-    return () => {
-        // Limpiar el listener cuando el componente se desmonte
-        window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
-
   useEffect(() => {
-    const partidaID = sessionStorage.getItem('partida_id'); // Obtén el ID de la partida
-    const isPartidaOn = localStorage.getItem(`partidaIniciada_${partidaID}`); // Obtén el estado de la partida
+    if (wsCFRef.current && wsCFRef.current.readyState !== WebSocket.CLOSED) {
+      return;
+    }
+    try {
+      // Crear la conexión WebSocket
+      wsCFRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaID}/figs?player_id=${player_id}`);
 
-    const handleStorageChange = (event) => {
-      if (event.key === `players_${partidaID}`) {
-        const players = JSON.parse(localStorage.getItem(`players_${partidaID}`)); // Obtener el arreglo desde localStorage
-        const isPartidaOn = localStorage.getItem(`partidaIniciada_${partidaID}`); // Obtén el estado de la partida
+      // Manejar mensajes recibidos del WebSocket
+      wsCFRef.current.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log('data de websocket:', data);
+        setMazo(data);
+      };
 
-        if (Array.isArray(players) && players.length === 1 && isPartidaOn === 'true') {
-          const playerName = players[0].player_name;
-          setModalMessage(`¡Felicitaciones ${playerName} Ganaste el juego!`);
-          setShowModal(true);  // Mostrar el modal
-          wsUPRef.current.close();
-          sessionStorage.removeItem('players');
-          localStorage.removeItem(`hostAbandono_partida_${partidaID}`);
-          sessionStorage.removeItem('partida_id');
-          sessionStorage.removeItem('isOwner');
-          sessionStorage.removeItem('timeLeft');
-          localStorage.removeItem(`players_${partidaID}`);
-          sessionStorage.removeItem('partidaIniciada');
-          localStorage.removeItem(`partidaIniciada_${partidaID}`);
-          navigate('/Opciones');
-        }
-      }
-    };
+      // Manejar errores en la conexión
+      wsCFRef.current.onerror = (error) => {
+        console.error('Error en WebSocket:', error);
+      };
 
-    // Añadir el listener para cambios en localStorage
-    window.addEventListener('storage', handleStorageChange);
+      // Manejar la desconexión del WebSocket
+      wsCFRef.current.onclose = () => {
+        console.log('Conexión WebSocket cerrada');
+      };
 
-    return () => {
-      // Limpiar el listener cuando el componente se desmonte
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);*/
+    } catch (error) {
+      console.error('Error al conectar con el WebSocket:', error);
+    }
+  }, [wsCFRef.current, partidaIniciada]);
 
   const handleCloseModal = () => {
     const partidaID = sessionStorage.getItem('partida_id');
