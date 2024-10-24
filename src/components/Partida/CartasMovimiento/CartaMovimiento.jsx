@@ -6,14 +6,13 @@ import "./CartaMovimiento.css";
 
 const CartaMovimiento = ({ id, ubicacion, index }) => {
   const Images = [
-    "/Imagenes/Movimiento/back-mov.svg",
+    "/Imagenes/Movimiento/mov7.svg",
     "/Imagenes/Movimiento/mov1.svg",
     "/Imagenes/Movimiento/mov2.svg",
     "/Imagenes/Movimiento/mov3.svg",
     "/Imagenes/Movimiento/mov4.svg",
     "/Imagenes/Movimiento/mov5.svg",
     "/Imagenes/Movimiento/mov6.svg",
-    "/Imagenes/Movimiento/mov7.svg",
   ];
 
   const { jugando, setJugando, handleMouseEnter, handleMouseLeave } =
@@ -47,16 +46,16 @@ const CartaMovimiento = ({ id, ubicacion, index }) => {
       onMouseLeave={handleMouseLeave}
     >
       <img
-        src={Images[(id % 7) + 1]}
-        alt={`Carta de Movimiento ${(id % 7) + 1}`}
+        src={id == -1 ? "/Imagenes/Movimiento/back-mov.svg" : Images[(id % 7) ]} 
+        alt={`Carta de Movimiento ${(id % 7)}`}
         className="carta-movimiento-img"
       />
     </div>
   ) : (
     <div className={"carta-movimiento-sin-hover"}>
       <img
-        src={Images[(id % 7) + 1]}
-        alt={`Carta de Movimiento ${(id % 7) + 1}`}
+        src={id == -1 ? "/Imagenes/Movimiento/back-mov.svg" : Images[(id % 7)]} 
+        alt={`Carta de Movimiento ${(id % 7)}`}
         className="carta-movimiento-img"
       />
     </div>
