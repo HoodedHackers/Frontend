@@ -12,7 +12,6 @@ function ListarPartidas() {
   const navigate = useNavigate();
   const { wsLPRef, wsUPRef } = useContext(WebSocketContext);
 
-
   const Unirse = async (partidaID) => {
     try {
       // Conectar al WebSocket de Unirse a Partida
@@ -70,8 +69,6 @@ function ListarPartidas() {
           params.max_players = numJugadores;
         }
       }
-
-      params.limit = 100;
 
       // Convertir los parámetros a una cadena de consulta
       let query = new URLSearchParams(params).toString();
