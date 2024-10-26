@@ -132,11 +132,10 @@ function ListarPartidas() {
     };
   }, []);
 
-// Filtrar las partidas por el término de búsqueda por nombre y cantidad mínima de jugadores
-const partidasFiltradas = partidas.filter((partida) =>
-  partida.name.toLowerCase().startsWith(filtroNombre.toLowerCase()) && // Cambiado a startsWith
-  (filtroJugadores === "" || partida.current_players >= parseInt(filtroJugadores)) &&
-  partida.current_players < partida.max_players 
+  const partidasFiltradas = partidas.filter((partida) =>
+  partida.name.toLowerCase().startsWith(filtroNombre.toLowerCase()) &&
+  (filtroJugadores === "" || partida.current_players === parseInt(filtroJugadores)) &&
+  partida.current_players < partida.max_players
 );
 
   return (
