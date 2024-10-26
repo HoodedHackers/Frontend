@@ -128,6 +128,7 @@ function numbersToSquares(colores, posicionesResaltadas) {
 
       if (!response.ok) {
         console.error("Error al realizar el movimiento:", data.detail);
+        setCancelarMovimientos(true);
       }
     } catch (error) {
       console.error("Error al conectar con el servidor:", error);

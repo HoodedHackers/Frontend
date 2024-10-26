@@ -8,6 +8,7 @@ function PasarTurno({
 }) {
   const game_id = sessionStorage.getItem("partida_id");
 	let identifier = sessionStorage.getItem("identifier");
+  
   if (!game_id) {
     console.error("partidaId no está definido en sessionStorage");
     return;

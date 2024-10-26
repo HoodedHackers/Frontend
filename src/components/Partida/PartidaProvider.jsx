@@ -11,10 +11,9 @@ export const PartidaProvider = ({ children }) => {
 
   const [posicionJugador, setPosicionJugador] = useState();
 
-  //const [jugadorActualIndex, setJugadorActualIndex] = useState(parseInt(localStorage.getItem("jugadorActualIndex"), 10) || 0);
   const [jugadorActualIndex, setJugadorActualIndex] = useState(0);
 
-  const [jugando, setJugando] = useState(false); // True si se ha elegido una carta de movimiento
+  const [jugando, setJugando] = useState(false);
 
   const [isOverlayVisible, setIsOverlayVisible] = useState();
   
@@ -27,6 +26,9 @@ export const PartidaProvider = ({ children }) => {
   const [cartaMovimientoActualIndex, setCartaMovimientoActualIndex] = useState({});
 
   const [cantidadCartasMovimientoJugadorActual, setCantidadCartasMovimientoJugadorActual] = useState(null);
+
+  const [cancelarHabilitado, setCancelarHabilitado] = useState(false);
+
 
   const handleMouseEnter = () => {
     setIsOverlayVisible(true);
@@ -62,7 +64,9 @@ export const PartidaProvider = ({ children }) => {
         cartaMovimientoActualIndex,
         setCartaMovimientoActualIndex,
         cantidadCartasMovimientoJugadorActual,
-        setCantidadCartasMovimientoJugadorActual
+        setCantidadCartasMovimientoJugadorActual,
+        cancelarHabilitado,
+        setCancelarHabilitado
       }}
     >
       {children}
