@@ -2,10 +2,12 @@ import React, { useContext } from 'react';
 import './CancelarMovimientos.css';
 import { PartidaContext } from '../PartidaProvider.jsx';
 
-const CancelarMovimientos = ({ jugadorActual }) => {
-  const { partidaIniciada } = useContext(PartidaContext); // Accede a partidaIniciada
+
+const CancelarMovimientos = () => {
+  const { partidaIniciada } = useContext(PartidaContext);
   const ident = sessionStorage.getItem("identifier");
   const gameId = sessionStorage.getItem("partida_id");
+  const { setCancelarHabilitado } = useContext(PartidaContext);
 
   const cancelarMovimientos = async () => {
     try {
@@ -24,9 +26,8 @@ const CancelarMovimientos = ({ jugadorActual }) => {
       const data = await response.json();
       console.log('Movimientos cancelados:', data);
 
-      // Deshabilitar cartaMovimiento después de cancelar el movimiento
-      setCartaMovimiento(false);
-
+      // Deshabilitar el botón de cancelar movimientos
+      setCancelarHabilitado(false);
     } catch (error) {
       console.error('Error al deshacer el movimiento:', error);
     }
@@ -36,7 +37,9 @@ const CancelarMovimientos = ({ jugadorActual }) => {
 
   return (
     <div className="cancelar-movimientos-btn">
-      <button onClick={cancelarMovimientos}>
+      <button 
+      onClick={cancelarMovimientos}
+      >
         Cancelar Movimientos
       </button>
     </div>

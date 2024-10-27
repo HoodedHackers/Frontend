@@ -33,7 +33,9 @@ function Partida() {
     setCartaMovimientoActualId,
     setCartaMovimientoActualIndex,
     cantidadCartasMovimientoJugadorActual,
-    setCantidadCartasMovimientoJugadorActual
+    setCantidadCartasMovimientoJugadorActual,
+    cancelarHabilitado,
+    setCancelarHabilitado
   } = useContext(PartidaContext);
 
   useEffect(() => {
@@ -278,7 +280,8 @@ function Partida() {
         <TableroWithProvider />
       </div>
       <div className="cancelar-movimientos-container">
-        <CancelarMovimientos jugadorActual={activePlayer.player_name} />
+        <CancelarMovimientos 
+        jugadorActual={activePlayer.player_name} />
       </div>
       <div>
         {!partidaIniciada && <IniciarPartida empezarPartida={empezarPartida} />}

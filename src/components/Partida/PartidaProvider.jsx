@@ -30,6 +30,7 @@ export const PartidaProvider = ({ children }) => {
   const [cancelarHabilitado, setCancelarHabilitado] = useState(false);
 
 
+
   const handleMouseEnter = () => {
     setIsOverlayVisible(true);
   };
@@ -67,6 +68,7 @@ export const PartidaProvider = ({ children }) => {
         setCantidadCartasMovimientoJugadorActual,
         cancelarHabilitado,
         setCancelarHabilitado
+    
       }}
     >
       {children}

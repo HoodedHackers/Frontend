@@ -2,6 +2,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import {PartidaContext} from '../PartidaProvider';
 import { WebSocketContext } from '../../WebSocketsProvider.jsx';
+import { set } from 'react-hook-form';
 
 
 // Crear el contexto
@@ -36,7 +37,7 @@ export const TableroProvider = ({ children }) => {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [turnoActual, setTurnoActual] = useState(0);
   const [jugadoresActivos, setJugadoresActivos] = useState([true, true, true, true]);
-  const { cartaMovimientoActualId, cartaMovimientoActualIndex } = useContext(PartidaContext);
+  const { cartaMovimientoActualId, cartaMovimientoActualIndex} = useContext(PartidaContext);
   const { wsBSRef } = useContext(WebSocketContext);
 
 
@@ -128,7 +129,6 @@ function numbersToSquares(colores, posicionesResaltadas) {
 
       if (!response.ok) {
         console.error("Error al realizar el movimiento:", data.detail);
-        setCancelarMovimientos(true);
       }
     } catch (error) {
       console.error("Error al conectar con el servidor:", error);
