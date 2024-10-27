@@ -287,19 +287,6 @@ function Partida() {
     navigate('/Opciones');
   };
 
-  // Funcion para ordenar data.players segun el orden de jugadores.
-  function ordenarPlayers(dataPlayers, jugadores) {
-    // Obtenemos el orden de player_id desde jugadores
-    const ordenJugadorIds = jugadores.map(jugador => jugador.player_id);
-
-    // Ordenamos dataPlayers para que siga el orden de jugadores
-    const jugadoresOrdenados = [...dataPlayers].sort((a, b) => {
-        return ordenJugadorIds.indexOf(a.player_id) - ordenJugadorIds.indexOf(b.player_id);
-    });
-    
-    return jugadoresOrdenados;
-  }
-
   function empezarPartida() {
     sessionStorage.setItem('partidaIniciada', "true");
     setPartidaIniciada(true);
