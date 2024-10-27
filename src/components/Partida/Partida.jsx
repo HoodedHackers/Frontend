@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { PartidaContext, PartidaProvider } from './PartidaProvider.jsx';
 import Jugador from "./Jugador/Jugador.jsx";
 import { CartasMovimientoMano } from "./CartasMovimiento/CartasMovimientoMano.jsx";
@@ -32,7 +32,9 @@ function Partida() {
     setCartaMovimientoActualId,
     setCartaMovimientoActualIndex,
     cantidadCartasMovimientoJugadorActual,
-    setCantidadCartasMovimientoJugadorActual
+    setCantidadCartasMovimientoJugadorActual,
+    mazo,
+    setMazo
   } = useContext(PartidaContext);
 
   useEffect(() => {
@@ -98,7 +100,7 @@ function Partida() {
     return null;
   }
 
-  const { wsUPRef, wsStartGameRef, wsTRef, wsUCMRef } = useContext(WebSocketContext);
+  const { wsUPRef, wsStartGameRef, wsTRef, wsUCMRef, wsCFRef } = useContext(WebSocketContext);
 
   useEffect(() => {
     try {
@@ -137,13 +139,6 @@ function Partida() {
       }
     }
   }, [wsUPRef.current]);
-
-  function empezarPartida() {
-    sessionStorage.setItem('partidaIniciada', "true");
-    setPartidaIniciada(true);
-    reorderPlayers(JSON.parse(sessionStorage.getItem("players")));
-    console.log("Partida iniciada");
-  }
 
   // Conectar al WebSocket cuando el componente se monte
     useEffect(() => {
@@ -245,69 +240,40 @@ function Partida() {
 		};
 	}, [player_id, partidaID, wsTRef]);
 
-  /*useEffect(() => {
-    const partidaID = sessionStorage.getItem('partida_id'); // Obtén el ID de la partida
-
-    const handleStorageChange = (event) => {
-        if (event.key === `hostAbandono_partida_${partidaID}` && event.newValue === 'true') {
-          setModalMessage('El host ha abandonado la partida. Serás redirigido.');
-          setShowModal(true);  // Mostrar el modal
-          wsUPRef.current.close();
-          sessionStorage.removeItem('players');
-          localStorage.removeItem(`hostAbandono_partida_${partidaID}`);
-          sessionStorage.removeItem('partida_id');
-          sessionStorage.removeItem('isOwner');
-          sessionStorage.removeItem('timeLeft');
-          localStorage.removeItem(`partidaIniciada_${partidaID}`);
-          sessionStorage.removeItem('partidaIniciada');
-          navigate('/Opciones');
-        }
-    };
-
-    // Añadir el listener para cambios en localStorage
-    window.addEventListener('storage', handleStorageChange);
-
-    return () => {
-        // Limpiar el listener cuando el componente se desmonte
-        window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
-
   useEffect(() => {
-    const partidaID = sessionStorage.getItem('partida_id'); // Obtén el ID de la partida
-    const isPartidaOn = localStorage.getItem(`partidaIniciada_${partidaID}`); // Obtén el estado de la partida
+    if (wsCFRef.current && wsCFRef.current.readyState !== WebSocket.CLOSED) {
+      return;
+    }
+    try {
+      // Crear la conexión WebSocket
+      wsCFRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaID}/figs?player_id=${player_id}`);
 
-    const handleStorageChange = (event) => {
-      if (event.key === `players_${partidaID}`) {
-        const players = JSON.parse(localStorage.getItem(`players_${partidaID}`)); // Obtener el arreglo desde localStorage
-        const isPartidaOn = localStorage.getItem(`partidaIniciada_${partidaID}`); // Obtén el estado de la partida
+      wsCFRef.current.onopen = () => {
+        console.log('Conexión WebSocket abierta');
+        wsCFRef.current.send(JSON.stringify({ receive: 'cards'}));
+      };
 
-        if (Array.isArray(players) && players.length === 1 && isPartidaOn === 'true') {
-          const playerName = players[0].player_name;
-          setModalMessage(`¡Felicitaciones ${playerName} Ganaste el juego!`);
-          setShowModal(true);  // Mostrar el modal
-          wsUPRef.current.close();
-          sessionStorage.removeItem('players');
-          localStorage.removeItem(`hostAbandono_partida_${partidaID}`);
-          sessionStorage.removeItem('partida_id');
-          sessionStorage.removeItem('isOwner');
-          sessionStorage.removeItem('timeLeft');
-          localStorage.removeItem(`players_${partidaID}`);
-          sessionStorage.removeItem('partidaIniciada');
-          localStorage.removeItem(`partidaIniciada_${partidaID}`);
-          navigate('/Opciones');
-        }
-      }
-    };
+      // Manejar mensajes recibidos del WebSocket
+      wsCFRef.current.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log('Mensaje recibido del WebSocket de Figuras:', data);
+        setMazo(data.players);
+      };
 
-    // Añadir el listener para cambios en localStorage
-    window.addEventListener('storage', handleStorageChange);
+      // Manejar errores en la conexión
+      wsCFRef.current.onerror = (error) => {
+        console.error('Error en WebSocket:', error);
+      };
 
-    return () => {
-      // Limpiar el listener cuando el componente se desmonte
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);*/
+      // Manejar la desconexión del WebSocket
+      wsCFRef.current.onclose = () => {
+        console.log('Conexión WebSocket cerrada');
+      };
+
+    } catch (error) {
+      console.error('Error al conectar con el WebSocket:', error);
+    }
+  }, [wsCFRef.current, partidaIniciada]);
 
   const handleCloseModal = () => {
     const partidaID = sessionStorage.getItem('partida_id');
@@ -320,6 +286,26 @@ function Partida() {
     setShowModal(false);  // Cerrar el modal
     navigate('/Opciones');
   };
+
+  // Funcion para ordenar data.players segun el orden de jugadores.
+  function ordenarPlayers(dataPlayers, jugadores) {
+    // Obtenemos el orden de player_id desde jugadores
+    const ordenJugadorIds = jugadores.map(jugador => jugador.player_id);
+
+    // Ordenamos dataPlayers para que siga el orden de jugadores
+    const jugadoresOrdenados = [...dataPlayers].sort((a, b) => {
+        return ordenJugadorIds.indexOf(a.player_id) - ordenJugadorIds.indexOf(b.player_id);
+    });
+    
+    return jugadoresOrdenados;
+  }
+
+  function empezarPartida() {
+    sessionStorage.setItem('partidaIniciada', "true");
+    setPartidaIniciada(true);
+    reorderPlayers(JSON.parse(sessionStorage.getItem("players")));
+    console.log("Partida iniciada");
+  }
 
   return (
     <div className="container-partida">
