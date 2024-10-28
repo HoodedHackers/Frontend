@@ -1,13 +1,30 @@
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 15px; 
+  gap: 15px; /* Mayor espacio entre campos */
+  margin-bottom: 20px; /* Ajustar margen inferior */
 }
 
 .form-field {
   display: flex;
   flex-direction: column;
+}
+
+input, select {
+  padding: 10px;
+  border: 1px solid #000000; 
+  border-radius: 4px;
+  font-size: 14px;
+  color: #ffffff;
+  background-color: #817f7f;
+  outline: none;
+  box-shadow: 0 0 10px #f3f1f0;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus, select:focus {
+  border-color: #000000;
+  box-shadow: 0 0 15px #000000;
 }
 
 .crear-partidas-titulo {
@@ -25,25 +42,6 @@ label {
   color: #000000; 
   text-shadow: 0 0 5px #da8e6b, 0 0 10px #f5540a; 
 }
-
-input {
-  padding: 10px;
-  border: 1px solid #000000; 
-  border-radius: 4px;
-  font-size: 14px;
-  color: #ffffff; 
-  background-color: #817f7f; 
-  outline: none;
-  box-shadow: 0 0 10px #f3f1f0;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-input:focus {
-  border-color: #000000; 
-  box-shadow: 0 0 15px #000000; 
-}
-
-
 
 .button-container {
 margin-top: 10px;
@@ -131,3 +129,4 @@ outline: none;
 .crear-partida-boton:active {
   transform: scale(0.95);
 }
+

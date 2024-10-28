@@ -1,59 +1,68 @@
 import "./ListarPartidas.css";
-import { useState, useEffect, useRef, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { WebSocketContext } from '../../WebSocketsProvider.jsx';
 
 function ListarPartidas() {
   const [partidas, setPartidas] = useState([]);
   const navigate = useNavigate();
-  const { wsLPRef, wsUPRef } = useContext(WebSocketContext); 
+  const { wsLPRef, wsUPRef } = useContext(WebSocketContext);
 
-
-  const Unirse = async (partidaID) => {
+  const Unirse = async (partida) => {
     try {
-      // Conectar al WebSocket de Unirse a Partida
       const player_id = parseInt(sessionStorage.getItem("player_id"), 10);
-      wsUPRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaID}?player_id=${player_id}`);
+      let password = null;
 
-      // Manejar la conexión abierta
+      // Si la partida es privada, solicita la contraseña
+      if (partida.is_private) {
+        password = prompt("La partida es privada. Ingrese la contraseña:");
+        if (!password) {
+          alert("Debe ingresar una contraseña.");
+          return;
+        }
+      }
+
+      // Conectar al WebSocket de Unirse a Partida
+      wsUPRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partida.id}?player_id=${player_id}`);
+
       wsUPRef.current.onopen = () => {
         console.log("Conexión WebSocket de Unirse a Partida abierta.");
 
         const startMessage = {
-          user_identifier: sessionStorage.getItem('identifier')
+          user_identifier: sessionStorage.getItem('identifier'),
+          password: password // Enviar la contraseña si es partida privada
         };
         wsUPRef.current.send(JSON.stringify(startMessage));
         console.log("Mensaje unión a partida enviado.");
       };
 
-      // Manejar el arreglo de jugadores actualziado recibido como respuesta
       wsUPRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
+        if (data.error) {
+          alert("Contraseña incorrecta o error al unirse a la partida.");
+          return;
+        }
         sessionStorage.setItem("players", JSON.stringify(data.players));
+        sessionStorage.setItem("partida_id", partida.id);
+        sessionStorage.setItem('isOwner', false);
+
+        setTimeout(() => {
+          navigate(`/Partida/${partida.id}`);
+        }, 1000);
       };
 
-      // Manejar errores
       wsUPRef.current.onerror = (error) => {
         console.error("WebSocket error:", error);
       };
 
-      sessionStorage.setItem("partida_id", partidaID);
-
-      sessionStorage.setItem('isOwner', false);
-
-      // Navegar a la partida
-      setTimeout(() => {
-        navigate(`/Partida/${partidaID}`);
-      }, 1000);
-
     } catch (error) {
       console.error(error);
     }
-  };  
+  };
 
   const fetchPartidas = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/lobby', { 
+      const response = await fetch('http://127.0.0.1:8000/api/lobby', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -70,12 +79,9 @@ function ListarPartidas() {
   };
 
   useEffect(() => {
-    // Fetch inicial
     fetchPartidas();
-    
   }, []);
 
-  
   useEffect(() => {
     wsLPRef.current = new WebSocket("ws://127.0.0.1:8000/ws/api/lobby");
 
@@ -84,31 +90,26 @@ function ListarPartidas() {
     };
 
     wsLPRef.current.onmessage = (event) => {
-      console.log("Received message:", event.data);
       const updatedMessage = JSON.parse(event.data);
       if (updatedMessage.message === "update") {
         fetchPartidas();
       }
     };
 
-    // Manejar errores
     wsLPRef.current.onerror = (error) => {
       console.error("WebSocket Listar Partida error:", error);
     };
 
-    // Manejar cierre de conexión
-    wsLPRef.current.onclose = function () {
+    wsLPRef.current.onclose = () => {
       console.log("WebSocket de Listar Partida cerrado");
     };
 
-    // Cleanup cuando el componente se desmonta
     return () => {
       if (wsLPRef.current) {
         wsLPRef.current.close();
       }
     };
   }, []);
-
 
   return (
     <div>
@@ -123,11 +124,14 @@ function ListarPartidas() {
                 <p className="item-partida-jugadores">
                   <b>Jugadores:</b> {partida.current_players}/{partida.max_players}
                 </p>
+                <p className="item-partida-tipo">
+                  <b>Tipo:</b> {partida.is_private ? 'Privada' : 'Pública'}
+                </p>
               </div>
               <div className="item-partida-der">
                 <button
                   className="item-partida-boton"
-                  onClick={() => Unirse(partida.id)} 
+                  onClick={() => Unirse(partida)}
                 >
                   Unirse
                 </button>
