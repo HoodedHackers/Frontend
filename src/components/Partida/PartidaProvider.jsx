@@ -9,6 +9,8 @@ export const PartidaProvider = ({ children }) => {
 
   const [jugadores, setJugadores] = useState([]);
 
+  const [colorBloqueado]=useState(sessionStorage.getItem("colorBloqueado")|| "#f52020");
+
   const [posicionJugador, setPosicionJugador] = useState();
 
   //const [jugadorActualIndex, setJugadorActualIndex] = useState(parseInt(localStorage.getItem("jugadorActualIndex"), 10) || 0);
@@ -62,7 +64,8 @@ export const PartidaProvider = ({ children }) => {
         cartaMovimientoActualIndex,
         setCartaMovimientoActualIndex,
         cantidadCartasMovimientoJugadorActual,
-        setCantidadCartasMovimientoJugadorActual
+        setCantidadCartasMovimientoJugadorActual,
+        colorBloqueado
       }}
     >
       {children}
