@@ -34,7 +34,8 @@ function Partida() {
     cantidadCartasMovimientoJugadorActual,
     setCantidadCartasMovimientoJugadorActual,
     mazo,
-    setMazo
+    setMazo,
+    jugadorActualIndex
   } = useContext(PartidaContext);
 
   useEffect(() => {
@@ -273,7 +274,7 @@ function Partida() {
     } catch (error) {
       console.error('Error al conectar con el WebSocket:', error);
     }
-  }, [wsCFRef.current, partidaIniciada]);
+  }, [wsCFRef.current, partidaIniciada, jugadorActualIndex]);
 
   const handleCloseModal = () => {
     const partidaID = sessionStorage.getItem('partida_id');

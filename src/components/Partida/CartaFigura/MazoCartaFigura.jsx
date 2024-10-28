@@ -23,9 +23,10 @@ function MazoCartaFigura ({ubicacion}) {
   
     return jugadoresOrdenados;
   }
-
+  
+  console.log("MazoCartaFigura.jsx: mazo: ", mazo);
   const mazoo = ordenarPlayers(mazo, jugadores);
-  const cartasDelJugador = mazoo[ubicacion]?.cards || [];
+  const cartasDelJugador = mazoo[ubicacion]?.cards || [];;
 
   return (
     <div className={`container-cartas-figura grupo-${ubicacion + 1}`}>
