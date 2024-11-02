@@ -7,12 +7,12 @@ function MazoCartaFigura ({ubicacion}) {
   const { handleMouseEnter, handleMouseLeave, mazo, jugadores } = useContext(PartidaContext);
   
   // Funcion que ordena y filtra lo jugadores segun su id
-  function ordenarPlayers(dataPlayers, jugadores) {
+  function ordenarPlayers(playerDecks, jugadores) {
     // Obtenemos el orden de player_id desde jugadores
     const ordenJugadorIds = jugadores.map(jugador => jugador.player_id);
   
     // Filtramos dataPlayers para eliminar elementos no presentes en jugadores
-    const jugadoresFiltrados = dataPlayers.filter(jugador =>
+    const jugadoresFiltrados = playerDecks.filter(jugador =>
       ordenJugadorIds.includes(jugador.player_id)
     );
   
@@ -24,9 +24,8 @@ function MazoCartaFigura ({ubicacion}) {
     return jugadoresOrdenados;
   }
   
-  console.log("MazoCartaFigura.jsx: mazo: ", mazo);
-  const mazoo = ordenarPlayers(mazo, jugadores);
-  const cartasDelJugador = mazoo[ubicacion]?.cards || [];;
+  const mazoOrdenado = ordenarPlayers(mazo, jugadores);
+  const cartasDelJugador = mazoOrdenado[ubicacion]?.cards || [];;
 
   return (
     <div className={`container-cartas-figura grupo-${ubicacion + 1}`}>

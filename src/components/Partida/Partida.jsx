@@ -250,14 +250,12 @@ function Partida() {
       wsCFRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaID}/figs?player_id=${player_id}`);
 
       wsCFRef.current.onopen = () => {
-        console.log('Conexión WebSocket abierta');
         wsCFRef.current.send(JSON.stringify({ receive: 'cards'}));
       };
 
       // Manejar mensajes recibidos del WebSocket
       wsCFRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        console.log('Mensaje recibido del WebSocket de Figuras:', data);
         setMazo(data.players);
       };
 
