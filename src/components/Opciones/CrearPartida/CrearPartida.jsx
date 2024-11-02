@@ -6,11 +6,11 @@ import './CrearPartida.css';
 export default function CrearPartida() {
     const { wsUPRef } = useContext(WebSocketContext);
     const [partidaDatos, setPartidaDatos] = useState({
-        name: '',
+        nombre: '',
         min_jugadores: '',
         max_jugadores: '',
-        is_private: 'publica',  // pública o privada
-        password: ''  // contraseña para partidas privadas
+        tipo: 'publica',  // pública o privada
+        contrasena: ''  // contraseña para partidas privadas
     });
 
     const navigate = useNavigate();
@@ -101,8 +101,7 @@ export default function CrearPartida() {
                     <option value="privada">Privada</option>
                 </select>
             </div>
-
-            <div className="form-group">
+            <div className="form-group"data-privada={partidaDatos.tipo === 'privada'}>
                 <div className="form-field">
                     <label htmlFor="nombre">Nombre de Partida</label>
                     <input
