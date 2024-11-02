@@ -6,11 +6,11 @@ import './CrearPartida.css';
 export default function CrearPartida() {
     const { wsUPRef } = useContext(WebSocketContext);
     const [partidaDatos, setPartidaDatos] = useState({
-        nombre: '',
+        name: '',
         min_jugadores: '',
         max_jugadores: '',
-        tipo: 'publica',  // pública o privada
-        contrasena: ''  // contraseña para partidas privadas
+        is_private: 'publica',  // pública o privada
+        password: ''  // contraseña para partidas privadas
     });
 
     const navigate = useNavigate();
@@ -33,8 +33,8 @@ export default function CrearPartida() {
             min_players: partidaDatos.min_jugadores,
             max_players: partidaDatos.max_jugadores,
             identifier: id_jugador,
-            tipo: partidaDatos.tipo,
-            contrasena: partidaDatos.tipo === 'privada' ? partidaDatos.contrasena : null  // solo enviar si es privada
+            is_private: partidaDatos.tipo === 'privada',
+            password: partidaDatos.tipo === 'privada' ? partidaDatos.contrasena : null  // solo enviar si es privada
         };
 
         try {

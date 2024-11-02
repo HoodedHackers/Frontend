@@ -159,6 +159,7 @@
 
 // export default ListarPartidas;
 
+
 import "./ListarPartidas.css";
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -166,24 +167,25 @@ import { WebSocketContext } from '../../WebSocketsProvider.jsx';
 
 function ListarPartidas() {
   const [partidas, setPartidas] = useState([]);
+  const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
+  const [selectedPartida, setSelectedPartida] = useState(null);
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const { wsLPRef, wsUPRef } = useContext(WebSocketContext);
 
-  const Unirse = async (partida) => {
+  const handleJoinClick = (partida) => {
+    if (partida.is_private) {
+      setSelectedPartida(partida);
+      setPasswordModalOpen(true); // Mostrar el modal de contraseña
+    } else {
+      joinGame(partida, null); // Unirse directamente sin contraseña
+    }
+  };
+
+  const joinGame = async (partida, password) => {
     try {
       const player_id = parseInt(sessionStorage.getItem("player_id"), 10);
-      let password = null;
 
-      // Verificar si la partida es privada
-      if (partida.is_private) {
-        password = prompt("La partida es privada. Ingrese la contraseña:");
-        if (!password) {
-          alert("Debe ingresar una contraseña.");
-          return;
-        }
-      }
-
-      // Conectar al WebSocket de Unirse a Partida
       wsUPRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partida.id}?player_id=${player_id}`);
 
       wsUPRef.current.onopen = () => {
@@ -200,7 +202,7 @@ function ListarPartidas() {
         const data = JSON.parse(event.data);
         if (data.error) {
           alert("Contraseña incorrecta o error al unirse a la partida.");
-          return; // Detener aquí si hay un error
+          return;
         }
         sessionStorage.setItem("players", JSON.stringify(data.players));
         sessionStorage.setItem("partida_id", partida.id);
@@ -234,8 +236,6 @@ function ListarPartidas() {
         throw new Error('No se pudo obtener las partidas.');
       }
       const data = await response.json();
-
-      // Usar los datos obtenidos sin modificar la privacidad
       setPartidas(data);
     } catch (error) {
       console.error("Error al obtener partidas:", error);
@@ -275,6 +275,12 @@ function ListarPartidas() {
     };
   }, []);
 
+  const handleModalSubmit = () => {
+    joinGame(selectedPartida, password);
+    setPassword(''); // Limpiar la contraseña
+    setPasswordModalOpen(false); // Cerrar el modal
+  };
+
   return (
     <div>
       {partidas.length === 0 ? (
@@ -295,8 +301,8 @@ function ListarPartidas() {
               <div className="item-partida-der">
                 <button
                   className="item-partida-boton"
-                  onClick={() => Unirse(partida)}
-                  disabled={partida.current_players >= partida.max_players} // Deshabilitar si la partida está llena
+                  onClick={() => handleJoinClick(partida)}
+                  disabled={partida.current_players >= partida.max_players}
                 >
                   Unirse
                 </button>
@@ -304,6 +310,23 @@ function ListarPartidas() {
             </li>
           ))}
         </ul>
+      )}
+
+      {/* Modal fuera del contenedor principal */}
+      {isPasswordModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <h3>Ingrese la contraseña de la partida</h3>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Contraseña"
+            />
+            <button onClick={handleModalSubmit}>Unirse</button>
+            <button onClick={() => setPasswordModalOpen(false)}>Cancelar</button>
+          </div>
+        </div>
       )}
     </div>
   );
