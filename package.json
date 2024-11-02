@@ -23,6 +23,7 @@
     "react-hook-form": "^7.53.0",
     "react-router-dom": "^6.26.2",
     "react-tsparticles": "^1.43.1",
+    "styled-components": "^6.1.13",
     "tsparticles": "^3.5.0",
     "tsparticles-path-polygon": "^1.43.1"
   },

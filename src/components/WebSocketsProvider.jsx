@@ -9,6 +9,7 @@ export const WebSocketProvider = ({ children }) => {
     const wsStartGameRef = useRef(null); // WebSocket para iniciar partida
     const wsTRef = useRef(null); // WebSocket para pasar turno
     const wsBSRef = useRef(null); // WebSocket para el Estado del Tablero (Board State)
+    const wsCRef = useRef(null); // WebSocket para el Chat
 
   return (
     <WebSocketContext.Provider
@@ -18,7 +19,8 @@ export const WebSocketProvider = ({ children }) => {
         wsUCMRef,
         wsStartGameRef,
         wsTRef,
-        wsBSRef
+        wsBSRef,
+        wsCRef
       }}
     >
       {children}

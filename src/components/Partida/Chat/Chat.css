@@ -1,0 +1,55 @@
+/* ChatStyles.css */
+
+.ul-chat {
+    flex-grow: 1;
+    max-height: 90vh;
+    margin: 10px auto;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    overflow-y: auto; /* Habilita el scroll vertical cuando el contenido excede la altura máxima */
+    padding: 0; /* Remueve el padding para que no interfiera con el scroll */
+}
+
+.li-message {
+    background-color: #FFF8DC;
+    border: 2px solid #000000;
+    border-radius: 15px; /* Bordes redondeados */
+    padding: 10px 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra para un efecto de elevación */
+}
+
+
+.chat-input-container {
+    display: flex;
+    margin-top: 10px; /* Separación desde el contenedor del chat */
+    margin-left: 10px; /* Separación desde el contenedor del chat */
+}
+
+.chat-input {
+    flex: 1; /* Permite que el input ocupe el espacio disponible */
+    padding: 10px;
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 5px;
+    margin-right: 10px; /* Espaciado entre el input y el botón */
+    outline: none;
+}
+
+.send-button {
+    padding: 10px;
+    border: 2px solid #000000; 
+    border-radius: 5px;
+    background-color: #ffffff; 
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 10px;
+}
+
+.send-button:hover {
+    color: #ffffff; 
+    background-color: #f8782e;  
+    border-color: #000000;
+}
