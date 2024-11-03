@@ -7,8 +7,8 @@ export default function CrearPartida() {
     const { wsUPRef } = useContext(WebSocketContext);
     const [partidaDatos, setPartidaDatos] = useState({
         nombre: '',
-        min_jugadores: '',
-        max_jugadores: '',
+        min_jugadores: '2',
+        max_jugadores: '4',
         tipo: 'publica',  // pública o privada
         contrasena: ''  // contraseña para partidas privadas
     });
@@ -30,8 +30,8 @@ export default function CrearPartida() {
         
         const solicitudJson = {
             name: partidaDatos.nombre,
-            min_players: partidaDatos.min_jugadores,
-            max_players: partidaDatos.max_jugadores,
+            min_players: partidaDatos.min_jugadores, // Cambiado para coincidir
+            max_players: partidaDatos.max_jugadores, // Cambiado para coincidir
             identifier: id_jugador,
             is_private: partidaDatos.tipo === 'privada',
             password: partidaDatos.tipo === 'privada' ? partidaDatos.contrasena : null  // solo enviar si es privada
@@ -67,6 +67,10 @@ export default function CrearPartida() {
                     sessionStorage.setItem("players", JSON.stringify(data.players));
                 };
 
+                wsUPRef.current.onerror = (error) => {
+                    console.error("WebSocket error:", error);
+                };
+
                 sessionStorage.setItem('isOwner', true);
 
                 setTimeout(() => {
@@ -78,6 +82,7 @@ export default function CrearPartida() {
             }
         } catch (error) {
             console.error('Error:', error);
+            setError('Error al crear la partida');
         }
     };
 
@@ -101,13 +106,15 @@ export default function CrearPartida() {
                     <option value="privada">Privada</option>
                 </select>
             </div>
-            <div className="form-group"data-privada={partidaDatos.tipo === 'privada'}>
+
+            <div className="form-group" data-privada={partidaDatos.tipo === 'privada'}>
                 <div className="form-field">
                     <label htmlFor="nombre">Nombre de Partida</label>
                     <input
                         id="nombre"
                         name="nombre"
                         type="text"
+                        autoComplete="off"
                         value={partidaDatos.nombre}
                         onChange={manejarPartidaDatos}
                     />
@@ -121,6 +128,7 @@ export default function CrearPartida() {
                         type="number"
                         min="2"
                         max="4"
+                        autoComplete="off"
                         value={partidaDatos.min_jugadores}
                         onChange={manejarPartidaDatos}
                     />
@@ -134,12 +142,12 @@ export default function CrearPartida() {
                         type="number"
                         min="2"
                         max="4"
+                        autoComplete="off"
                         value={partidaDatos.max_jugadores}
                         onChange={manejarPartidaDatos}
                     />
                 </div>
 
-                {/* Campo adicional de contraseña, solo visible si la partida es privada */}
                 {partidaDatos.tipo === 'privada' && (
                     <div className="form-field">
                         <label htmlFor="contrasena">Contraseña</label>
@@ -176,7 +184,9 @@ export default function CrearPartida() {
                     <button
                         className="notification-close"
                         onClick={() => setError('')}
-                    />
+                    >
+                        Cerrar
+                    </button>
                 </div>
             )}
         </form>

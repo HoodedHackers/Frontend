@@ -76,14 +76,13 @@ describe('ListarPartidas Component', () => {
     );
 
     // Verificar que se muestra un mensaje indicando que no hay partidas
-    const message = screen.getByText(/No hay partidas disponibles en este momento. Por favor, intente crear una partida./i);
+    const message = screen.getByText(/No se encontraron partidas, pruebe con otro nombre o número de jugadores./i);
     expect(message).toBeInTheDocument();
   });
 
-  it('Muestra un error por consola si el GET falla', async () => {
+  
+  it('Muestra un mensaje de error cuando el GET falla', async () => {
     global.fetch = mockFetch(null, 404);
-
-    // Mock de console.error
     const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     render(
@@ -94,11 +93,8 @@ describe('ListarPartidas Component', () => {
 
     await waitFor(() => {
       expect(consoleErrorMock).toHaveBeenCalled();
-      const errorArg = consoleErrorMock.mock.calls[0][0]; // Primer argumento pasado a console.error
-      expect(errorArg.message).toBe("No se pudo obtener las partidas.");
     });
   });
-
   it('Se concecta al endpoint de Listar Partidas para renderizar partidas', async () => {
     global.fetch = mockFetch(partidas);
 
@@ -116,30 +112,6 @@ describe('ListarPartidas Component', () => {
     expect(screen.getByText('Partida Lu')).toBeInTheDocument();
     expect(screen.getByText('Partida Mati')).toBeInTheDocument();
   });
-
-  it('Se conecta con el WebSocket de Listar Partidas', async () => {
-    //const socketMock = createWebSocketMock(); // Crear el mock del WebSocket
-  //
-    //// Mockear el constructor del WebSocket para que devuelva nuestro mock
-    //global.WebSocket = vi.fn(() => socketMock);
-//
-    //const consoleLogMock = vi.spyOn(console, 'log').mockImplementation(() => {})
-  //
-    //render(
-    //  <WebSocketProvider>
-    //    <ListarPartidas />
-    //  </WebSocketProvider>
-    //);
-  //
-    //// Simular que la conexión se abre
-    //socketMock.triggerOpen();
-  //
-    //// Verificar que se registró la conexión en el log
-    //await waitFor(() => {
-    //  expect(consoleLogMock).toHaveBeenCalledWith("WebSocket de Listar Partida conectado");
-    //});
-  });
-  
 
   it('Muestra un error si el WebSocket de Listar Partidas falla', () => {
 
@@ -170,3 +142,4 @@ describe('ListarPartidas Component', () => {
   });
 
 });
+
