@@ -33,7 +33,8 @@ function Partida() {
     setCartaMovimientoActualId,
     setCartaMovimientoActualIndex,
     cantidadCartasMovimientoJugadorActual,
-    setCantidadCartasMovimientoJugadorActual
+    setCantidadCartasMovimientoJugadorActual,
+    isChatOpen
   } = useContext(PartidaContext);
 
   useEffect(() => {
@@ -259,10 +260,73 @@ function Partida() {
   };
 
   return (
-    <div className="partida-con-chat">
-      <div className="contenedor-chat">
-        <Chat />
+    isChatOpen? (
+      <div className="partida-con-chat">
+        <div className="contenedor-chat">
+          <Chat />
+        </div>
+        <div className="container-partida">
+          {Array.isArray(jugadores) && jugadores.length > 0 ? (
+            jugadores.map((jugador, index) => (
+              <div key={jugador.player_id}>
+                <Jugador
+                  nombre={jugador.player_name}
+                  ubicacion={`jugador${index + 1}`}
+                />
+                <CartasMovimientoMano ubicacion={index} jugadorId={jugador.player_id} />
+                <MazoCartaFigura ubicacion={index} />
+              </div>
+            ))
+          ) : (
+            <p>No hay jugadores en la partida.</p>
+          )}
+          <div className="tableroContainer">
+            <TableroWithProvider />
+          </div>
+          <div>
+            {!partidaIniciada && <IniciarPartida empezarPartida={empezarPartida} />}
+          </div>
+          <div className="abandonar-partida-container">
+            {isOverlayVisible && <div className="overlay-supremo"></div>}
+            <AbandonarPartida />
+          </div>
+          <div className="pasar-turno-container">
+            <PasarTurno
+              onTurnoCambiado={manejarFinTurno}
+              tiempoLimite={tiempoLimite}
+              setTimeLeft={setTimeLeft}
+              disabled={activePlayer.player_id !== player_id}
+            />
+          </div>
+          <div className="timer-container">
+            {jugadores && jugadores.length > 0 && (
+              <Temporizador
+                tiempoLimite={tiempoLimite}
+                jugadorActual={activePlayer.player_name}
+                timeLeft={timeLeft}
+                setTimeLeft={setTimeLeft}
+                onFinTurno={manejarFinTurno}
+              />
+            )}
+          </div>
+          {showModal && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <div className="modal-header">
+                </div>
+                <div className="modal-body">
+                  <p>{modalMessage}</p>
+                </div>
+                <div className="modal-footer">
+                  <button onClick={handleCloseModal}>Cerrar</button>
+                </div>
+              </div>
+            </div>
+          )}
+          {isOverlayVisible && <div className="overlay"></div>}
+        </div>
       </div>
+    ):(
       <div className="container-partida">
         {Array.isArray(jugadores) && jugadores.length > 0 ? (
           jugadores.map((jugador, index) => (
@@ -323,7 +387,7 @@ function Partida() {
         )}
         {isOverlayVisible && <div className="overlay"></div>}
       </div>
-    </div>
+    )
   );
 }
 

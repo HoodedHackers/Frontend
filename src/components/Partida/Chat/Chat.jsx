@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
+import { PartidaContext } from '../PartidaProvider.jsx';
 import { WebSocketContext } from '../../WebSocketsProvider.jsx';
 import './Chat.css';
 
@@ -7,6 +8,7 @@ function Chat() {
   const [isConnected, setIsConnected] = useState(false);
   const [nuevoMensaje, setNuevoMensaje] = useState('');
   const [mensajes, setMensajes] = useState([]);
+  const { setIsChatOpen } = useContext(PartidaContext);
   const { wsCRef } = useContext(WebSocketContext);
   const game_id = sessionStorage.getItem('partida_id');
   const userName = sessionStorage.getItem('player_nickname');
@@ -57,6 +59,9 @@ function Chat() {
 
   return (
     <div>
+      <div className="chat-header">
+        <button className="close-button" onClick={() => setIsChatOpen(false)}>X</button>
+      </div>
       <ul className="ul-chat">
         {mensajes.map((mensaje, index) => (
           <li key={index} className="li-message">
