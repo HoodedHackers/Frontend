@@ -8,6 +8,7 @@
   max-width: 600px; /* Ajusta según tus necesidades */
 }
 
+
 /* Estilo de cada item de partida */
 .item-partida {
   display: flex;
@@ -17,7 +18,7 @@
   padding: 1rem;
   background-color: white;
   margin-bottom: 0.5rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid #000000;
   border-radius: 0.75rem;
   transition: background-color 0.2s ease;
   width: 100%;
@@ -30,6 +31,7 @@
 .list-item-izq {
   min-width: 0;
   flex: 1;
+
 }
 
 .item-partida-nombre {
@@ -134,7 +136,32 @@
 /* Texto centrado */
 .texto-centrado {
   text-align: center;
-  color: #6b7280;
+  color: #050505;
+}
+
+.buscador-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; 
+  align-items: center;
+  width: 100%;
+  max-width: 600px; /* Ajusta el tamaño según tus necesidades */
+}
+
+.buscador-con-lupa {
+  display: flex;
+  position: relative;
+  align-items: center;
+  width: 100%;
+  max-width: 330px;
+}
+
+.buscadorjugadores{
+  display: flex;
+  position: relative;
+  align-items: center;
+  width: 100%;
+  max-width: 330px;
 }
 
 /* Estilo para partidas privadas */
@@ -185,4 +212,40 @@
 
 .modal-content button:hover {
   background-color: #ff0000;
+}
+=======
+.icono-lupa {
+  position: absolute;
+  right: 10px;
+  color: #000213;
+  pointer-events: none;
+}
+
+.campo-busqueda {
+  width: 100%;
+  padding: 10px 40px 10px 10px; 
+  margin: 0;
+  border: 2px solid #000213;
+  font-weight: bold;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s ease-in-out;
+  background-color: #6b7280;
+  color: #000213;
+}
+
+.campo-busqueda::placeholder {
+  color: #999;
+  opacity: 1;
+}
+
+.campo-busqueda:focus {
+  border-color: #007BFF;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.buscador-con-lupa .campo-busqueda {
+  padding: 10px 15px;  
+  height: 40px; 
 }

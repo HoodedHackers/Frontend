@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { PartidaContext } from "../PartidaProvider.jsx";
 import { CartasMovimientoContext } from "./CartasMovimientoMano.jsx";
 import { WebSocketContext } from "../../WebSocketsProvider.jsx";
@@ -11,11 +11,11 @@ const CartaMovimiento = ({ id, ubicacion, index }) => {
     "/Imagenes/Movimiento/mov2.svg",
     "/Imagenes/Movimiento/mov3.svg",
     "/Imagenes/Movimiento/mov4.svg",
-    "/Imagenes/Movimiento/mov5.svg",
     "/Imagenes/Movimiento/mov6.svg",
+    "/Imagenes/Movimiento/mov5.svg"
   ];
 
-  const { jugando, setJugando, handleMouseEnter, handleMouseLeave } =
+  const { setJugando, handleMouseEnter, handleMouseLeave } =
     useContext(PartidaContext);
 
   const { seleccionada, setSeleccionada } = useContext(CartasMovimientoContext);
@@ -46,8 +46,8 @@ const CartaMovimiento = ({ id, ubicacion, index }) => {
       onMouseLeave={handleMouseLeave}
     >
       <img
-        src={id == -1 ? "/Imagenes/Movimiento/back-mov.svg" : Images[(id % 7) ]} 
-        alt={`Carta de Movimiento ${(id % 7)}`}
+        src={id == -1 ? "/Imagenes/Movimiento/back-mov.svg" : Images[(id % 7)]} 
+        alt={id == -1 ? "Carta de Movimiento 0" : `Carta de Movimiento ${(id % 7) + 1}`}
         className="carta-movimiento-img"
       />
     </div>
@@ -55,7 +55,7 @@ const CartaMovimiento = ({ id, ubicacion, index }) => {
     <div className={"carta-movimiento-sin-hover"}>
       <img
         src={id == -1 ? "/Imagenes/Movimiento/back-mov.svg" : Images[(id % 7)]} 
-        alt={`Carta de Movimiento ${(id % 7)}`}
+        alt={id == -1 ? "Carta de Movimiento 0" : `Carta de Movimiento ${(id % 7) + 1}`}
         className="carta-movimiento-img"
       />
     </div>

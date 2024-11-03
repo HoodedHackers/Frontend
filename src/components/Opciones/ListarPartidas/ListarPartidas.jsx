@@ -27,6 +27,7 @@ function ListarPartidas() {
     joinGame(partida, password);
   };
 
+
   const joinGame = async (partida, password) => {
     try {
       const player_id = parseInt(sessionStorage.getItem("player_id"), 10);
@@ -62,6 +63,16 @@ function ListarPartidas() {
         setErrorMessage("Se produjo un error al intentar unirse a la partida.");
         setShowErrorModal(true);
       };
+
+      sessionStorage.setItem("partida_id", partidaID);
+
+      sessionStorage.setItem('isOwner', false);
+
+      // Navegar a la partida
+      setTimeout(() => {
+        navigate(`/Partida/${partidaID}`);
+      }, 500);
+
     } catch (error) {
       setErrorMessage("Ocurrió un error inesperado al intentar unirse.");
       setShowErrorModal(true);
@@ -71,16 +82,33 @@ function ListarPartidas() {
   const fetchPartidas = async () => {
     try {
       let params = {};
-      if (filtroNombre) params.name = filtroNombre;
-      if (filtroJugadores) params.max_players = parseInt(filtroJugadores);
 
+
+      // Agregar filtro por nombre si está presente
+      if (filtroNombre) {
+        params.name = filtroNombre;
+      }
+
+      if (filtroJugadores) {
+        const numJugadores = parseInt(filtroJugadores);
+        if (!isNaN(numJugadores)) {
+          params.max_players = numJugadores;
+        }
+      }
+
+      // Convertir los parámetros a una cadena de consulta
       let query = new URLSearchParams(params).toString();
-      const response = await fetch(`http://127.0.0.1:8000/api/lobby?${query}`, {
+
+      // Enviar la solicitud fetch
+      const response = await fetch('http://127.0.0.1:8000/api/lobby?' + query, {
+
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
-      
-      if (!response.ok) throw new Error('No se pudo obtener las partidas.');
+
+      if (!response.ok) {
+        throw new Error('No se pudo obtener las partidas.');
+      }
 
       const data = await response.json();
       setPartidas(data);
@@ -93,6 +121,7 @@ function ListarPartidas() {
   useEffect(() => {
     fetchPartidas();
   }, [filtroNombre, filtroJugadores]);
+
 
   useEffect(() => {
     wsLPRef.current = new WebSocket("ws://127.0.0.1:8000/ws/api/lobby");
@@ -185,6 +214,7 @@ function ListarPartidas() {
                   className="item-partida-boton"
                   onClick={() => handleJoinClick(partida)}
                   disabled={partida.current_players >= partida.max_players}
+
                 >
                   Unirse
                 </button>
@@ -194,6 +224,7 @@ function ListarPartidas() {
         </ul>
       )}
     </div>
+
   );
 }
 

@@ -10,13 +10,15 @@ vi.mock('../components/Partida/PartidaProvider');
 
 // Mock de los datos del contexto
 const jugadores = [
-    { id: 1, player_name: 'Jugador 1' }
+    { player_id: 1, player_name: 'Jugador 1' }
   ];
 
 // Mock de los datos de las cartas de movimiento
 let cartaMovimientosMock = [
   { player_id: 1, all_cards: [30, 21, 43] }
 ];
+
+const jugadorId = 1;
 
 describe('Cartas de Movimiento', () => {
 
@@ -36,6 +38,7 @@ describe('Cartas de Movimiento', () => {
         <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
           <CartasMovimientoMano 
             ubicacion={0}
+            jugadorId={jugadorId}
           />
         </PartidaContext.Provider>
       </WebSocketProvider>  
@@ -63,6 +66,7 @@ describe('Cartas de Movimiento', () => {
         <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
           <CartasMovimientoMano 
             ubicacion={0}
+            jugadorId={jugadorId}
           />
         </PartidaContext.Provider>
       </WebSocketProvider> 
@@ -89,12 +93,13 @@ describe('Cartas de Movimiento', () => {
   it('Se renderizan todos los tipos de cartas de movimiento', () => {
     const tipos = [-1, 0, 1, 2, 3, 4, 5, 6]; // Tipos de carta a verificar
     const seleccionada = null;
+    const partidaIniciada = true;
 
     // Renderiza una carta por cada tipo
     tipos.forEach((tipo) => {
       render(
         <WebSocketProvider>
-        <PartidaContext.Provider value={{ jugadores }}>
+        <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
           <CartasMovimientoContext.Provider value={{seleccionada}}> 
             <CartaMovimiento 
               id={tipo}
@@ -108,8 +113,21 @@ describe('Cartas de Movimiento', () => {
       // Verifica que la imagen esté en el documento
       expect(imagen).toBeInTheDocument();
 
-      const expectedSrc = `/Imagenes/Movimiento/${tipo + 1 === 0 ? 'back-mov' : `mov${tipo + 1}`}.svg`;
-      expect(imagen.src).toContain(expectedSrc);
+      if (tipo === -1) {
+        expect(imagen.src).toContain('back-mov.svg');
+      }
+      else if (tipo === 0) {
+        expect(imagen.src).toContain('mov7.svg');
+      }
+      else if (tipo === 5) {
+        expect(imagen.src).toContain('mov6.svg');
+      }
+      else if (tipo === 6) {
+        expect(imagen.src).toContain('mov5.svg');
+      }
+      else {
+        expect(imagen.src).toContain(`mov${tipo}.svg`);
+      }
     });
   });
 
@@ -131,6 +149,7 @@ describe('Cartas de Movimiento', () => {
         <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
           <CartasMovimientoMano 
             ubicacion={0}
+            jugadorId={jugadorId}
           />
         </PartidaContext.Provider>
       </WebSocketProvider> 
@@ -162,6 +181,7 @@ describe('Cartas de Movimiento', () => {
         <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
           <CartasMovimientoMano 
             ubicacion={0}
+            jugadorId={jugadorId}
           />
         </PartidaContext.Provider>
       </WebSocketProvider> 
@@ -195,6 +215,7 @@ describe('Cartas de Movimiento', () => {
         <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
           <CartasMovimientoMano 
             ubicacion={0}
+            jugadorId={jugadorId}
           />
         </PartidaContext.Provider>
       </WebSocketProvider> 
