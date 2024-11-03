@@ -249,9 +249,9 @@ function Partida() {
       // Crear la conexión WebSocket
       wsCFRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaID}/figs?player_id=${player_id}`);
 
-      wsCFRef.current.onopen = () => {
+      /*wsCFRef.current.onopen = () => {
         wsCFRef.current.send(JSON.stringify({ receive: 'cards'}));
-      };
+      };*/
 
       // Manejar mensajes recibidos del WebSocket
       wsCFRef.current.onmessage = (event) => {
@@ -272,7 +272,7 @@ function Partida() {
     } catch (error) {
       console.error('Error al conectar con el WebSocket:', error);
     }
-  }, [wsCFRef.current, partidaIniciada, jugadorActualIndex]);
+  }, [wsCFRef.current/*, partidaIniciada, jugadorActualIndex*/]);
 
   const handleCloseModal = () => {
     const partidaID = sessionStorage.getItem('partida_id');
