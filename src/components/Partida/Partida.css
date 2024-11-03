@@ -1,6 +1,6 @@
 .partida-con-chat {
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: 1fr calc(100vw - 100vh);
   height: 100vh;
 }
 
@@ -20,8 +20,8 @@
 .contenedor-chat {
   position: fixed; /* Cambiar a fixed para que se mantenga en su lugar al hacer scroll */
   right: 0px; /* Separación desde el lado derecho de la ventana */
-  width: 300px; /* Ancho fijo del contenedor */
   height: 100%; /* Altura fija del contenedor */
+  width: calc(100vw - 100vh);
   background-color: rgba(30, 30, 30, 0.9); /* Fondo semi-transparente */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   display: flex;
