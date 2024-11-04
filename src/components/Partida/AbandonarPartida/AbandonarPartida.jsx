@@ -13,9 +13,6 @@ const AbandonarPartida = () => {
 
     const ident = sessionStorage.getItem('identifier');
     const partidaId = sessionStorage.getItem('partida_id');
-    const isOwner = sessionStorage.getItem('isOwner');
-    const name = sessionStorage.getItem('player_nickname');
-    let players = JSON.parse(sessionStorage.getItem('players'));
 
     const manejadorAbandonarPartida = async () => {
         setLoading(true);
@@ -35,7 +32,7 @@ const AbandonarPartida = () => {
                 const data = await response.json();
 
                 if (data.status === "success") {
-
+                    sessionStorage.removeItem('figurasEnTablero');
                     sessionStorage.removeItem('players');
                     sessionStorage.removeItem('timeLeft');
                     sessionStorage.removeItem('partida_id');
