@@ -34,7 +34,8 @@ export const CartasMovimientoMano = ({ubicacion, jugadorId}) => {
 
   async function obtenerMovimientos () {
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/partida/en_curso/movimiento', { 
+      const partidaId = parseInt(sessionStorage.getItem("partida_id"), 10);
+      const response = await fetch(`http://127.0.0.1:8000/api/lobby/${partidaId}/movs`, { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
