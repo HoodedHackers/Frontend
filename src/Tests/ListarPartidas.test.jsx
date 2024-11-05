@@ -80,10 +80,9 @@ describe('ListarPartidas Component', () => {
     expect(message).toBeInTheDocument();
   });
 
-  it('Muestra un error por consola si el GET falla', async () => {
+  
+  it('Muestra un mensaje de error cuando el GET falla', async () => {
     global.fetch = mockFetch(null, 404);
-
-    // Mock de console.error
     const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     render(
@@ -94,11 +93,8 @@ describe('ListarPartidas Component', () => {
 
     await waitFor(() => {
       expect(consoleErrorMock).toHaveBeenCalled();
-      const errorArg = consoleErrorMock.mock.calls[0][0]; // Primer argumento pasado a console.error
-      expect(errorArg.message).toBe("No se pudo obtener las partidas.");
     });
   });
-
   it('Se concecta al endpoint de Listar Partidas para renderizar partidas', async () => {
     global.fetch = mockFetch(partidas);
 

@@ -76,7 +76,8 @@ function IniciarPartida() {
               {loading ? 'Iniciando...' : 'Iniciar Partida'}
             </button>
           ) : (
-            <p className="waiting-message">Esperando a que el CREADOR inicie la partida...</p>          )}
+            <p className={styles['waiting-message']}>Esperando a que el CREADOR inicie la partida...</p>
+            )}
         </>
       )}
     </div>

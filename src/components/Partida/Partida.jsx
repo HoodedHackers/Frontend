@@ -11,11 +11,15 @@ import Temporizador from "./Temporizador/Temporizador.jsx";
 import { WebSocketContext } from '../WebSocketsProvider.jsx';
 import "./Partida.css";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 
 function Partida() {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+  const audioRef = useRef(null);
+
   const {
     partidaIniciada,
     setPartidaIniciada,
@@ -140,6 +144,23 @@ function Partida() {
       }
     }
   }, [wsUPRef.current]);
+  useEffect(() => {
+    // Reproducir el audio de fondo solo si la partida ha iniciado
+    if (partidaIniciada && audioRef.current) {
+      audioRef.current.play().catch(error => {
+        console.error("Error al reproducir el audio:", error);
+      });
+    }
+  
+    // Detener el audio cuando el componente se desmonta o la partida termina
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0; // Reiniciar el audio
+      }
+    };
+  }, [partidaIniciada]); // Se activa cuando la partida inicia
+  
 
   // Conectar al WebSocket cuando el componente se monte
     useEffect(() => {
@@ -293,8 +314,14 @@ function Partida() {
     console.log("Partida iniciada");
   }
 
+
   return (
     <div className="container-partida">
+        {/* El elemento <audio> para la música de fondo */}
+    <audio ref={audioRef} loop>
+        <source src="/Hollow Knight OST - Crystal Peak.mp3" type="audio/mpeg" />
+        Tu navegador no soporta el audio.
+      </audio>
       {Array.isArray(jugadores) && jugadores.length > 0 ? (
         jugadores.map((jugador, index) => (
           <div key={jugador.player_id}>
