@@ -49,7 +49,7 @@ export const CartasMovimientoMano = ({ubicacion, jugadorId}) => {
         throw new Error('Fallo al intentar recuperar los movimientos');
       }
       const data = await response.json();
-      console.log("Datos de movimientos recibidos");
+      console.log("Datos de movimientos recibidos: ", data);
       return data;
     } catch (error) {
       console.error(error);
