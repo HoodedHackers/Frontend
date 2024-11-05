@@ -155,6 +155,8 @@ export default function CrearPartida() {
                             id="contrasena"
                             name="contrasena"
                             type="password"
+                            placeholder="Contraseña" 
+                            autoComplete="new-password"
                             value={partidaDatos.contrasena}
                             onChange={manejarPartidaDatos}
                         />
@@ -171,8 +173,9 @@ export default function CrearPartida() {
 
             <div className="button-container">
                 <button
-                    className="crear-partida-boton"
-                    onClick={manejarBotonCrearPartida}
+                variant="contained"
+                className="crear-partida-boton"
+                onClick={manejarBotonCrearPartida}
                 >
                     Crear Partida
                 </button>

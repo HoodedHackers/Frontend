@@ -38,12 +38,18 @@
   color: #111827;
 }
 
-.item-partida-jugadores,
-.item-partida-tipo {
+.item-partida-jugadores {
   margin-top: 0.25rem;
   font-size: 0.75rem;
   color: #6b7280;
 }
+
+.item-partida-tipo {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: #000000; /* Color negro */
+}
+
 
 @media (min-width: 640px) {
   .item-partida-der {

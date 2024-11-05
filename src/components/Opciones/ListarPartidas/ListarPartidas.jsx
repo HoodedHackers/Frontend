@@ -23,10 +23,16 @@ function ListarPartidas() {
   };
 
   const handleJoinClick = (partida) => {
+    if (partida.is_private && (!passwordInputs[partida.id] || passwordInputs[partida.id].trim() === "")) {
+      setErrorMessage("Por favor ingrese una contraseña para unirse a una partida privada.");
+      setShowErrorModal(true);
+      return;
+    }
+    
     const password = partida.is_private ? passwordInputs[partida.id] : null;
     joinGame(partida, password);
   };
-
+  
   const joinGame = async (partida, password) => {
     try {
       const player_id = parseInt(sessionStorage.getItem("player_id"), 10);

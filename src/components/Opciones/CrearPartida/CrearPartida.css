@@ -114,3 +114,26 @@ label {
   border: none; 
   outline: none; 
 }
+
+.copiar-contrasena {
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  color: #000000;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #ffffff; 
+  border: 2px solid #000000; 
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 10px #e25221, 0 0 20px #ec4f23; 
+  margin-top: 8px;
+}
+
+.copiar-contrasena:hover { 
+  color: #ffffff; 
+  background-color: #e86f19;  
+  border-color: #000000;
+}
+
+.copiar-contrasena:active {
+  transform: scale(0.95);
+}
