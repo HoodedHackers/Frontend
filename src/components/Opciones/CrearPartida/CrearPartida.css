@@ -163,3 +163,16 @@ label {
       opacity: 0;
   }
 }
+
+.modal-error {
+    position: relative;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: rgba(255, 0, 0, 0.8);
+    color: white;
+    border-radius: 5px;
+    font-size: 0.9em;
+    text-align: center;
+    max-width: 400px;
+    margin: 10px auto;
+}

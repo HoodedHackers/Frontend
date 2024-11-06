@@ -9,13 +9,14 @@ export default function CrearPartida() {
         nombre: '',
         min_jugadores: '2',
         max_jugadores: '4',
-        tipo: 'publica',  // pública o privada
-        contrasena: ''  // contraseña para partidas privadas
+        tipo: 'publica',
+        contrasena: ''
     });
 
     const navigate = useNavigate();
     const [error, setError] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
+    const [errorModalVisible, setErrorModalVisible] = useState(false);
 
     const manejarPartidaDatos = (e) => {
         setPartidaDatos({
@@ -27,15 +28,23 @@ export default function CrearPartida() {
     const manejarBotonCrearPartida = async (e) => {
         e.preventDefault();
 
+        if (partidaDatos.tipo === 'privada' && !partidaDatos.contrasena) {
+            setError('Por favor, ingresa una contraseña para la partida privada.');
+            setErrorModalVisible(true);
+            setTimeout(() => {
+                setErrorModalVisible(false);
+            }, 2000);  // El mensaje desaparecerá después de 2 segundos
+            return;
+        }
+
         const id_jugador = sessionStorage.getItem('identifier');
-        
         const solicitudJson = {
             name: partidaDatos.nombre,
-            min_players: partidaDatos.min_jugadores, // Cambiado para coincidir
-            max_players: partidaDatos.max_jugadores, // Cambiado para coincidir
+            min_players: partidaDatos.min_jugadores,
+            max_players: partidaDatos.max_jugadores,
             identifier: id_jugador,
             is_private: partidaDatos.tipo === 'privada',
-            password: partidaDatos.tipo === 'privada' ? partidaDatos.contrasena : null  // solo enviar si es privada
+            password: partidaDatos.tipo === 'privada' ? partidaDatos.contrasena : null
         };
 
         try {
@@ -54,7 +63,6 @@ export default function CrearPartida() {
                 const partidaId = data.id;
                 sessionStorage.setItem('partida_id', partidaId);
 
-                // Conectar al WebSocket de Unirse a Partida
                 const player_id = parseInt(sessionStorage.getItem("player_id"), 10);
                 wsUPRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaId}?player_id=${player_id}`);
 
@@ -182,25 +190,20 @@ export default function CrearPartida() {
                 >
                     Crear Partida
                 </button>
-            </div>
 
-            {error && (
-                <div className="notification error">
+            {errorModalVisible && (
+                <div className="modal-error">
                     <p>{error}</p>
-                    <button
-                        className="notification-close"
-                        onClick={() => setError('')}
-                    >
-                        Cerrar
-                    </button>
                 </div>
             )}
+            </div>
 
             {modalVisible && (
                 <div className="modal-copiar">
                     <p>¡Contraseña copiada al portapapeles!</p>
                 </div>
             )}
+
         </form>
     );
 }
