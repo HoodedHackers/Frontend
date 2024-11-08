@@ -95,6 +95,7 @@ describe('ListarPartidas Component', () => {
       expect(consoleErrorMock).toHaveBeenCalled();
     });
   });
+  
   it('Se concecta al endpoint de Listar Partidas para renderizar partidas', async () => {
     global.fetch = mockFetch(partidas);
 

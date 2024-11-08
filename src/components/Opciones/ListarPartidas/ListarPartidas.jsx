@@ -111,6 +111,7 @@ function ListarPartidas() {
     };
 
     wsLPRef.current.onerror = (error) => console.error("WebSocket Listar Partida error:", error);
+    
     wsLPRef.current.onclose = () => console.log("WebSocket de Listar Partida cerrado");
 
     return () => {

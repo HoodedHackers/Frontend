@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">12.5% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>3/24</span>
+                <span class='fraction'>24/24</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">12.5% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>3/24</span>
+                <span class='fraction'>24/24</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -96,65 +96,65 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { createContext, useEffect, useRef } from 'react';
+<span class="cline-any cline-yes">3x</span></td><td class="text"><pre class="prettyprint lang-js">import React, { createContext, useEffect, useRef } from 'react';
 &nbsp;
 export const WebSocketContext = createContext();
 &nbsp;
-export const WebSocketProvider = <span class="fstat-no" title="function not covered" >({ children }) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    const wsLPRef = useRef(null); // WebSocket de Listar Partidas</span>
-<span class="cstat-no" title="statement not covered" >    const wsUPRef = useRef(null); // WebSocket de Unirse a Partida</span>
-<span class="cstat-no" title="statement not covered" >    const wsUCMRef = useRef(null); // WebSocket de Usar Carta de Movimiento</span>
-<span class="cstat-no" title="statement not covered" >    const wsStartGameRef = useRef(null); // WebSocket para iniciar partida</span>
-<span class="cstat-no" title="statement not covered" >    const wsTRef = useRef(null); // WebSocket para pasar turno</span>
-<span class="cstat-no" title="statement not covered" >    const wsBSRef = useRef(null); // WebSocket para el Estado del Tablero (Board State)</span>
-<span class="cstat-no" title="statement not covered" >    const wsCFRef = useRef(null); // WebSocket para cartas de figuras</span>
+export const WebSocketProvider = ({ children }) =&gt; {
+    const wsLPRef = useRef(null); // WebSocket de Listar Partidas
+    const wsUPRef = useRef(null); // WebSocket de Unirse a Partida
+    const wsUCMRef = useRef(null); // WebSocket de Usar Carta de Movimiento
+    const wsStartGameRef = useRef(null); // WebSocket para iniciar partida
+    const wsTRef = useRef(null); // WebSocket para pasar turno
+    const wsBSRef = useRef(null); // WebSocket para el Estado del Tablero (Board State)
+    const wsCFRef = useRef(null); // WebSocket para cartas de figuras
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return (</span>
-<span class="cstat-no" title="statement not covered" >    &lt;WebSocketContext.Provider</span>
-<span class="cstat-no" title="statement not covered" >      value={{</span>
-<span class="cstat-no" title="statement not covered" >        wsLPRef,</span>
-<span class="cstat-no" title="statement not covered" >        wsUPRef,</span>
-<span class="cstat-no" title="statement not covered" >        wsUCMRef,</span>
-<span class="cstat-no" title="statement not covered" >        wsStartGameRef,</span>
-<span class="cstat-no" title="statement not covered" >        wsTRef,</span>
-<span class="cstat-no" title="statement not covered" >        wsBSRef,</span>
-<span class="cstat-no" title="statement not covered" >        wsCFRef,</span>
-<span class="cstat-no" title="statement not covered" >      }}</span>
+  return (
+    &lt;WebSocketContext.Provider
+      value={{
+        wsLPRef,
+        wsUPRef,
+        wsUCMRef,
+        wsStartGameRef,
+        wsTRef,
+        wsBSRef,
+        wsCFRef,
+      }}
     &gt;
-<span class="cstat-no" title="statement not covered" >      {children}</span>
-<span class="cstat-no" title="statement not covered" >    &lt;/WebSocketContext.Provider&gt;</span>
+      {children}
+    &lt;/WebSocketContext.Provider&gt;
   );
-<span class="cstat-no" title="statement not covered" >};</span></pre></td></tr></table></pre>
+};</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-11-05T22:38:05.075Z
+                at 2024-11-08T21:47:40.963Z
             </div>
         <script src="../prettify.js"></script>
         <script>
