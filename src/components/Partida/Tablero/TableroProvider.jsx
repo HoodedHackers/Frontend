@@ -77,28 +77,20 @@ function numbersToSquares(colores, posicionesResaltadas) {
   }
 
   function handleSquareClick(index) {
-    if (selectedIndex === null) {
+    if (selectedIndex === index) {
+      // Si el índice ya está seleccionado, deselecciona el cuadrado
+      setSelectedIndex(null);
+    } else if (selectedIndex === null) {
       // Selecciona el cuadrado si no hay ninguno seleccionado
       setSelectedIndex(index);
-      console.log(`Jugador ${sessionStorage.getItem("identifier")} seleccionó el cuadrado en posición: ${index}`);
     } else {
-      const newSquares = [...squares];
-
       // Guardar la posición de origen y destino
       const origen = selectedIndex;
       const destino = index;
-
-      // Cambiar las posiciones de las fichas
-      [newSquares[origen], newSquares[destino]] = [newSquares[destino], newSquares[origen]];
-
-      // Actualizar el estado
-      setSquares(newSquares);
-      setSelectedIndex(null);
-      setTurnoActual((turnoActual + 1) % jugadoresActivos.length); // Actualizar el estado
-
-      // Obtener el ID de la carta en uso y el identifier (esto debería estar de
+  
+      // Obtener el ID de la carta en uso y el identifier
       const identifier = sessionStorage.getItem("identifier");
-
+  
       // Enviar la información al backend
       enviarMovimiento(identifier, origen, destino);
     }

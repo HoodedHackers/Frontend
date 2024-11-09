@@ -284,6 +284,8 @@ function Partida() {
 			console.log("Received message:", event.data);
 			const updatedMessage = JSON.parse(event.data);
 			setActivePlayer({player_name: updatedMessage.player_name, player_id: updatedMessage.player_id});
+      sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", 3);
+      setCantidadCartasMovimientoJugadorActual(3);
 		};
 	}, [player_id, partidaID, wsTRef]);
 
