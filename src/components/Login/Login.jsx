@@ -101,8 +101,7 @@ const Login = () => {
       <div className="devButtonContainer">
         <button 
           className="devButton" 
-          onClick={() => navigate("/desarrolladores")}
-        >
+          onClick={() => navigate("/desarrolladores")}>
           Desarrolladores
         </button>
       </div>
