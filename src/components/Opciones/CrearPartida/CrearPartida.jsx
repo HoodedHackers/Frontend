@@ -36,8 +36,15 @@ export default function CrearPartida() {
             return;
         }
 
-        if (parseInt(partidaDatos.min_jugadores, 10) < 2) {
-            setError('La cantidad mínima de jugadores debe ser al menos 2.');
+        if (partidaDatos.nombre.length > 64) {
+            setError('El nombre de la partida es no puede exceder de los 64 caracteres.')
+            setErrorModalVisible(true);
+            setTimeout(() => setErrorModalVisible(false), 3000);
+            return;
+        }
+
+        if (parseInt(partidaDatos.min_jugadores, 10) < 2 || parseInt(partidaDatos.min_jugadores, 10) > 4) {
+            setError('La cantidad mínima de jugadores debe estar entre 2 y 4.');
             setErrorModalVisible(true);
             setTimeout(() => setErrorModalVisible(false), 3000);
             return;
@@ -58,9 +65,15 @@ export default function CrearPartida() {
             return;
         }
 
-        // Validación de longitud de la contraseña
         if (partidaDatos.contrasena.length > 20) {
             setError('contraseña debe tener menos de 20 caracteres.');
+            setErrorModalVisible(true);
+            setTimeout(() => setErrorModalVisible(false), 3000);
+            return;
+        }
+
+        if (parseInt(partidaDatos.min_jugadores, 10) > parseInt(partidaDatos.max_jugadores, 10)) {
+            setError('valores de jugadores incorrectos.');
             setErrorModalVisible(true);
             setTimeout(() => setErrorModalVisible(false), 3000);
             return;
