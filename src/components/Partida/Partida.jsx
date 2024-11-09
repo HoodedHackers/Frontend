@@ -256,7 +256,6 @@ function Partida() {
     }
   }, [wsUCMRef.current]);
 
-
 	useEffect(() => {
 		wsTRef.current = new WebSocket(`ws://localhost:8000/ws/lobby/${partidaID}/turns?player_id=${player_id}`);
 
@@ -312,8 +311,13 @@ function Partida() {
     sessionStorage.removeItem('isOwner');
     sessionStorage.removeItem('timeLeft');
     sessionStorage.removeItem('partidaIniciada');
-    setShowModal(false);  // Cerrar el modal
+    setShowModal(false);  
     navigate('/Opciones');
+  };
+
+  // Función para manejar la navegación a la página anterior
+  const goBack = () => {
+    navigate(-1); // Navega a la página anterior en el historial
   };
 
   function empezarPartida() {
@@ -323,21 +327,20 @@ function Partida() {
     console.log("Partida iniciada");
   }
 
-
   return (
     <div className="container-partida">
-        {/* El elemento <audio> para la música de fondo */}
-    <audio ref={audioRef} loop>
+      {partidaIniciada && (
+        <button onClick={goBack} className="go-back-button">
+          <i className="fas fa-arrow-left"></i>
+        </button>
+      )}
+      <audio ref={audioRef} loop>
         <source src="/Hollow Knight OST - Crystal Peak.mp3" type="audio/mpeg" />
         Tu navegador no soporta el audio.
       </audio>
-
-      {/* Botón de mute */}
       <button onClick={toggleMute} className="mute-button">
-  <i className={isMuted ? "fas fa-volume-mute" : "fas fa-volume-up"}></i>
-</button>
-
-
+        <i className={isMuted ? "fas fa-volume-mute" : "fas fa-volume-up"}></i>
+      </button>
       {Array.isArray(jugadores) && jugadores.length > 0 ? (
         jugadores.map((jugador, index) => (
           <div key={jugador.player_id}>

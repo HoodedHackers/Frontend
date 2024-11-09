@@ -137,37 +137,5 @@ describe('ListarPartidas Component', () => {
     expect(screen.queryByText('Partida Milo')).not.toBeInTheDocument();
     expect(screen.queryByText('Partida Ely')).not.toBeInTheDocument();
   });
-
-
-
-
-  it('Muestra un error si el WebSocket de Listar Partidas falla', () => {
-
-  });
-
-  it('Vuelve a renderizar si recibe partidas desde el WebSocket de Listar Partidas', () => {
-
-  });
-
-  it('Se conecta con el endpoint de Unirse a Partida', () => {
-
-  });
-
-  it('Muestra un error si el endpoint falla', () => {
-
-  });
-
-  it('Se conecta con el WebSocket de Unirse a Partida', () => {
-
-  });
-
-  it('Muestra un error si el WebSocket falla', () => {
-
-  });
-
-  it('Permite al usuario unirse a una partida', async () => {
-
-  });
-
 });
 

@@ -135,5 +135,18 @@ describe("CrearPartida Component", () => {
     );
 
     fireEvent.click(button);
+  });
+
+  it("Muestra un mensaje de error si el nombre de la partida está vacío", () => {
+    fireEvent.click(button);
+    expect(screen.getByText("El nombre de la partida es obligatorio.")).toBeInTheDocument();
+  });
+
+  it("Muestra un mensaje de error si el nombre de la partida excede los 64 caracteres", () => {
+    fireEvent.change(screen.getByLabelText(/Nombre de Partida/i), {
+      target: { value: "a".repeat(65) },
     });
+    fireEvent.click(button);
+    expect(screen.getByText("El nombre de la partida es no puede exceder de los 64 caracteres.")).toBeInTheDocument();
+  });
 });

@@ -20,7 +20,7 @@ transform: scale(0.95);
 .abandonar-partida-boton:hover {
   background-color: #f72840; 
   border: 2px solid #ffffff; 
-
+  transform: scale(1.05);
 }
 
 .abandonar-partida-boton:disabled {

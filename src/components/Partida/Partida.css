@@ -213,3 +213,32 @@ button:disabled {
   transform: scale(1.05);
 }
 
+.go-back-button {
+  position: fixed; /* Para mantenerlo sobre todo y en una posición fija */
+  top: 80px;       /* Ajusta según tu preferencia */
+  left: 40px;      /* Ajusta según tu preferencia */
+  z-index: 1000;   /* Asegura que esté por encima de otros elementos */
+  background-color: #f8782e; 
+  color: white;
+  border: 2px solid black;
+  border-radius: 8px; /* Borde redondeado */
+  padding: 10px; /* Espaciado interno */
+  font-size: 18px; /* Tamaño del ícono de la flecha */
+  cursor: pointer; /* Cambia el cursor al pasar por encima */
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease; /* Transiciones para el hover */
+}
+
+.go-back-button:hover {
+  background-color: #f72840; 
+  border: 2px solid #ffffff; 
+  transform: scale(1.1);
+}
+
+.go-back-button:focus {
+  outline: none;      /* Elimina el contorno predeterminado cuando se hace foco */
+}
+
+.arrow-icon {
+  width: 24px;    /* Tamaño del ícono si estás usando una imagen */
+  height: auto;   /* Mantiene la relación de aspecto */
+}
