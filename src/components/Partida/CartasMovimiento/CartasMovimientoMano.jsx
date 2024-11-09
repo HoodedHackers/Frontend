@@ -7,55 +7,14 @@ export const CartasMovimientoContext = createContext();
 
 export const CartasMovimientoMano = ({ubicacion, jugadorId}) => {
   const [seleccionada, setSeleccionada] = useState(null);
-  const [cartasDelJugador, setCartasDelJugador] = useState([]);
   const {
-    partidaIniciada,
     jugadorActualId, 
     cartaMovimientoActualId, 
     cartaMovimientoActualIndex ,
-    cantidadCartasMovimientoJugadorActual
+    cantidadCartasMovimientoJugadorActual,
+    cartasDelJugador
   } = useContext(PartidaContext);
 
-
-  // Actualiza las cartas de movimiento al comenzar la partida
-  useEffect(() => {
-    if (partidaIniciada) {
-      const cargarMovimientos = async () => {
-        const dataMovimientos = await obtenerMovimientos();
-        setCartasDelJugador(dataMovimientos.all_cards);
-      };
-      cargarMovimientos();
-    }
-    else {
-      setCartasDelJugador([-1,-1,-1]);
-    }
-  }, [partidaIniciada]);
-
-
-  async function obtenerMovimientos () {
-    try {
-      const partidaId = parseInt(sessionStorage.getItem("partida_id"), 10);
-      const response = await fetch(`http://127.0.0.1:8000/api/lobby/${partidaId}/movs`, { 
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          game_id: parseInt(sessionStorage.getItem("partida_id"), 10),
-          player: sessionStorage.getItem("identifier")
-        })
-      });
-      if (!response.ok) {
-        throw new Error('Fallo al intentar recuperar los movimientos');
-      }
-      const data = await response.json();
-      console.log("Datos de movimientos recibidos: ", data);
-      return data;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  };
 
   return (
     <CartasMovimientoContext.Provider 

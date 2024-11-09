@@ -28,6 +28,8 @@ export const PartidaProvider = ({ children }) => {
 
   const [cantidadCartasMovimientoJugadorActual, setCantidadCartasMovimientoJugadorActual] = useState(null);
 
+  const [cartasDelJugador, setCartasDelJugador] = useState(sessionStorage.getItem("cartas_mov") ? JSON.parse(sessionStorage.getItem("cartas_mov")) : [-1,-1,-1]);
+
   const [mazo, setMazo] = useState([]);
 
   const handleMouseEnter = () => {
@@ -65,6 +67,8 @@ export const PartidaProvider = ({ children }) => {
         setCartaMovimientoActualIndex,
         cantidadCartasMovimientoJugadorActual,
         setCantidadCartasMovimientoJugadorActual,
+        cartasDelJugador,
+        setCartasDelJugador,
         mazo,
         setMazo
       }}

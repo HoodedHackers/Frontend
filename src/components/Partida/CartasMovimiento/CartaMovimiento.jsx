@@ -24,17 +24,35 @@ const CartaMovimiento = ({ id, ubicacion, index }) => {
 
   const isActive = id === seleccionada;
 
-  const usarCartaMovimiento = () => {
+  const usarCartaMovimiento = async () => {
     setJugando(true);
     if (seleccionada != id) {
       setSeleccionada(id);
+      const game_id = sessionStorage.getItem("partida_id");
       const message = {
-        player_identifier: sessionStorage.getItem("identifier"),
+        identifier: sessionStorage.getItem("identifier"),
         card_id: id,
-        index: index
+        card_index: index,
+        game_id: game_id
       };
-      wsUCMRef.current.send(JSON.stringify(message));
-      console.log("Se envió la Carta de Movimiento elegida.");
+
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/api/lobby/${game_id}/use_movement_card`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(message),
+        });
+        if (!response.ok) {
+          throw new Error("Error al enviar la Carta de Movimiento elegida: ", response);
+        }
+        else {
+          console.log("Se envió la Carta de Movimiento elegida.");
+        }
+      } catch (error) {
+        console.error("Error al enviar la Carta de Movimiento elegida: ", response);
+      }    
     }
   };
 
