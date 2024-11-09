@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { PartidaContext, PartidaProvider } from './PartidaProvider.jsx';
 import Jugador from "./Jugador/Jugador.jsx";
 import { CartasMovimientoMano } from "./CartasMovimiento/CartasMovimientoMano.jsx";
@@ -11,12 +11,16 @@ import Temporizador from "./Temporizador/Temporizador.jsx";
 import Chat from "./Chat/Chat.jsx";
 import { WebSocketContext } from '../WebSocketsProvider.jsx';
 import { useNavigate } from "react-router-dom";
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import "./Partida.css";
 
 function Partida() {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+  const audioRef = useRef(null);
+  const [isMuted, setIsMuted] = useState(false);
+
   const {
     partidaIniciada,
     setPartidaIniciada,
@@ -33,7 +37,10 @@ function Partida() {
     setCartaMovimientoActualId,
     setCartaMovimientoActualIndex,
     cantidadCartasMovimientoJugadorActual,
-    setCantidadCartasMovimientoJugadorActual
+    setCantidadCartasMovimientoJugadorActual,
+    mazo,
+    setMazo,
+    jugadorActualIndex
   } = useContext(PartidaContext);
 
   useEffect(() => {
@@ -99,7 +106,7 @@ function Partida() {
     return null;
   }
 
-  const { wsUPRef, wsStartGameRef, wsTRef, wsUCMRef } = useContext(WebSocketContext);
+  const { wsUPRef, wsStartGameRef, wsTRef, wsUCMRef, wsCFRef } = useContext(WebSocketContext);
 
   useEffect(() => {
     try {
@@ -139,12 +146,30 @@ function Partida() {
     }
   }, [wsUPRef.current]);
 
-  function empezarPartida() {
-    sessionStorage.setItem('partidaIniciada', "true");
-    setPartidaIniciada(true);
-    reorderPlayers(JSON.parse(sessionStorage.getItem("players")));
-    console.log("Partida iniciada");
-  }
+  useEffect(() => {
+    if (partidaIniciada && audioRef.current) {
+      if (!isMuted) {
+        audioRef.current.play().catch(error => {
+          console.error("Error al reproducir el audio:", error);
+        });
+      } else {
+        audioRef.current.pause();
+      }
+    }
+
+    // Detener el audio cuando el componente se desmonta o la partida termina
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0; // Reiniciar el audio
+      }
+    };
+  }, [partidaIniciada, isMuted]); // Se activa cuando la partida inicia o el estado mute cambia
+
+  // Maneja el click del botón de mute
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+  };
 
   // Conectar al WebSocket cuando el componente se monte
     useEffect(() => {
@@ -246,6 +271,39 @@ function Partida() {
 		};
 	}, [player_id, partidaID, wsTRef]);
 
+  useEffect(() => {
+    if (wsCFRef.current && wsCFRef.current.readyState !== WebSocket.CLOSED) {
+      return;
+    }
+    try {
+      // Crear la conexión WebSocket
+      wsCFRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaID}/figs?player_id=${player_id}`);
+
+      /*wsCFRef.current.onopen = () => {
+        wsCFRef.current.send(JSON.stringify({ receive: 'cards'}));
+      };*/
+
+      // Manejar mensajes recibidos del WebSocket
+      wsCFRef.current.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        setMazo(data.players);
+      };
+
+      // Manejar errores en la conexión
+      wsCFRef.current.onerror = (error) => {
+        console.error('Error en WebSocket:', error);
+      };
+
+      // Manejar la desconexión del WebSocket
+      wsCFRef.current.onclose = () => {
+        console.log('Conexión WebSocket cerrada');
+      };
+
+    } catch (error) {
+      console.error('Error al conectar con el WebSocket:', error);
+    }
+  }, [wsCFRef.current/*, partidaIniciada, jugadorActualIndex*/]);
+
   const handleCloseModal = () => {
     const partidaID = sessionStorage.getItem('partida_id');
     wsUPRef.current.close();
@@ -257,6 +315,14 @@ function Partida() {
     setShowModal(false);  // Cerrar el modal
     navigate('/Opciones');
   };
+
+  function empezarPartida() {
+    sessionStorage.setItem('partidaIniciada', "true");
+    setPartidaIniciada(true);
+    reorderPlayers(JSON.parse(sessionStorage.getItem("players")));
+    console.log("Partida iniciada");
+  }
+
 
   return (
     <div className="partida-con-chat">

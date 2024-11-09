@@ -6,6 +6,8 @@ import { CartasMovimientoMano, CartasMovimientoContext } from '../components/Par
 import { PartidaContext } from '../components/Partida/PartidaProvider';
 import { WebSocketProvider } from '../components/WebSocketsProvider';
 
+sessionStorage.setItem('partida_id', 1); // Fijamos partida_id en 1
+
 vi.mock('../components/Partida/PartidaProvider');
 
 // Mock de los datos del contexto
@@ -74,7 +76,7 @@ describe('Cartas de Movimiento', () => {
 
     // Espera a que fetch sea llamado con los parámetros correctos
     await waitFor(() => {
-      expect(fetchMock).toHaveBeenCalledWith('http://127.0.0.1:8000/api/partida/en_curso/movimiento', {
+      expect(fetchMock).toHaveBeenCalledWith(`http://127.0.0.1:8000/api/lobby/1/movs`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

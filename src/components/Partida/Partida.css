@@ -213,3 +213,25 @@ button:disabled {
   background-color: #282827; /* Cambia el color al pasar el ratón */
   transform: scale(1.05); /* Aumenta ligeramente el tamaño */
 }
+
+.mute-button {
+  position: absolute;
+  top: 30px;
+  left: 200px;
+  z-index: 3;
+  background-color: #070707;
+  color: #fff;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+  font-size: 18px; /* Ajusta el tamaño del icono */
+}
+
+/* Hover del botón */
+.mute-button:hover {
+  background-color: #282827;
+  transform: scale(1.05);
+}
+
