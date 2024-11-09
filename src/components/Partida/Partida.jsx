@@ -9,6 +9,7 @@ import AbandonarPartida from "./AbandonarPartida/AbandonarPartida.jsx";
 import PasarTurno from "./PasarTurno/PasarTurno.jsx";
 import Temporizador from "./Temporizador/Temporizador.jsx";
 import { WebSocketContext } from '../WebSocketsProvider.jsx';
+import CancelarMovimientos from "./CancelarMovimiento/CancelarMovimientos.jsx";
 import "./Partida.css";
 import { useNavigate } from "react-router-dom";
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -354,6 +355,10 @@ function Partida() {
       )}
       <div className="tableroContainer">
         <TableroWithProvider />
+      </div>
+      <div className="cancelar-movimientos-container">
+        <CancelarMovimientos 
+        jugadorActual={activePlayer.player_name} />
       </div>
       <div>
         {!partidaIniciada && <IniciarPartida empezarPartida={empezarPartida} />}
