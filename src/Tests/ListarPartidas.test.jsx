@@ -83,20 +83,21 @@ describe('ListarPartidas Component', () => {
   
   it('Muestra un mensaje de error cuando el GET falla', async () => {
     global.fetch = mockFetch(null, 404);
-    const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(() => {});
-
     render(
       <WebSocketProvider>
         <ListarPartidas />
       </WebSocketProvider>
     );
-
+  
+    // Esperar a que se muestre el mensaje de error en el DOM
     await waitFor(() => {
-      expect(consoleErrorMock).toHaveBeenCalled();
+      const errorModal = screen.getByText(/Error al obtener partidas disponibles./i);
+      expect(errorModal).toBeInTheDocument();
     });
   });
   
-  it('Se concecta al endpoint de Listar Partidas para renderizar partidas', async () => {
+  
+  it('Se conecta al endpoint de Listar Partidas para renderizar partidas', async () => {
     global.fetch = mockFetch(partidas);
 
     render(
@@ -113,6 +114,32 @@ describe('ListarPartidas Component', () => {
     expect(screen.getByText('Partida Lu')).toBeInTheDocument();
     expect(screen.getByText('Partida Mati')).toBeInTheDocument();
   });
+
+  it('Filtra partidas por nombre', async () => {
+    global.fetch = mockFetch(partidas);
+
+    render(
+      <WebSocketProvider>
+        <ListarPartidas />
+      </WebSocketProvider>
+    );
+
+    // Simulamos el ingreso de un nombre para filtrar
+    const inputNombre = screen.getByPlaceholderText(/Buscar por nombre de partida.../i);
+    fireEvent.change(inputNombre, { target: { value: 'Partida Lu' } });
+
+    // Esperamos que solo se muestre la partida que corresponde al filtro
+    await waitFor(() => {
+      expect(screen.getByText('Partida Lu')).toBeInTheDocument();
+    });
+
+    // Comprobamos que las demás partidas no están presentes
+    expect(screen.queryByText('Partida Milo')).not.toBeInTheDocument();
+    expect(screen.queryByText('Partida Ely')).not.toBeInTheDocument();
+  });
+
+
+
 
   it('Muestra un error si el WebSocket de Listar Partidas falla', () => {
 

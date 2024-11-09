@@ -11,7 +11,7 @@ import Temporizador from "./Temporizador/Temporizador.jsx";
 import { WebSocketContext } from '../WebSocketsProvider.jsx';
 import "./Partida.css";
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 
 function Partida() {
@@ -19,6 +19,7 @@ function Partida() {
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const audioRef = useRef(null);
+  const [isMuted, setIsMuted] = useState(false);
 
   const {
     partidaIniciada,
@@ -144,14 +145,18 @@ function Partida() {
       }
     }
   }, [wsUPRef.current]);
+
   useEffect(() => {
-    // Reproducir el audio de fondo solo si la partida ha iniciado
     if (partidaIniciada && audioRef.current) {
-      audioRef.current.play().catch(error => {
-        console.error("Error al reproducir el audio:", error);
-      });
+      if (!isMuted) {
+        audioRef.current.play().catch(error => {
+          console.error("Error al reproducir el audio:", error);
+        });
+      } else {
+        audioRef.current.pause();
+      }
     }
-  
+
     // Detener el audio cuando el componente se desmonta o la partida termina
     return () => {
       if (audioRef.current) {
@@ -159,8 +164,12 @@ function Partida() {
         audioRef.current.currentTime = 0; // Reiniciar el audio
       }
     };
-  }, [partidaIniciada]); // Se activa cuando la partida inicia
-  
+  }, [partidaIniciada, isMuted]); // Se activa cuando la partida inicia o el estado mute cambia
+
+  // Maneja el click del botón de mute
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+  };
 
   // Conectar al WebSocket cuando el componente se monte
     useEffect(() => {
@@ -322,6 +331,13 @@ function Partida() {
         <source src="/Hollow Knight OST - Crystal Peak.mp3" type="audio/mpeg" />
         Tu navegador no soporta el audio.
       </audio>
+
+      {/* Botón de mute */}
+      <button onClick={toggleMute} className="mute-button">
+  <i className={isMuted ? "fas fa-volume-mute" : "fas fa-volume-up"}></i>
+</button>
+
+
       {Array.isArray(jugadores) && jugadores.length > 0 ? (
         jugadores.map((jugador, index) => (
           <div key={jugador.player_id}>

@@ -115,7 +115,6 @@ describe("CrearPartida Component", () => {
     });
 });
 
-
   it("Muestra y oculta correctamente el campo de contraseña para partidas privadas", () => {
     const tipoSelect = screen.getByLabelText(/Tipo de Partida/i);
 
@@ -126,4 +125,15 @@ describe("CrearPartida Component", () => {
     expect(screen.queryByLabelText(/Contraseña/i)).not.toBeInTheDocument();
   });
 
+  it("Muestra un mensaje de error si la solicitud al backend falla", async () => {
+    // Simula una respuesta fallida
+    global.fetch.mockImplementationOnce(() =>
+      Promise.resolve({
+        ok: false,
+        json: () => Promise.resolve({ detail: "Error al crear la partida" }),
+      })
+    );
+
+    fireEvent.click(button);
+    });
 });

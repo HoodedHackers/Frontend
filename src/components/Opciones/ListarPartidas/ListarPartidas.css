@@ -142,11 +142,6 @@
   color: #6b7280;
 }
 
-/* Estilo para partidas privadas */
-.item-partida-privada {
-  color: red;
-  font-weight: bold;
-}
 /* Modal de error con overlay centrado */
 .error-modal {
   position: fixed;

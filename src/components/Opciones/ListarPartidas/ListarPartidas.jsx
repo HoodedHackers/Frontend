@@ -28,16 +28,16 @@ function ListarPartidas() {
       setShowErrorModal(true);
       return;
     }
-    
+
     const password = partida.is_private ? passwordInputs[partida.id] : null;
     joinGame(partida, password);
   };
-  
+
   const joinGame = async (partida, password) => {
     try {
       const player_id = parseInt(sessionStorage.getItem("player_id"), 10);
       wsUPRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partida.id}?player_id=${player_id}`);
-  
+
       wsUPRef.current.onopen = () => {
         const startMessage = {
           user_identifier: sessionStorage.getItem('identifier'),
@@ -45,25 +45,25 @@ function ListarPartidas() {
         };
         wsUPRef.current.send(JSON.stringify(startMessage));
       };
-  
+
       wsUPRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
-  
+
         if (data.error === 'Invalid password') {
           setErrorMessage("Contraseña incorrecta. Intente de nuevo.");
           setShowErrorModal(true);
           return;
         }
-  
+
         sessionStorage.setItem("players", JSON.stringify(data.players));
         sessionStorage.setItem("partida_id", partida.id);
         sessionStorage.setItem('isOwner', false);
-  
+
         setTimeout(() => {
           navigate(`/Partida/${partida.id}`);
         }, 1000);
       };
-  
+
       wsUPRef.current.onerror = (error) => {
         setErrorMessage("Se produjo un error al intentar unirse a la partida.");
         setShowErrorModal(true);
@@ -85,12 +85,13 @@ function ListarPartidas() {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
-      
+
       if (!response.ok) throw new Error('No se pudo obtener las partidas.');
 
       const data = await response.json();
       setPartidas(data);
     } catch (error) {
+      console.error("No se pudo obtener las partidas.");
       setErrorMessage("Error al obtener partidas disponibles.");
       setShowErrorModal(true);
     }
@@ -111,7 +112,7 @@ function ListarPartidas() {
     };
 
     wsLPRef.current.onerror = (error) => console.error("WebSocket Listar Partida error:", error);
-    
+
     wsLPRef.current.onclose = () => console.log("WebSocket de Listar Partida cerrado");
 
     return () => {
@@ -166,7 +167,7 @@ function ListarPartidas() {
           </div>
         </div>
       )}
-      
+
       {partidasFiltradas.length === 0 ? (
         <p className="texto-centrado">No se encontraron partidas, pruebe con otro nombre o número de jugadores.</p>
       ) : (

@@ -28,12 +28,41 @@ export default function CrearPartida() {
     const manejarBotonCrearPartida = async (e) => {
         e.preventDefault();
 
+        // Validaciones adicionales
+        if (!partidaDatos.nombre.trim()) {
+            setError('El nombre de la partida es obligatorio.');
+            setErrorModalVisible(true);
+            setTimeout(() => setErrorModalVisible(false), 3000);
+            return;
+        }
+
+        if (parseInt(partidaDatos.min_jugadores, 10) < 2) {
+            setError('La cantidad mínima de jugadores debe ser al menos 2.');
+            setErrorModalVisible(true);
+            setTimeout(() => setErrorModalVisible(false), 3000);
+            return;
+        }
+
+        const maxJugadores = parseInt(partidaDatos.max_jugadores, 10);
+        if (![2, 3, 4].includes(maxJugadores)) {
+            setError('La cantidad máxima de jugadores debe ser 2, 3 o 4.');
+            setErrorModalVisible(true);
+            setTimeout(() => setErrorModalVisible(false), 3000);
+            return;
+        }
+
         if (partidaDatos.tipo === 'privada' && !partidaDatos.contrasena) {
             setError('Por favor, ingresa una contraseña para la partida privada.');
             setErrorModalVisible(true);
-            setTimeout(() => {
-                setErrorModalVisible(false);
-            }, 2000);  // El mensaje desaparecerá después de 2 segundos
+            setTimeout(() => setErrorModalVisible(false), 3000);
+            return;
+        }
+
+        // Validación de longitud de la contraseña
+        if (partidaDatos.contrasena.length > 20) {
+            setError('contraseña debe tener menos de 20 caracteres.');
+            setErrorModalVisible(true);
+            setTimeout(() => setErrorModalVisible(false), 3000);
             return;
         }
 
@@ -167,7 +196,7 @@ export default function CrearPartida() {
                             id="contrasena"
                             name="contrasena"
                             type="password"
-                            placeholder="Contraseña" 
+                            placeholder="Contraseña"
                             autoComplete="off"
                             value={partidaDatos.contrasena}
                             onChange={manejarPartidaDatos}
@@ -184,18 +213,18 @@ export default function CrearPartida() {
             </div>
             <div className="button-container">
                 <button
-                variant="contained"
-                className="crear-partida-boton"
-                onClick={manejarBotonCrearPartida}
+                    variant="contained"
+                    className="crear-partida-boton"
+                    onClick={manejarBotonCrearPartida}
                 >
                     Crear Partida
                 </button>
 
-            {errorModalVisible && (
-                <div className="modal-error">
-                    <p>{error}</p>
-                </div>
-            )}
+                {errorModalVisible && (
+                    <div className="modal-error">
+                        <p>{error}</p>
+                    </div>
+                )}
             </div>
 
             {modalVisible && (
