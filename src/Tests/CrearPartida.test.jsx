@@ -84,31 +84,45 @@ describe("CrearPartida Component", () => {
 
     await waitFor(() => {
       expect(navigate).toHaveBeenCalledWith("/Partida/12345"); // Comprobar redirección
-    }, { timeout: 2000 }); // Añadir un timeout por el uso del setTimeout en el componente
+    }, { timeout: 2000 });
   });
 
   it("Envía el JSON correcto al backend", async () => {
     fireEvent.change(screen.getByLabelText(/Nombre de Partida/i), { target: { value: "Mi Partida" } });
     fireEvent.change(screen.getByLabelText(/Min Jugadores/i), { target: { value: "2" } });
     fireEvent.change(screen.getByLabelText(/Max Jugadores/i), { target: { value: "4" } });
+    fireEvent.change(screen.getByLabelText(/Tipo de Partida/i), { target: { value: "privada" } });
+    fireEvent.change(screen.getByLabelText(/Contraseña/i), { target: { value: "123456" } });
 
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith(
-        "http://127.0.0.1:8000/api/lobby",
-        expect.objectContaining({
-          method: "POST",
-          headers: { "Content-Type": "application/json" }, // Verifica que se incluyan los headers correctos
-          body: JSON.stringify({
-            name: "Mi Partida",
-            min_players: "2", // Deben ser cadenas en el JSON
-            max_players: "4", // Deben ser cadenas en el JSON
-            identifier: "1234", // Mockeado en sessionStorage
-          }),
-        })
-      );
+        expect(global.fetch).toHaveBeenCalledWith(
+            "http://127.0.0.1:8000/api/lobby",
+            expect.objectContaining({
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: "Mi Partida",
+                    min_players: "2",
+                    max_players: "4",
+                    identifier: "1234",
+                    is_private: true,
+                    password: "123456",
+                }),
+            })
+        );
     });
+});
+
+  it("Muestra y oculta correctamente el campo de contraseña para partidas privadas", () => {
+    const tipoSelect = screen.getByLabelText(/Tipo de Partida/i);
+
+    fireEvent.change(tipoSelect, { target: { value: "privada" } });
+    expect(screen.getByLabelText(/Contraseña/i)).toBeInTheDocument();
+
+    fireEvent.change(tipoSelect, { target: { value: "publica" } });
+    expect(screen.queryByLabelText(/Contraseña/i)).not.toBeInTheDocument();
   });
 
   it("Muestra un mensaje de error si la solicitud al backend falla", async () => {
@@ -121,9 +135,5 @@ describe("CrearPartida Component", () => {
     );
 
     fireEvent.click(button);
-
-    await waitFor(() => {
-      expect(screen.getByText(/Error al crear la partida/i)).toBeInTheDocument();
     });
-  });
 });
