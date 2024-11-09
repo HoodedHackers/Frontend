@@ -154,3 +154,27 @@
   background: rgb(255, 153, 0);
   box-shadow: 0 0 15px #000000, 0 0 20px #ffffff;
 }
+
+.devButtonContainer {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 10;
+}
+
+.devButton {
+  background-color: #494a4a;
+  color: white;
+  border: black;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+}
+
+.devButton:hover {
+  background-color: #0056b3;
+}
+
