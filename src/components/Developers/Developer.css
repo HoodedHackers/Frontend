@@ -136,11 +136,10 @@
   background-color: rgba(255, 255, 255, 0.8);
   color: #000;
 }
-
 .navigate-button {
   position: fixed;
-  bottom: 20px;
-  left: 20px;
+  top: 20px; /* Cambiar 'bottom' por 'top' para que se posicione arriba */
+  left: 20px; /* Ya está en su lugar para la parte izquierda */
   padding: 10px 20px;
   background-color: #575959;
   color: white;

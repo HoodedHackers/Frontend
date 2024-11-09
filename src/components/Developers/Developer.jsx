@@ -15,7 +15,7 @@ const developers = [
 const Developer = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const audioRef = useRef(null);
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Para redirigir al login
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % developers.length);
@@ -25,6 +25,10 @@ const Developer = () => {
     setCurrentIndex((prevIndex) =>
       (prevIndex - 1 + developers.length) % developers.length
     );
+  };
+
+  const handleGoBack = () => {
+    navigate("/"); // Redirigir al login
   };
 
   useEffect(() => {
@@ -70,14 +74,10 @@ const Developer = () => {
         Tu navegador no soporta el elemento de audio.
       </audio>
 
-      <button className="navigate-button" onClick={() => {
-        console.log("Redirigiendo al Lobby...");
-        navigate("/"); // Redirige al lobby
-      }}>
-        Volver al Lobby
+      {/* Botón para redirigir al login */}
+      <button className="navigate-button" onClick={handleGoBack}>
+        Volver al Login
       </button>
-
-
     </div>
   );
 };
