@@ -7,6 +7,7 @@ export const CartasMovimientoContext = createContext();
 
 export const CartasMovimientoMano = ({ubicacion, jugadorId}) => {
   const [seleccionada, setSeleccionada] = useState(null);
+  const cartasDefault = [-1, -1, -1];
   const {
     jugadorActualId, 
     cartaMovimientoActualId, 
@@ -24,22 +25,9 @@ export const CartasMovimientoMano = ({ubicacion, jugadorId}) => {
       }}
     >  
       <div className={`jugador${ubicacion + 1}-container-cartas-movimiento`}>
-        {cartasDelJugador.length > 0 ? (
-          cartasDelJugador.map((carta, index) => (
-            ubicacion === 0 ? (
-              jugadorId === jugadorActualId ? (
-                ((index + 1) <= cantidadCartasMovimientoJugadorActual) || cantidadCartasMovimientoJugadorActual === null ? (
-                  <div key={index}>
-                    <CartaMovimiento
-                      id={carta} 
-                      ubicacion={ubicacion}
-                      index={index}
-                    />
-                  </div>
-                ) : (
-                  null
-                )
-              ) : (
+        {ubicacion === 0 ? (
+          cartasDelJugador.length > 0 ? (
+            cartasDelJugador.map((carta, index) => (
                 <div key={index}>
                   <CartaMovimiento
                     id={carta} 
@@ -47,43 +35,44 @@ export const CartasMovimientoMano = ({ubicacion, jugadorId}) => {
                     index={index}
                   />
                 </div>
-              ) 
-            ) : (
-              jugadorId === jugadorActualId ? (
-                (index + 1) <= cantidadCartasMovimientoJugadorActual ? (
-                  cartaMovimientoActualIndex === index ? (
-                    <div key={index}>
-                      <CartaMovimiento
-                        id={cartaMovimientoActualId} 
-                        ubicacion={ubicacion}
-                        index={index}
-                      />
-                    </div>
-                  ) : (
-                    <div key={index}>
-                      <CartaMovimiento
-                        id={-1} 
-                        ubicacion={ubicacion}
-                        index={index}
-                      />
-                    </div>
-                  )
+            ))
+          ) : (
+            null
+          )
+        ) : (
+          cartasDefault.map((carta, index) =>
+            jugadorId === jugadorActualId ? (
+              (index + 1) <= cantidadCartasMovimientoJugadorActual ? (
+                cartaMovimientoActualIndex === index ? (
+                  <div key={index}>
+                    <CartaMovimiento
+                      id={cartaMovimientoActualId} 
+                      ubicacion={ubicacion}
+                      index={index}
+                    />
+                  </div>
                 ) : (
-                  null
+                  <div key={index}>
+                    <CartaMovimiento
+                      id={carta} 
+                      ubicacion={ubicacion}
+                      index={index}
+                    />
+                  </div>
                 )
               ) : (
-                <div key={index}>
-                  <CartaMovimiento
-                    id={-1} 
-                    ubicacion={ubicacion}
-                    index={index}
-                  />
-                </div>
+                null
               )
+            ) : (
+              <div key={index}>
+                <CartaMovimiento
+                  id={carta} 
+                  ubicacion={ubicacion}
+                  index={index}
+                />
+              </div>
             )
-          ))
-        ) : (
-          null
+          )
         )}
       </div>
     </CartasMovimientoContext.Provider>

@@ -36,7 +36,7 @@ export const TableroProvider = ({ children }) => {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [turnoActual, setTurnoActual] = useState(0);
   const [jugadoresActivos, setJugadoresActivos] = useState([true, true, true, true]);
-  const { cartaMovimientoActualId, cartaMovimientoActualIndex } = useContext(PartidaContext);
+  const { cartaMovimientoActualId, cartaMovimientoActualIndex, setCartasDelJugador } = useContext(PartidaContext);
   const { wsBSRef } = useContext(WebSocketContext);
 
 
@@ -124,12 +124,21 @@ function numbersToSquares(colores, posicionesResaltadas) {
       });
 
       const data = await response.json();
-      console.log("Respuesta del servidor:", data);
+
+      if(data == "Invalid move"){
+        console.log("Movimiento inválido");
+      }
+      else{
+        sessionStorage.setItem("cartas_mov", JSON.stringify(data.card_mov));
+        setCartasDelJugador(data.card_mov);
+      }
 
       if (!response.ok) {
         console.error("Error al realizar el movimiento:", data.detail);
       }
     } catch (error) {
+      sessionStorage.setItem("cartas_mov", JSON.stringify(data.card_mov));
+      setCartasDelJugador(data.card_mov);
       console.error("Error al conectar con el servidor:", error);
     }
   }

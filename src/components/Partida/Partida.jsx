@@ -223,14 +223,12 @@ function Partida() {
 
       wsUCMRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
-
         switch (data.action) {
           case "deal":
             sessionStorage.setItem("cartas_mov", JSON.stringify(data.card_mov));
             setCartasDelJugador(data.card_mov);
             sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", cartasDelJugador.length);
             setCantidadCartasMovimientoJugadorActual(cartasDelJugador.length);
-            console.log("Length", cartasDelJugador.length);
           break;
 
           case "select":
@@ -246,14 +244,14 @@ function Partida() {
           case "recover_card":
             sessionStorage.setItem("jugadorActualId", data.player_id);
             setJugadorActualId(data.player_id);
-            sessionStorage.setItem("cartaMovimientoActualId", data.card_id);
-            setCartaMovimientoActualId(data.card_id);
-            sessionStorage.setItem("cartaMovimientoActualIndex", data.index);
-            setCartaMovimientoActualIndex(data.index);
+            sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", data.len);
+            setCantidadCartasMovimientoJugadorActual(data.len);
+            sessionStorage.setItem("cartaMovimientoActualId", -1);
+            setCartaMovimientoActualId(-1);
           break;
-        
+
           default:
-            throw new Error("Acción no reconocida.");
+            throw new Error("Acción no reconocida: ", data.action);
         }
         console.log("Mensaje recibido del WebSocket de Usar Carta de Movimiento:", data);
       }
