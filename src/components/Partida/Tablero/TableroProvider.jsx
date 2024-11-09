@@ -125,16 +125,12 @@ function numbersToSquares(colores, posicionesResaltadas) {
 
       const data = await response.json();
 
-      if(data == "Invalid move"){
-        console.log("Movimiento inválido");
-      }
-      else{
-        sessionStorage.setItem("cartas_mov", JSON.stringify(data.card_mov));
-        setCartasDelJugador(data.card_mov);
-      }
-
       if (!response.ok) {
         console.error("Error al realizar el movimiento:", data.detail);
+      }
+      else {
+        sessionStorage.setItem("cartas_mov", JSON.stringify(data.card_mov));
+        setCartasDelJugador(data.card_mov);
       }
     } catch (error) {
       sessionStorage.setItem("cartas_mov", JSON.stringify(data.card_mov));
