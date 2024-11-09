@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useRef } from 'react';
+import { createContext, useRef } from 'react';
 
 export const WebSocketContext = createContext();
 
@@ -10,6 +10,7 @@ export const WebSocketProvider = ({ children }) => {
     const wsTRef = useRef(null); // WebSocket para pasar turno
     const wsBSRef = useRef(null); // WebSocket para el Estado del Tablero (Board State)
     const wsCFRef = useRef(null); // WebSocket para cartas de figuras
+    const wsTimerRef = useRef(null); // WebSocket para temporizador
 
   return (
     <WebSocketContext.Provider
@@ -21,6 +22,7 @@ export const WebSocketProvider = ({ children }) => {
         wsTRef,
         wsBSRef,
         wsCFRef,
+        wsTimerRef,
       }}
     >
       {children}
