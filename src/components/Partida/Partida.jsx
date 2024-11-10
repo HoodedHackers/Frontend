@@ -9,6 +9,7 @@ import AbandonarPartida from "./AbandonarPartida/AbandonarPartida.jsx";
 import PasarTurno from "./PasarTurno/PasarTurno.jsx";
 import Temporizador from "./Temporizador/Temporizador.jsx";
 import { WebSocketContext } from '../WebSocketsProvider.jsx';
+import CancelarMovimientos from "./CancelarMovimiento/CancelarMovimientos.jsx";
 import "./Partida.css";
 import { useNavigate } from "react-router-dom";
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -66,10 +67,7 @@ function Partida() {
   const partidaID = sessionStorage.getItem('partida_id');
   const identifier = sessionStorage.getItem('identifier');
   const player_id = parseInt(sessionStorage.getItem("player_id"));
-  const [timeLeft, setTimeLeft] = useState(() => {
-    const storedTime = sessionStorage.getItem("timeLeft");
-    return storedTime !== null ? Number(storedTime) : tiempoLimite;
-  });
+  const [time, setTime] = useState(-1.0);
 	const [activePlayer, setActivePlayer] = useState({});
   const name = sessionStorage.getItem('player_nickname');
 
@@ -79,16 +77,12 @@ function Partida() {
       setJugadorActualIndex(nuevoIndex);
       setPosicionJugador(nuevoIndex);
       sessionStorage.setItem("posicion_jugador", nuevoIndex);
-      setTimeLeft(tiempoLimite);
+      setTime(tiempoLimite);
       sessionStorage.setItem("timeLeft", tiempoLimite);
 
       setJugando(false);
     }
   };
-
-  useEffect(() => {
-    sessionStorage.setItem("timeLeft", timeLeft);
-  }, [timeLeft]);
 
   function reorderPlayers (players) {
     if (players && Array.isArray(players)) {
@@ -109,7 +103,7 @@ function Partida() {
     return null;
   }
 
-  const { wsUPRef, wsStartGameRef, wsTRef, wsUCMRef, wsCFRef } = useContext(WebSocketContext);
+  const { wsUPRef, wsStartGameRef, wsTRef, wsUCMRef, wsCFRef, wsTimerRef } = useContext(WebSocketContext);
 
   useEffect(() => {
     try {
@@ -185,12 +179,12 @@ function Partida() {
           // Inicializar el WebSocket
           const player_id = parseInt(sessionStorage.getItem("player_id"), 10);
           wsStartGameRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaID}/status?player_id=${player_id}`);
-  
+
           // Evento cuando se abre la conexión
           wsStartGameRef.current.onopen = () => {
               console.log("Conectado al WebSocket de Iniciar Partida de estado de partida");
           };
-  
+
           // Evento cuando se recibe un mensaje del WebSocket
           wsStartGameRef.current.onmessage = (event) => {
               const message = JSON.parse(event.data);
@@ -199,7 +193,7 @@ function Partida() {
                 empezarPartida(); // Llamar a la función para iniciar la partida
               }
           };
-  
+
           // Evento cuando la conexión se cierra
           wsStartGameRef.current.onclose = () => {
               console.log("Conexión WebSocket de Iniciar Partida cerrada");
@@ -322,6 +316,21 @@ function Partida() {
     }
   }, [wsCFRef.current/*, partidaIniciada, jugadorActualIndex*/]);
 
+
+  // Temporizador
+  useEffect(() => {
+    wsTimerRef.current = new WebSocket(`http://127.0.0.1:8000/ws/timer?player_id=${player_id}&game_id=${partidaID}`);
+
+    wsTimerRef.current.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setTime(data.time);
+    };
+
+    wsTimerRef.current.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+  }, [player_id, partidaID, wsTimerRef]);
+
   const handleCloseModal = () => {
     const partidaID = sessionStorage.getItem('partida_id');
     wsUPRef.current.close();
@@ -373,6 +382,10 @@ function Partida() {
       <div className="tableroContainer">
         <TableroWithProvider />
       </div>
+      <div className="cancelar-movimientos-container">
+        <CancelarMovimientos 
+        jugadorActual={activePlayer.player_name} />
+      </div>
       <div>
         {!partidaIniciada && <IniciarPartida empezarPartida={empezarPartida} />}
       </div>
@@ -384,18 +397,15 @@ function Partida() {
         <PasarTurno
           onTurnoCambiado={manejarFinTurno}
           tiempoLimite={tiempoLimite}
-          setTimeLeft={setTimeLeft}
+          setTimeLeft={setTime}
           disabled={activePlayer.player_id !== player_id}
         />
       </div>
       <div className="timer-container">
-        {jugadores && jugadores.length > 0 && (
+        {jugadores && jugadores.length > 0 && time > -1.0 && (
           <Temporizador
-            tiempoLimite={tiempoLimite}
-            jugadorActual={activePlayer.player_name}
-            timeLeft={timeLeft}
-            setTimeLeft={setTimeLeft}
-            onFinTurno={manejarFinTurno}
+            currentPlayer={activePlayer.player_name}
+            time={time}
           />
         )}
       </div>

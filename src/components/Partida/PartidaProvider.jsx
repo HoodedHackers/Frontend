@@ -32,6 +32,8 @@ export const PartidaProvider = ({ children }) => {
 
   const [mazo, setMazo] = useState([]);
 
+  const [cancelarHabilitado, setCancelarHabilitado] = useState(false);
+
   const handleMouseEnter = () => {
     setIsOverlayVisible(true);
   };
@@ -70,7 +72,9 @@ export const PartidaProvider = ({ children }) => {
         cartasDelJugador,
         setCartasDelJugador,
         mazo,
-        setMazo
+        setMazo,
+        cancelarHabilitado,
+        setCancelarHabilitado
       }}
     >
       {children}
