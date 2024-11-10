@@ -3,7 +3,6 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 import {PartidaContext} from '../PartidaProvider';
 import { WebSocketContext } from '../../WebSocketsProvider.jsx';
 
-
 // Crear el contexto
 export const TableroContext = createContext();
 
@@ -36,7 +35,12 @@ export const TableroProvider = ({ children }) => {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [turnoActual, setTurnoActual] = useState(0);
   const [jugadoresActivos, setJugadoresActivos] = useState([true, true, true, true]);
-  const { cartaMovimientoActualId, cartaMovimientoActualIndex, setCartasDelJugador } = useContext(PartidaContext);
+  const { 
+    cartaMovimientoActualId,
+    cartaMovimientoActualIndex, 
+    setCartasDelJugador ,
+    setJugando
+  } = useContext(PartidaContext);
   const { wsBSRef } = useContext(WebSocketContext);
 
 
@@ -123,6 +127,7 @@ function numbersToSquares(colores, posicionesResaltadas) {
       else {
         sessionStorage.setItem("cartas_mov", JSON.stringify(data.card_mov));
         setCartasDelJugador(data.card_mov);
+        setJugando(false);
       }
     } catch (error) {
       sessionStorage.setItem("cartas_mov", JSON.stringify(data.card_mov));
