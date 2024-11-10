@@ -279,6 +279,7 @@ function Partida() {
       sessionStorage.setItem("cartaMovimientoActualId", -1);
       setCartaMovimientoActualId(-1);
       setSeleccionada(false);
+      setJugando(false);
 		};
 	}, [player_id, partidaID, wsTRef]);
 
