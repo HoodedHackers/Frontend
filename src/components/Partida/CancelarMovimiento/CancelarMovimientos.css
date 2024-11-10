@@ -3,10 +3,7 @@
   }
   
   .cancelar-movimientos-btn{
-    background-color: #f8782e;
-    color: white;
     padding: 5px 10px;
-    border: #000000;
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
@@ -16,6 +13,10 @@
     position: absolute;
     top: 90px; 
     left: 75%; 
+    background-color: #f8782e; 
+    color: white; 
+    border: 2px solid black;
+    font-weight: bold;
   }
   
   .cancelar-movimientos-btn:hover {
