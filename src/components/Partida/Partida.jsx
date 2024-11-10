@@ -34,17 +34,14 @@ function Partida() {
     setJugadorActualIndex,
     setJugando,
     isOverlayVisible,
+    setSeleccionada,
     setJugadorActualId,
-    cartaMovimientoActualId,
     setCartaMovimientoActualId,
     setCartaMovimientoActualIndex,
-    cantidadCartasMovimientoJugadorActual,
     setCantidadCartasMovimientoJugadorActual,
     cartasDelJugador,
     setCartasDelJugador,
-    mazo,
     setMazo,
-    jugadorActualIndex
   } = useContext(PartidaContext);
 
   useEffect(() => {
@@ -79,7 +76,6 @@ function Partida() {
       sessionStorage.setItem("posicion_jugador", nuevoIndex);
       setTime(tiempoLimite);
       sessionStorage.setItem("timeLeft", tiempoLimite);
-
       setJugando(false);
     }
   };
@@ -280,6 +276,9 @@ function Partida() {
 			setActivePlayer({player_name: updatedMessage.player_name, player_id: updatedMessage.player_id});
       sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", 3);
       setCantidadCartasMovimientoJugadorActual(3);
+      sessionStorage.setItem("cartaMovimientoActualId", -1);
+      setCartaMovimientoActualId(-1);
+      setSeleccionada(false);
 		};
 	}, [player_id, partidaID, wsTRef]);
 

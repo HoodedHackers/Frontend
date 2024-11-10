@@ -1,7 +1,5 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { PartidaContext } from "../PartidaProvider.jsx";
-import { CartasMovimientoContext } from "./CartasMovimientoMano.jsx";
-import { WebSocketContext } from "../../WebSocketsProvider.jsx";
 import "./CartaMovimiento.css";
 
 const CartaMovimiento = ({ id, ubicacion, index }) => {
@@ -15,13 +13,13 @@ const CartaMovimiento = ({ id, ubicacion, index }) => {
     "/Imagenes/Movimiento/mov5.svg"
   ];
 
-  const { setJugando, handleMouseEnter, handleMouseLeave } =
-    useContext(PartidaContext);
-
-  const { seleccionada, setSeleccionada } = useContext(CartasMovimientoContext);
-
-  const { wsUCMRef } = useContext(WebSocketContext);
-
+  const { 
+    setJugando,
+    handleMouseEnter,
+    handleMouseLeave,
+    seleccionada,
+    setSeleccionada
+  } = useContext(PartidaContext);
   const isActive = id === seleccionada;
 
   const usarCartaMovimiento = async () => {

@@ -20,6 +20,8 @@ export const PartidaProvider = ({ children }) => {
   
   const [isOwner] = useState(sessionStorage.getItem("isOwner") === 'true');
 
+  const [seleccionada, setSeleccionada] = useState(null);
+
   const [jugadorActualId, setJugadorActualId] = useState({});
 
   const [cartaMovimientoActualId, setCartaMovimientoActualId] = useState({});
@@ -61,6 +63,8 @@ export const PartidaProvider = ({ children }) => {
         handleMouseEnter,
         handleMouseLeave,
         isOwner,
+        seleccionada,
+        setSeleccionada,
         jugadorActualId,
         setJugadorActualId,
         cartaMovimientoActualId,
