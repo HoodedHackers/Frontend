@@ -10,13 +10,14 @@ export const CartasMovimientoMano = ({ubicacion, jugadorId}) => {
     cartaMovimientoActualId, 
     cartaMovimientoActualIndex ,
     cantidadCartasMovimientoJugadorActual,
-    cartasDelJugador
+    cartasDelJugador,
+    partidaIniciada
   } = useContext(PartidaContext);
 
 
   return (
     <div className={`jugador${ubicacion + 1}-container-cartas-movimiento`}>
-      {ubicacion === 0 ? (
+      {ubicacion === 0 && partidaIniciada ? (
         cartasDelJugador.length > 0 ? (
           cartasDelJugador.map((carta, index) => (
               <div key={index}>
