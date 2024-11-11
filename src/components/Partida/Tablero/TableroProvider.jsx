@@ -9,7 +9,7 @@ export const TableroContext = createContext();
 // Proveedor del contexto
 export const TableroProvider = ({ children }) => {
   const [squares, setSquares] = useState(generateInitialColors());
-  const [figurasEnTablero, setFigurasEnTablero] = useState([]); 
+  const [figurasEnTablero, setFigurasEnTablero] = useState([]);
   // figurasEnTablero es un arreglo de objetos con la siguiente estructura:
   //  [
   //    {
@@ -35,11 +35,12 @@ export const TableroProvider = ({ children }) => {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [turnoActual, setTurnoActual] = useState(0);
   const [jugadoresActivos, setJugadoresActivos] = useState([true, true, true, true]);
-  const { 
+  const {
     cartaMovimientoActualId,
-    cartaMovimientoActualIndex, 
+    cartaMovimientoActualIndex,
     setCartasDelJugador ,
-    setJugando
+    setJugando,
+    setColorBloquado
   } = useContext(PartidaContext);
   const { wsBSRef } = useContext(WebSocketContext);
 
@@ -54,14 +55,10 @@ export const TableroProvider = ({ children }) => {
   };
 
 function numbersToSquares(colores, posicionesResaltadas) {
-  let colors = ['#f3e84c',
-    '#1d53b6',
-    '#f52020',
-    '#27f178'];
-    return colores.map((x, index) => ({
-      color: colors[x - 1], // Asignar el color basado en el número
-      highlighted: posicionesResaltadas.includes(index), // Verificar si la posición está resaltada
-    }));
+  return colores.map((x, index) => ({
+    color: COLORES[x - 1], // Asignar el color basado en el número
+    highlighted: posicionesResaltadas.includes(index), // Verificar si la posición está resaltada
+  }));
 }
 
   function generateInitialColors() {
@@ -91,10 +88,10 @@ function numbersToSquares(colores, posicionesResaltadas) {
       // Guardar la posición de origen y destino
       const origen = selectedIndex;
       const destino = index;
-  
+
       // Obtener el ID de la carta en uso y el identifier
       const identifier = sessionStorage.getItem("identifier");
-  
+
       // Enviar la información al backend
       enviarMovimiento(identifier, origen, destino);
     }
@@ -154,7 +151,7 @@ function numbersToSquares(colores, posicionesResaltadas) {
     try {
       wsBSRef.current = new WebSocket(`ws://localhost:8000/ws/lobby/${game_id}/board?player_id=${player_id}`);
       wsBSRef.current.onopen = () => { wsBSRef.current.send(JSON.stringify({request: "status"})) };
-  
+
       wsBSRef.current.onmessage = (event) => {
         console.log("Mensaje recibido por el WebSocket de Estado del Tablero: ", event.data);
         let data = JSON.parse(event.data);
@@ -162,19 +159,20 @@ function numbersToSquares(colores, posicionesResaltadas) {
         sessionStorage.setItem("figurasEnTablero", JSON.stringify(data.possible_figures));
         setFigurasEnTablero(data.possible_figures);
         setSquares(numbersToSquares(data.board, extractedTiles));
+        setColorBloquado(COLORES[data.forbidenColor]);
 
         //pa' proba'
         //setSquares(numbersToSquares(
         //  [1,2,1,2,4,3,1,3,2,2,2,1,1,4,4,2,1,4,1,2,1,3,3,4,1,4,3,4,3,4,2,3,3,3,2,4],
         //  [0,3,6,8,9,10,12,15,17,18,23,24,26,29,31,32,33,35])
-        //); 
+        //);
       };
     } catch (error) {
       console.error("Error al conectar al WebSocket de Estado del Tablero:", error);
     }
-    
+
   }, [wsBSRef.current]);
-  
+
   return (
     <TableroContext.Provider
       value={{

@@ -9,7 +9,7 @@ export const PartidaProvider = ({ children }) => {
 
   const [jugadores, setJugadores] = useState([]);
 
-  const [colorBloqueado]=useState(sessionStorage.getItem("colorBloqueado")|| "#f52020");
+  const [colorBloqueado, setColorBloquado] = useState(1);
 
   const [posicionJugador, setPosicionJugador] = useState();
 
@@ -81,7 +81,8 @@ export const PartidaProvider = ({ children }) => {
         setMazo,
         cancelarHabilitado,
         setCancelarHabilitado,
-        colorBloqueado
+        colorBloqueado,
+        setColorBloquado
       }}
     >
       {children}
