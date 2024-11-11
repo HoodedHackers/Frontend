@@ -18,6 +18,8 @@ const jugadores = [
 // Mock de los datos de las cartas de movimiento
 let cartasDelJugador = [30, 21, 43];
 
+const activePlayer = { player_name: "PlayerTest", player_id: 1 };
+
 const jugadorId = 1;
 
 describe('Cartas de Movimiento', () => {
@@ -32,7 +34,7 @@ describe('Cartas de Movimiento', () => {
     // Renderiza el componente con los datos simulados
     render(
       <WebSocketProvider>
-        <PartidaContext.Provider value={{ jugadores, partidaIniciada, cartasDelJugador }}>
+        <PartidaContext.Provider value={{ jugadores, partidaIniciada, cartasDelJugador, activePlayer }}>
           <CartasMovimientoMano 
             ubicacion={0}
             jugadorId={jugadorId}
@@ -54,7 +56,7 @@ describe('Cartas de Movimiento', () => {
     tipos.forEach((tipo) => {
       render(
         <WebSocketProvider>
-        <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
+        <PartidaContext.Provider value={{ jugadores, partidaIniciada, activePlayer }}>
           <CartaMovimiento 
             id={tipo}
           /> 
@@ -93,7 +95,7 @@ describe('Cartas de Movimiento', () => {
     // Renderiza el componente
     render(
       <WebSocketProvider>
-        <PartidaContext.Provider value={{ jugadores, partidaIniciada, cartasDelJugador }}>
+        <PartidaContext.Provider value={{ jugadores, partidaIniciada, cartasDelJugador, activePlayer }}>
           <CartasMovimientoMano 
             ubicacion={0}
             jugadorId={jugadorId}
@@ -119,7 +121,7 @@ describe('Cartas de Movimiento', () => {
     // Renderiza el componente
     render(
       <WebSocketProvider>
-        <PartidaContext.Provider value={{ jugadores, partidaIniciada, cartasDelJugador }}>
+        <PartidaContext.Provider value={{ jugadores, partidaIniciada, cartasDelJugador, activePlayer }}>
           <CartasMovimientoMano 
             ubicacion={0}
             jugadorId={jugadorId}

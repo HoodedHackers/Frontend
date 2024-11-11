@@ -19,6 +19,7 @@ describe('MazoCartaFigura', () => {
       { player_id: 1 },
       { player_id: 2 },
     ],
+    activePlayer: { player_name: "PlayerTest", player_id: 1 }
   };
 
   beforeEach(() => {
