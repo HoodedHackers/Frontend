@@ -5,7 +5,7 @@ import './TableroContainer.css';
 
 function Square({ color, onClick, isSelected, isHighlighted }) {
   const { colorToImageMap } = useContext(TableroContext);
-  const { jugando } = useContext(PartidaContext);
+  const { jugandoMov, jugandoFig } = useContext(PartidaContext);
   
   return (
     <button
@@ -16,9 +16,9 @@ function Square({ color, onClick, isSelected, isHighlighted }) {
         backgroundPosition: 'center', 
       }}
       onClick={onClick}
-      disabled={!jugando}
+      disabled={jugandoFig ? !isHighlighted : !jugandoMov}
     />
-  );
+  );  
 }
 
 function Tablero() {

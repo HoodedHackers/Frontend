@@ -15,6 +15,10 @@
     animation: neonGlow 2s infinite; /* Animación del resplandor */
 }
 
+.carta-movimiento.disabled {
+  cursor: not-allowed;
+}
+
 .carta-movimiento-sin-hover { /* Esta es la que se les muestra a los demas jugadores */
     width: 4vw;
     display: flex; /* Asegura que el contenido se alinee dentro del contenedor */

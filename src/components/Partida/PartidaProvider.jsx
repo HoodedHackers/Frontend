@@ -14,13 +14,17 @@ export const PartidaProvider = ({ children }) => {
   //const [jugadorActualIndex, setJugadorActualIndex] = useState(parseInt(localStorage.getItem("jugadorActualIndex"), 10) || 0);
   const [jugadorActualIndex, setJugadorActualIndex] = useState(0);
 
-  const [jugando, setJugando] = useState(false); // True si se ha elegido una carta de movimiento
+  const [jugandoMov, setJugandoMov] = useState(false); // True si se ha elegido una carta de movimiento
+
+  const [jugandoFig, setJugandoFig] = useState(false); // True si se ha elegido una carta de figura
 
   const [isOverlayVisible, setIsOverlayVisible] = useState();
   
   const [isOwner] = useState(sessionStorage.getItem("isOwner") === 'true');
 
-  const [seleccionada, setSeleccionada] = useState(null);
+  const [seleccionadaMov, setSeleccionadaMov] = useState(null);
+
+  const [seleccionadaFig, setSeleccionadaFig] = useState(null);
 
   const [jugadorActualId, setJugadorActualId] = useState({});
 
@@ -35,6 +39,8 @@ export const PartidaProvider = ({ children }) => {
   const [mazo, setMazo] = useState([]);
 
   const [cancelarHabilitado, setCancelarHabilitado] = useState(false);
+
+  const [activePlayer, setActivePlayer] = useState({});
 
   const handleMouseEnter = () => {
     setIsOverlayVisible(true);
@@ -56,15 +62,19 @@ export const PartidaProvider = ({ children }) => {
         setPosicionJugador,
         jugadorActualIndex,
         setJugadorActualIndex,
-        jugando,
-        setJugando,
+        jugandoMov,
+        setJugandoMov,
+        jugandoFig,
+        setJugandoFig,
         isOverlayVisible,
         setIsOverlayVisible,
         handleMouseEnter,
         handleMouseLeave,
         isOwner,
-        seleccionada,
-        setSeleccionada,
+        seleccionadaMov,
+        setSeleccionadaMov,
+        seleccionadaFig,
+        setSeleccionadaFig,
         jugadorActualId,
         setJugadorActualId,
         cartaMovimientoActualId,
@@ -78,7 +88,9 @@ export const PartidaProvider = ({ children }) => {
         mazo,
         setMazo,
         cancelarHabilitado,
-        setCancelarHabilitado
+        setCancelarHabilitado,
+        activePlayer,
+        setActivePlayer,
       }}
     >
       {children}

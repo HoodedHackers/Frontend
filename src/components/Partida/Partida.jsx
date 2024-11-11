@@ -32,9 +32,11 @@ function Partida() {
     posicionJugador,
     setPosicionJugador,
     setJugadorActualIndex,
-    setJugando,
     isOverlayVisible,
-    setSeleccionada,
+    setJugandoMov,
+    setSeleccionadaMov,
+    setJugandoFig,
+    setSeleccionadaFig,
     setJugadorActualId,
     setCartaMovimientoActualId,
     setCartaMovimientoActualIndex,
@@ -42,6 +44,8 @@ function Partida() {
     cartasDelJugador,
     setCartasDelJugador,
     setMazo,
+    activePlayer,
+    setActivePlayer
   } = useContext(PartidaContext);
 
   useEffect(() => {
@@ -65,7 +69,6 @@ function Partida() {
   const identifier = sessionStorage.getItem('identifier');
   const player_id = parseInt(sessionStorage.getItem("player_id"));
   const [time, setTime] = useState(-1.0);
-	const [activePlayer, setActivePlayer] = useState({});
   const name = sessionStorage.getItem('player_nickname');
 
   const manejarFinTurno = async () => {
@@ -76,7 +79,7 @@ function Partida() {
       sessionStorage.setItem("posicion_jugador", nuevoIndex);
       setTime(tiempoLimite);
       sessionStorage.setItem("timeLeft", tiempoLimite);
-      setJugando(false);
+      setJugandoMov(false);
     }
   };
 
@@ -278,8 +281,10 @@ function Partida() {
       setCantidadCartasMovimientoJugadorActual(3);
       sessionStorage.setItem("cartaMovimientoActualId", -1);
       setCartaMovimientoActualId(-1);
-      setSeleccionada(false);
-      setJugando(false);
+      setSeleccionadaMov({});
+      setJugandoMov(false);
+      setSeleccionadaFig({});
+      setJugandoFig(false);
 		};
 	}, [player_id, partidaID, wsTRef]);
 
@@ -291,14 +296,12 @@ function Partida() {
       // Crear la conexión WebSocket
       wsCFRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaID}/figs?player_id=${player_id}`);
 
-      /*wsCFRef.current.onopen = () => {
-        wsCFRef.current.send(JSON.stringify({ receive: 'cards'}));
-      };*/
-
       // Manejar mensajes recibidos del WebSocket
       wsCFRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
         setMazo(data.players);
+        sessionStorage.setItem("cartaMovimientoActualId", -1);
+        setCartaMovimientoActualId(-1);
       };
 
       // Manejar errores en la conexión

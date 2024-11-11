@@ -39,7 +39,8 @@ export const TableroProvider = ({ children }) => {
     cartaMovimientoActualId,
     cartaMovimientoActualIndex, 
     setCartasDelJugador ,
-    setJugando
+    setJugandoMov,
+    jugandoFig
   } = useContext(PartidaContext);
   const { wsBSRef } = useContext(WebSocketContext);
 
@@ -81,7 +82,18 @@ function numbersToSquares(colores, posicionesResaltadas) {
   }
 
   function handleSquareClick(index) {
-    if (selectedIndex === index) {
+    if (jugandoFig) {
+      const playerId = parseInt(sessionStorage.getItem("player_id"), 10);
+      const jugador = figurasEnTablero.find(j => j.player_id === playerId);
+      if(jugador.moves.some(move => move.tiles.includes(index))) { // Caso para descartar figura
+        const id_figura = jugador.moves.find(m => m.tiles.includes(index)).fig_id;
+        enviarFigura(id_figura);
+      }
+      else { // Caso para bloquear figura
+        // TODO 
+      }
+    }
+    else if (selectedIndex === index) {
       // Si el índice ya está seleccionado, deselecciona el cuadrado
       setSelectedIndex(null);
     } else if (selectedIndex === null) {
@@ -127,13 +139,40 @@ function numbersToSquares(colores, posicionesResaltadas) {
       else {
         sessionStorage.setItem("cartas_mov", JSON.stringify(data.card_mov));
         setCartasDelJugador(data.card_mov);
-        setJugando(false);
+        setJugandoMov(false);
       }
     } catch (error) {
       sessionStorage.setItem("cartas_mov", JSON.stringify(data.card_mov));
       setCartasDelJugador(data.card_mov);
       console.error("Error al conectar con el servidor:", error);
     }
+  }
+
+  // Función para enviar la figura al backend
+  async function enviarFigura(id_figura){
+    const game_id = sessionStorage.getItem("partida_id");
+    const message = {
+      player_identifier: sessionStorage.getItem("identifier"),
+      card_id: id_figura
+    };
+
+   try {
+     const response = await fetch(`http://127.0.0.1:8000/api/lobby/in-course/${game_id}/discard_figs`, {
+       method: "POST",
+       headers: {
+         "Content-Type": "application/json",
+       },
+       body: JSON.stringify(message),
+     });
+     if (!response.ok) {
+       throw new Error("Error al enviar la Carta de Figura elegida: ", response);
+     }
+     else {
+       console.log("Se envió la Carta de Figura elegida.");
+     }
+   } catch (error) {
+     console.error("Error al enviar la Carta de Figura elegida: ", error);
+   }  
   }
 
   // Función para extraer todas las fichas resaltas

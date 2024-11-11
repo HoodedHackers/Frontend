@@ -1,5 +1,6 @@
 // src/components/CartaFigura.jsx
-import React from 'react';
+import React, { useContext } from 'react';
+import { PartidaContext } from '../PartidaProvider.jsx';
 // import PropTypes from 'prop-types';
 import './CartaFigura.css'; 
 
@@ -33,19 +34,41 @@ function CartaFigura ({ tipo }) {
     "/Imagenes/Figura/24.svg",
   ]
 
+  const { 
+    setJugandoFig,
+    seleccionadaFig,
+    setSeleccionadaFig,
+    setSeleccionadaMov,
+    setJugandoMov,
+    activePlayer
+  } = useContext(PartidaContext);
+  const isActive = tipo === seleccionadaFig;
+  const isDisabled = activePlayer.player_id !== parseInt(sessionStorage.getItem("player_id"), 10);
+
+  const usarCartaFigura = async () => {
+    if (isDisabled) {
+      return;
+    }
+    setSeleccionadaMov({});
+    setJugandoMov(false);
+    setJugandoFig(true);
+    if (seleccionadaFig != tipo) {
+      setSeleccionadaFig(tipo);  
+    }
+  };
+
   return (
-    <div className="carta-figura">
+    <div 
+      className={`carta-figura ${isActive ? "activa" : ""} ${isDisabled ? "disabled" : ""}`}
+      onClick={usarCartaFigura}
+      disabled={activePlayer.player_id !== parseInt(sessionStorage.getItem("player_id"), 10)}
+    >
       <img 
-        src={tipo == -1 ? "/Imagenes/Figura/back.svg" : Images[tipo]} 
-        alt={tipo == -1 ? "Carta de Movimiento 0" : `Carta de Movimiento ${tipo + 1}`} 
+        src={tipo == -1 ? "/Imagenes/Figura/back.svg" : Images[tipo % 25]} 
+        alt={tipo == -1 ? "Carta de Movimiento 0" : `Carta de Movimiento ${(tipo % 25) + 1}`} 
         className='carta-figura-img'/>
     </div>
   );
 };
-
-// Definición de los tipos de props para validación
-// CartaFigura.propTypes = {
-//   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-// };
 
 export default CartaFigura;

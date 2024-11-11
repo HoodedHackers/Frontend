@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import CartaFigura from './CartaFigura'; 
 import { PartidaContext } from '../PartidaProvider.jsx';
 import './MazoCartaFigura.css'; 
@@ -32,7 +32,7 @@ function MazoCartaFigura ({ubicacion}) {
       {cartasDelJugador.length > 0 ? (
         cartasDelJugador.map((carta) => (
           <div key={carta} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-            <CartaFigura tipo={carta % 25} />
+            <CartaFigura tipo={carta} />
           </div>
         ))
       ) : (

@@ -14,18 +14,27 @@ const CartaMovimiento = ({ id, ubicacion, index }) => {
   ];
 
   const { 
-    setJugando,
+    setJugandoMov,
     handleMouseEnter,
     handleMouseLeave,
-    seleccionada,
-    setSeleccionada
+    seleccionadaMov,
+    setSeleccionadaMov,
+    setSeleccionadaFig,
+    setJugandoFig,
+    activePlayer
   } = useContext(PartidaContext);
-  const isActive = id === seleccionada;
+  const isActive = id === seleccionadaMov;
+  const isDisabled = activePlayer.player_id !== parseInt(sessionStorage.getItem("player_id"), 10);
 
   const usarCartaMovimiento = async () => {
-    setJugando(true);
-    if (seleccionada != id) {
-      setSeleccionada(id);
+    if (isDisabled) {
+      return;
+    }
+    setSeleccionadaFig({});
+    setJugandoFig(false);
+    setJugandoMov(true);
+    if (seleccionadaMov != id) {
+      setSeleccionadaMov(id);
       const game_id = sessionStorage.getItem("partida_id");
       const message = {
         identifier: sessionStorage.getItem("identifier"),
@@ -56,7 +65,7 @@ const CartaMovimiento = ({ id, ubicacion, index }) => {
 
   return ubicacion === 0 ? (
     <div
-      className={`carta-movimiento ${isActive ? "activa" : ""}`}
+    className={`carta-movimiento ${isActive ? "activa" : ""} ${isDisabled ? "disabled" : ""}`}
       onClick={usarCartaMovimiento}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
