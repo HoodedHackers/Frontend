@@ -44,14 +44,28 @@ export const TableroProvider = ({ children }) => {
   } = useContext(PartidaContext);
   const { wsBSRef } = useContext(WebSocketContext);
   const [errorMensaje, setErrorMensaje] = useState(null); // Nuevo estado para el mensaje de error
+  const [modoDaltonismo, setModoDaltonismo] = useState(false);
+
+
+  function toggleModoDaltonismo() {
+    setModoDaltonismo((prevModo) => !prevModo);
+  }
 
   // Colores disponibles
   const COLORES = ['#f3e84c', '#1d53b6', '#f52020', '#27f178'];
   const colorToImageMap = {
-    '#f3e84c': '/Imagenes/Tablero/A.svg',
-    '#1d53b6': '/Imagenes/Tablero/B.svg',
-    '#f52020': '/Imagenes/Tablero/C.svg',
-    '#27f178': '/Imagenes/Tablero/D.svg',
+    normal: {
+      '#f3e84c': '/Imagenes/Tablero/A.svg',
+      '#1d53b6': '/Imagenes/Tablero/B.svg',
+      '#f52020': '/Imagenes/Tablero/C.svg',
+      '#27f178': '/Imagenes/Tablero/D.svg',
+    },
+    daltonismo: {
+      '#f3e84c': '/Imagenes/Tablero/A_dalt.jpeg',
+      '#1d53b6': '/Imagenes/Tablero/B_dalt.jpeg',
+      '#f52020': '/Imagenes/Tablero/C_dalt.jpeg',
+      '#27f178': '/Imagenes/Tablero/D_dalt.jpeg',
+    }
   };
 
 function numbersToSquares(colores, posicionesResaltadas) {
@@ -87,7 +101,7 @@ function numbersToSquares(colores, posicionesResaltadas) {
       [colorDistribution[i], colorDistribution[j]] = [colorDistribution[j], colorDistribution[i]];
     }
 
-    return colorDistribution.slice(0, 36);
+    return colorDistribution.slice(0, 35);
   }
 
   function handleSquareClick(index) {
@@ -242,7 +256,9 @@ async function enviarMovimiento(identifier, origen, destino){
         handleSquareClick,
         colorToImageMap,
         figurasEnTablero,
-        setFigurasEnTablero
+        setFigurasEnTablero,
+        modoDaltonismo,
+        toggleModoDaltonismo
       }}
     >
     {errorMensaje && <div className="errorMensaje">{errorMensaje}</div>}

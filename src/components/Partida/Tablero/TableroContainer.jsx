@@ -4,14 +4,15 @@ import { PartidaContext } from '../PartidaProvider.jsx';
 import './TableroContainer.css';
 
 function Square({ color, onClick, isSelected, isHighlighted }) {
-  const { colorToImageMap } = useContext(TableroContext);
+  const { colorToImageMap,modoDaltonismo } = useContext(TableroContext);
   const { jugandoMov, jugandoFig } = useContext(PartidaContext);
-  
+  const imageUrl = colorToImageMap[modoDaltonismo ? 'daltonismo' : 'normal'][color];
+
   return (
     <button
       className={`square ${isSelected ? 'selected' : ''} ${isHighlighted ? 'highlighted' : ''}`} 
       style={{
-        backgroundImage: `url(${colorToImageMap[color]})`,
+        backgroundImage: `url(${imageUrl})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center', 
       }}
@@ -44,8 +45,13 @@ function Tablero() {
 }
 
 function TableroContainer() {
+  const { toggleModoDaltonismo, modoDaltonismo } = useContext(TableroContext);
+
   return (
-    <div className="boardContainer"> 
+    <div className="boardContainer">
+      <button onClick={toggleModoDaltonismo} className="modoDaltonismoButton">
+        {modoDaltonismo ? 'Modo Normal' : 'Modo Daltonismo'}
+      </button>
       <Tablero />
     </div>
   );

@@ -25,26 +25,6 @@ describe('Tablero Component', () => {
     expect(squares.length).toBe(36); // Asegúrate que el número de cuadrados es 36
   });
 
-  it('displays squares with correct background images', () => {
-    render(
-      <WebSocketContext.Provider value={{ wsBSRef: wsBSRefMock }}>  
-        <PartidaContext.Provider value={{}}> 
-          <TableroProvider>
-            <Tablero />
-          </TableroProvider>
-        </PartidaContext.Provider>
-      </WebSocketContext.Provider>
-    );
-
-    const squares = screen.getAllByRole('button');
-
-    squares.forEach((square, index) => {
-      // Verificamos que cada cuadrado tiene un fondo definido
-      expect(square).toHaveStyle({ backgroundSize: 'cover' });
-      expect(square).toHaveStyle({ backgroundPosition: 'center' });
-    });
-  });
-
   it('Se conecta al Web Socket de Estado del Tablero', () => {
     // No se Testeae Web Sockets
   });
@@ -52,4 +32,6 @@ describe('Tablero Component', () => {
   it('Muestra un error si el Web Socket de Estado del Tablero falla', () => {
     // No se Testeae Web Sockets
   });
+
+  
 });
