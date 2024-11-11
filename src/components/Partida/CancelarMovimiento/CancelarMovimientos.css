@@ -1,24 +1,37 @@
-    .cancelar-movimientos-btn:active {
-    background-color: #c71313; 
-  }
-  
-  .cancelar-movimientos-btn{
-    background-color: #f8782e;
-    color: white;
-    padding: 5px 10px;
-    border: #000000;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    grid-area: right; 
-    justify-self: center; 
-    position: absolute;
-    top: 90px; 
-    left: 75%; 
-  }
-  
-  .cancelar-movimientos-btn:hover {
-    background-color: #f8782e; 
-    border: 2px solid #ffffff; 
-  }
+.cancelar-movimientos-btn {
+  background-color: #f8782e;
+  color: white;
+  padding: 5px 10px;
+  border: 2px solid black;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  position: absolute;
+  top: 90px;
+  left: 75%;
+  border-radius: 5px;
+}
+
+.cancelar-movimientos-btn:active {
+  background-color: #c71313; 
+}
+
+.cancelar-movimientos-btn:hover {
+  background-color: #f72840; 
+  border-color: #ffffff;
+}
+
+.cancelar-movimientos-btn:disabled, 
+.botonDeshabilitado {
+  background-color: grey; /* Cambia el color a gris cuando está deshabilitado */
+  color: #cccccc; /* Cambia el color del texto a un tono más claro */
+  border-color: #666666; /* Cambia el color del borde a un gris más oscuro */
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.botonDeshabilitado:hover {
+  background-color: #f72840; 
+  border: 2px solid #ffffff; 
+  transform: scale(1.05); 
+}

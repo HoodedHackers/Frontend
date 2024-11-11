@@ -28,14 +28,35 @@
   display: flex;
 }
 
-@keyframes neonGlow {
-  0% {
-    box-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff, 0 0 30px #ffff00;
+.square.selected {
+  border: 2px solid black;
+  animation: pulseBorder 1.5s infinite;
+}
+
+@keyframes pulseBorder {
+  0%, 100% {
+    box-shadow: 0 0 5px black;
   }
   50% {
-    box-shadow: 0 0 20px #00ffff, 0 0 30px #ffff00, 0 0 40px #ff00ff;
+    box-shadow: 0 0 15px black;
   }
-  100% {
-    box-shadow: 0 0 10px #ffff00, 0 0 20px #ff00ff, 0 0 30px #00ffff;
-  }
+}
+
+/* Animación de desvanecimiento */
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.errorMensaje {
+  background-color: red;
+  color: white;
+  padding: 10px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 8px;
+  text-align: center;
+  animation: fadeOut 3s forwards; /* La animación dura 3 segundos */
 }

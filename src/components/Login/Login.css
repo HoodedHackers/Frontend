@@ -157,10 +157,11 @@
 
 .devButtonContainer {
   position: fixed;
-  bottom: 20px;
-  left: 20px;
+  top: 20px; 
+  right: 20px; 
   z-index: 10;
 }
+
 
 .devButton {
   background-color: #494a4a;
@@ -175,6 +176,6 @@
 }
 
 .devButton:hover {
-  background-color: #0056b3;
+  background-color: #005f73;
 }
 

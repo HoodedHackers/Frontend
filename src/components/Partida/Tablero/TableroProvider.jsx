@@ -43,7 +43,7 @@ export const TableroProvider = ({ children }) => {
     jugandoFig
   } = useContext(PartidaContext);
   const { wsBSRef } = useContext(WebSocketContext);
-
+  const [errorMensaje, setErrorMensaje] = useState(null); // Nuevo estado para el mensaje de error
 
   // Colores disponibles
   const COLORES = ['#f3e84c', '#1d53b6', '#f52020', '#27f178'];
@@ -64,6 +64,15 @@ function numbersToSquares(colores, posicionesResaltadas) {
       highlighted: posicionesResaltadas.includes(index), // Verificar si la posición está resaltada
     }));
 }
+
+
+  // Temporizador para borrar el mensaje de error después de 3 segundos
+  useEffect(() => {
+    if (errorMensaje) {
+      const timer = setTimeout(() => setErrorMensaje(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMensaje]);
 
   function generateInitialColors() {
     const colorDistribution = [
@@ -113,40 +122,45 @@ function numbersToSquares(colores, posicionesResaltadas) {
   }
 
   // Función para enviar el movimiento al backend
-  async function enviarMovimiento(identifier, origen, destino){
-    const game_id = sessionStorage.getItem("partida_id");
+async function enviarMovimiento(identifier, origen, destino){
+  const game_id = sessionStorage.getItem("partida_id");
 
-    try {
-      const response = await fetch(`http://127.0.0.1:8000/api/game/${game_id}/play_card`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          identifier: identifier, // UUID del jugador
-          origin_tile: origen, // Posición de origen
-          dest_tile: destino, // Posición de destino
-          card_mov_id: cartaMovimientoActualId, // ID de la carta
-          index_hand: cartaMovimientoActualIndex, // Índice de la carta en la mano
-        }),
-      });
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/api/game/${game_id}/play_card`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        identifier: identifier, // UUID del jugador
+        origin_tile: origen, // Posición de origen
+        dest_tile: destino, // Posición de destino
+        card_mov_id: cartaMovimientoActualId, // ID de la carta
+        index_hand: cartaMovimientoActualIndex, // Índice de la carta en la mano
+      }),
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (!response.ok) {
-        console.error("Error al realizar el movimiento:", data.detail);
-      }
-      else {
-        sessionStorage.setItem("cartas_mov", JSON.stringify(data.card_mov));
-        setCartasDelJugador(data.card_mov);
-        setJugandoMov(false);
-      }
-    } catch (error) {
+    if (!response.ok) {
+      setErrorMensaje(data.detail); // Guardar el mensaje de error
+      console.error("Error al realizar el movimiento:", data.detail);
+    }
+    else {
       sessionStorage.setItem("cartas_mov", JSON.stringify(data.card_mov));
       setCartasDelJugador(data.card_mov);
-      console.error("Error al conectar con el servidor:", error);
+      setJugandoMov(false);
+      setSelectedIndex(null); // Desseleccionar después de un movimiento exitoso
+      setErrorMensaje(null); // Limpiar el mensaje de error si el movimiento es exitoso
     }
+  } catch (error) {
+    setErrorMensaje("Error al conectar con el servidor."); // Guardar mensaje de error de conexión
+    sessionStorage.setItem("cartas_mov", JSON.stringify(data.card_mov));
+    setCartasDelJugador(data.card_mov);
+    console.error("Error al conectar con el servidor:", error);
   }
+}
+
 
   // Función para enviar la figura al backend
   async function enviarFigura(id_figura){
@@ -180,6 +194,10 @@ function numbersToSquares(colores, posicionesResaltadas) {
     return possibleFigures.flatMap(player =>
       player.moves.flatMap(move => move.tiles)
     );
+  }
+
+  function closeError() {
+    setErrorMensaje(null);
   }
 
   useEffect(() => {
@@ -227,6 +245,7 @@ function numbersToSquares(colores, posicionesResaltadas) {
         setFigurasEnTablero
       }}
     >
+    {errorMensaje && <div className="errorMensaje">{errorMensaje}</div>}
       {children}
     </TableroContext.Provider>
   );

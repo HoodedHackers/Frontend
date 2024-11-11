@@ -2,12 +2,10 @@ import React, { useContext } from 'react';
 import './CancelarMovimientos.css';
 import { PartidaContext } from '../PartidaProvider.jsx';
 
-
-const CancelarMovimientos = () => {
-  const { partidaIniciada } = useContext(PartidaContext);
+const CancelarMovimientos = ({ disabled }) => {
+  const { partidaIniciada, setCancelarHabilitado, setCartasDelJugador } = useContext(PartidaContext);
   const ident = sessionStorage.getItem("identifier");
   const gameId = sessionStorage.getItem("partida_id");
-  const { setCancelarHabilitado, setCartasDelJugador } = useContext(PartidaContext);
 
   const cancelarMovimientos = async () => {
     try {
@@ -21,8 +19,7 @@ const CancelarMovimientos = () => {
 
       if (!response.ok) {
         throw new Error('Error al cancelar los movimientos');
-      }
-      else {
+      } else {
         const data = await response.json();
         console.log('Movimientos cancelados:', data);
         setCancelarHabilitado(false);
@@ -37,13 +34,13 @@ const CancelarMovimientos = () => {
   if (!partidaIniciada) return null; // No mostrar el botón si la partida no ha comenzado
 
   return (
-    <div className="cancelar-movimientos-btn">
-      <button 
+    <button
       onClick={cancelarMovimientos}
-      >
-        Cancelar Movimientos
-      </button>
-    </div>
+      disabled={disabled}
+      className={`cancelar-movimientos-btn ${(disabled) ? "botonDeshabilitado" : ""}`}
+    >
+      Cancelar Movimientos
+    </button>
   );
 };
 

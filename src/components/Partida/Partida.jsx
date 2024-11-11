@@ -386,9 +386,11 @@ function Partida() {
         <TableroWithProvider />
       </div>
       <div className="cancelar-movimientos-container">
-        <CancelarMovimientos 
-        jugadorActual={activePlayer.player_name} />
-      </div>
+  <CancelarMovimientos 
+    disabled={activePlayer.player_id !== player_id} 
+  />
+</div>
+
       <div>
         {!partidaIniciada && <IniciarPartida empezarPartida={empezarPartida} />}
       </div>
