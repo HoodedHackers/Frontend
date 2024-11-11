@@ -7,7 +7,7 @@ const CancelarMovimientos = () => {
   const { partidaIniciada } = useContext(PartidaContext);
   const ident = sessionStorage.getItem("identifier");
   const gameId = sessionStorage.getItem("partida_id");
-  const { setCancelarHabilitado } = useContext(PartidaContext);
+  const { setCancelarHabilitado, setCartasDelJugador } = useContext(PartidaContext);
 
   const cancelarMovimientos = async () => {
     try {
@@ -22,12 +22,13 @@ const CancelarMovimientos = () => {
       if (!response.ok) {
         throw new Error('Error al cancelar los movimientos');
       }
-
-      const data = await response.json();
-      console.log('Movimientos cancelados:', data);
-
-      // Deshabilitar el botón de cancelar movimientos
-      setCancelarHabilitado(false);
+      else {
+        const data = await response.json();
+        console.log('Movimientos cancelados:', data);
+        setCancelarHabilitado(false);
+        sessionStorage.setItem("cartas_mov", JSON.stringify(data.card_mov));
+        setCartasDelJugador(data.card_mov);
+      }
     } catch (error) {
       console.error('Error al deshacer el movimiento:', error);
     }

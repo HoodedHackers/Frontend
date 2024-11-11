@@ -6,7 +6,7 @@ import './CartaFigura.css';
 function CartaFigura ({ tipo }) {
 
   const Images = [
-    "/Imagenes/Figura/back.svg",
+    "/Imagenes/Figura/25.svg",
     "/Imagenes/Figura/1.svg",
     "/Imagenes/Figura/2.svg",
     "/Imagenes/Figura/3.svg",
@@ -31,12 +31,14 @@ function CartaFigura ({ tipo }) {
     "/Imagenes/Figura/22.svg",
     "/Imagenes/Figura/23.svg",
     "/Imagenes/Figura/24.svg",
-    "/Imagenes/Figura/25.svg"
   ]
 
   return (
     <div className="carta-figura">
-      <img src={Images[tipo]} alt={`Carta de Figura ${tipo}`} className='carta-figura-img'/>
+      <img 
+        src={tipo == -1 ? "/Imagenes/Figura/back.svg" : Images[tipo]} 
+        alt={tipo == -1 ? "Carta de Movimiento 0" : `Carta de Movimiento ${tipo + 1}`} 
+        className='carta-figura-img'/>
     </div>
   );
 };

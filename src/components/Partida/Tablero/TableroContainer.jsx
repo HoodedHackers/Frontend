@@ -23,7 +23,6 @@ function Square({ color, onClick, isSelected, isHighlighted }) {
 
 function Tablero() {
   const { squares, handleSquareClick, selectedIndex } = useContext(TableroContext);
-
   return (
     <>
       {[0, 6, 12, 18, 24, 30].map(rowStart => (
@@ -35,6 +34,7 @@ function Tablero() {
               onClick={() => handleSquareClick(rowStart + i)}
               isSelected={selectedIndex === rowStart + i}
               isHighlighted={highlighted}
+              selected={rowStart + i === selectedIndex}
             />
           ))}
         </div>
@@ -58,5 +58,3 @@ export default function TableroWithProvider() {
     </TableroProvider>
   );
 }
-
-

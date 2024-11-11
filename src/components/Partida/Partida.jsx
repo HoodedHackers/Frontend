@@ -13,6 +13,7 @@ import CancelarMovimientos from "./CancelarMovimiento/CancelarMovimientos.jsx";
 import "./Partida.css";
 import { useNavigate } from "react-router-dom";
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { set } from "react-hook-form";
 
 
 function Partida() {
@@ -33,15 +34,14 @@ function Partida() {
     setJugadorActualIndex,
     setJugando,
     isOverlayVisible,
+    setSeleccionada,
     setJugadorActualId,
-    cartaMovimientoActualId,
     setCartaMovimientoActualId,
     setCartaMovimientoActualIndex,
-    cantidadCartasMovimientoJugadorActual,
     setCantidadCartasMovimientoJugadorActual,
-    mazo,
+    cartasDelJugador,
+    setCartasDelJugador,
     setMazo,
-    jugadorActualIndex
   } = useContext(PartidaContext);
 
   useEffect(() => {
@@ -76,7 +76,6 @@ function Partida() {
       sessionStorage.setItem("posicion_jugador", nuevoIndex);
       setTime(tiempoLimite);
       sessionStorage.setItem("timeLeft", tiempoLimite);
-
       setJugando(false);
     }
   };
@@ -209,28 +208,41 @@ function Partida() {
 
     try {
       wsUCMRef.current = new WebSocket(
-        `ws://127.0.0.1:8000/ws/lobby/${partidaID}/select?player_id=${player_id}`,
+        `ws://127.0.0.1:8000/ws/lobby/${partidaID}/movement_cards?player_UUID=${identifier}`,
       );
 
       wsUCMRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        if (data.action === "select") {
-          sessionStorage.setItem("jugadorActualId", data.player_id);
-          setJugadorActualId(data.player_id);
-          sessionStorage.setItem("cartaMovimientoActualId", data.card_id);
-          setCartaMovimientoActualId(data.card_id);
-          sessionStorage.setItem("cartaMovimientoActualIndex", data.index);
-          setCartaMovimientoActualIndex(data.index);
-        }
-        else if (data.action === "use_card" || data.action === "recover_card") {
-          setJugando(false);
-        }
-        else {
-          throw new Error("Acción no reconocida.");
-        }
+        switch (data.action) {
+          case "deal":
+            sessionStorage.setItem("cartas_mov", JSON.stringify(data.card_mov));
+            setCartasDelJugador(data.card_mov);
+            sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", cartasDelJugador.length);
+            setCantidadCartasMovimientoJugadorActual(cartasDelJugador.length);
+          break;
 
-        sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", data.len);
-        setCantidadCartasMovimientoJugadorActual(data.len);
+          case "select":
+            sessionStorage.setItem("jugadorActualId", data.player_id);
+            setJugadorActualId(data.player_id);
+            sessionStorage.setItem("cartaMovimientoActualId", data.card_id);
+            setCartaMovimientoActualId(data.card_id);
+            sessionStorage.setItem("cartaMovimientoActualIndex", data.index);
+            setCartaMovimientoActualIndex(data.index);
+          break;
+
+          case "use_card":
+          case "recover_card":
+            sessionStorage.setItem("jugadorActualId", data.player_id);
+            setJugadorActualId(data.player_id);
+            sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", data.len);
+            setCantidadCartasMovimientoJugadorActual(data.len);
+            sessionStorage.setItem("cartaMovimientoActualId", -1);
+            setCartaMovimientoActualId(-1);
+          break;
+
+          default:
+            throw new Error("Acción no reconocida: ", data.action);
+        }
         console.log("Mensaje recibido del WebSocket de Usar Carta de Movimiento:", data);
       }
 
@@ -262,6 +274,12 @@ function Partida() {
 			console.log("Received message:", event.data);
 			const updatedMessage = JSON.parse(event.data);
 			setActivePlayer({player_name: updatedMessage.player_name, player_id: updatedMessage.player_id});
+      sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", 3);
+      setCantidadCartasMovimientoJugadorActual(3);
+      sessionStorage.setItem("cartaMovimientoActualId", -1);
+      setCartaMovimientoActualId(-1);
+      setSeleccionada(false);
+      setJugando(false);
 		};
 	}, [player_id, partidaID, wsTRef]);
 
