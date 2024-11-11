@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useRef } from 'react';
+import React, { createContext, useRef } from 'react';
 
 export const WebSocketContext = createContext();
 
@@ -9,6 +9,8 @@ export const WebSocketProvider = ({ children }) => {
     const wsStartGameRef = useRef(null); // WebSocket para iniciar partida
     const wsTRef = useRef(null); // WebSocket para pasar turno
     const wsBSRef = useRef(null); // WebSocket para el Estado del Tablero (Board State)
+    const wsCFRef = useRef(null); // WebSocket para cartas de figuras
+    const wsTimerRef = useRef(null); // WebSocket para temporizador
 
   return (
     <WebSocketContext.Provider
@@ -18,7 +20,9 @@ export const WebSocketProvider = ({ children }) => {
         wsUCMRef,
         wsStartGameRef,
         wsTRef,
-        wsBSRef
+        wsBSRef,
+        wsCFRef,
+        wsTimerRef,
       }}
     >
       {children}

@@ -1,13 +1,39 @@
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 15px; 
+  gap: 15px; /* Mayor espacio entre campos */
+  margin-bottom: 20px; /* Ajustar margen inferior */
+  transition: max-height 0.3s ease; /* Animación de altura */
+}
+
+.form-group[data-privada="true"] {
+  max-height: 1000px; /* Altura mayor para incluir el campo de contraseña */
+}
+
+.form-group[data-privada="false"] {
+  max-height: 500px; /* Altura menor cuando es pública */
 }
 
 .form-field {
   display: flex;
   flex-direction: column;
+}
+
+input, select {
+  padding: 10px;
+  border: 1px solid #000000; 
+  border-radius: 4px;
+  font-size: 14px;
+  color: #ffffff;
+  background-color: #817f7f; /* Color de fondo gris */
+  outline: none;
+  box-shadow: 0 0 10px #f3f1f0;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus, select:focus {
+  border-color: #000000;
+  box-shadow: 0 0 15px #000000;
 }
 
 .crear-partidas-titulo {
@@ -26,108 +52,127 @@ label {
   text-shadow: 0 0 5px #da8e6b, 0 0 10px #f5540a; 
 }
 
-input {
-  padding: 10px;
-  border: 1px solid #000000; 
-  border-radius: 4px;
-  font-size: 14px;
-  color: #ffffff; 
-  background-color: #817f7f; 
-  outline: none;
-  box-shadow: 0 0 10px #f3f1f0;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-input:focus {
-  border-color: #000000; 
-  box-shadow: 0 0 15px #000000; 
-}
-
-
-
-.button-container {
-margin-top: 10px;
-text-align: center;
-}
-
-.crear-partida-boton {
-padding: 10px 20px; 
-font-size: 1rem; 
-color: #000000; 
-background-color: #ffffff; 
-border: 2px solid #000000; 
-border-radius: 5px; 
-cursor: pointer;
-transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-box-shadow: 0 0 10px #e25221, 0 0 20px #ec4f23; 
-}
-
-.crear-partida-boton:hover {
-color: #ffffff; 
-background-color: #f72840;  
-border-color: #000000;
-}
-
-.crear-partida-boton:active {
-transform: scale(0.95);
-}
-
-
-.notification {
-margin: 20px auto;
-padding: 15px;
-max-width: 400px;
-border: 1px solid #7c2d12;
-border-radius: 8px;
-background-color: #1c1c1c;
-color: #ffffff;
-font-weight: 600;
-text-align: center;
-box-shadow: 0 0 15px #7c2d12, 0 0 25px #5b1e0d;
-transition: opacity 0.3s ease;
-}
-
-.notification p {
-margin: 0;
-}
-
-.notification.error {
-border-color: #7c2d12;
-box-shadow: 0 0 15px #7c2d12, 0 0 25px #7c2d12;
-}
-
-.notification-close {
-position: relative;
-top: 8px;
-right: 8px;
-cursor: pointer;
-font-weight: bold;
-font-size: 8px;
-background-color: #7c2d12; 
-color: #fff;
-border: none; 
-outline: none; 
-}
-
-/* Estilo del botón de crear partida */
 .button-container {
   margin-top: 10px;
   text-align: center;
 }
 
 .crear-partida-boton {
-  font-size: 0.875rem;
-  color: #000000;
+  padding: 10px 20px; 
+  font-size: 1rem; 
+  color: #000000; 
+  background-color: #ffffff; 
+  border: 2px solid #000000; 
+  border-radius: 5px; 
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 10px #e25221, 0 0 20px #ec4f23; 
 }
 
 .crear-partida-boton:hover {
-  background-color: #f6953b; 
   color: #ffffff; 
-
+  background-color: #f72840;  
+  border-color: #000000;
 }
 
 .crear-partida-boton:active {
   transform: scale(0.95);
+}
+
+.notification {
+  margin: 20px auto;
+  padding: 15px;
+  max-width: 400px;
+  border: 1px solid #7c2d12;
+  border-radius: 8px;
+  background-color: #1c1c1c;
+  color: #ffffff;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 0 15px #7c2d12, 0 0 25px #5b1e0d;
+  transition: opacity 0.3s ease;
+}
+
+.notification p {
+  margin: 0;
+}
+
+.notification.error {
+  border-color: #7c2d12;
+  box-shadow: 0 0 15px #7c2d12, 0 0 25px #7c2d12;
+}
+
+.notification-close {
+  position: relative;
+  top: 8px;
+  right: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 8px;
+  background-color: #7c2d12; 
+  color: #fff;
+  border: none; 
+  outline: none; 
+}
+
+.copiar-contrasena {
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  color: #000000;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #ffffff; 
+  border: 2px solid #000000; 
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 10px #e25221, 0 0 20px #ec4f23; 
+  margin-top: 8px;
+}
+
+.copiar-contrasena:hover { 
+  color: #ffffff; 
+  background-color: #e86f19;  
+  border-color: #000000;
+}
+
+.copiar-contrasena:active {
+  transform: scale(0.95);
+}
+
+/* Estilo para el modal de copia de contraseña */
+.modal-copiar {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #10c216; 
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  z-index: 1000;
+  animation: fadeOut 2s ease-out forwards; /* Animación de desvanecimiento */
+}
+
+/* Animación de desvanecimiento */
+@keyframes fadeOut {
+  0% {
+      opacity: 1;
+  }
+  100% {
+      opacity: 0;
+  }
+}
+
+.modal-error {
+    position: relative;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: rgba(255, 0, 0, 0.8);
+    color: white;
+    border-radius: 5px;
+    font-size: 0.9em;
+    text-align: center;
+    max-width: 400px;
+    margin: 10px auto;
 }

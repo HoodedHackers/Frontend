@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { PartidaContext, PartidaProvider } from './PartidaProvider.jsx';
 import Jugador from "./Jugador/Jugador.jsx";
 import { CartasMovimientoMano } from "./CartasMovimiento/CartasMovimientoMano.jsx";
@@ -9,13 +9,20 @@ import AbandonarPartida from "./AbandonarPartida/AbandonarPartida.jsx";
 import PasarTurno from "./PasarTurno/PasarTurno.jsx";
 import Temporizador from "./Temporizador/Temporizador.jsx";
 import { WebSocketContext } from '../WebSocketsProvider.jsx';
+import CancelarMovimientos from "./CancelarMovimiento/CancelarMovimientos.jsx";
 import "./Partida.css";
 import { useNavigate } from "react-router-dom";
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import { set } from "react-hook-form";
+
 
 function Partida() {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+  const audioRef = useRef(null);
+  const [isMuted, setIsMuted] = useState(false);
+
   const {
     partidaIniciada,
     setPartidaIniciada,
@@ -27,12 +34,14 @@ function Partida() {
     setJugadorActualIndex,
     setJugando,
     isOverlayVisible,
+    setSeleccionada,
     setJugadorActualId,
-    cartaMovimientoActualId,
     setCartaMovimientoActualId,
     setCartaMovimientoActualIndex,
-    cantidadCartasMovimientoJugadorActual,
     setCantidadCartasMovimientoJugadorActual,
+    cartasDelJugador,
+    setCartasDelJugador,
+    setMazo,
     colorBloqueado
   } = useContext(PartidaContext);
 
@@ -56,10 +65,7 @@ function Partida() {
   const partidaID = sessionStorage.getItem('partida_id');
   const identifier = sessionStorage.getItem('identifier');
   const player_id = parseInt(sessionStorage.getItem("player_id"));
-  const [timeLeft, setTimeLeft] = useState(() => {
-    const storedTime = sessionStorage.getItem("timeLeft");
-    return storedTime !== null ? Number(storedTime) : tiempoLimite;
-  });
+  const [time, setTime] = useState(-1.0);
 	const [activePlayer, setActivePlayer] = useState({});
   const name = sessionStorage.getItem('player_nickname');
 
@@ -69,16 +75,11 @@ function Partida() {
       setJugadorActualIndex(nuevoIndex);
       setPosicionJugador(nuevoIndex);
       sessionStorage.setItem("posicion_jugador", nuevoIndex);
-      setTimeLeft(tiempoLimite);
+      setTime(tiempoLimite);
       sessionStorage.setItem("timeLeft", tiempoLimite);
-
       setJugando(false);
     }
   };
-
-  useEffect(() => {
-    sessionStorage.setItem("timeLeft", timeLeft);
-  }, [timeLeft]);
 
   function reorderPlayers (players) {
     if (players && Array.isArray(players)) {
@@ -99,7 +100,7 @@ function Partida() {
     return null;
   }
 
-  const { wsUPRef, wsStartGameRef, wsTRef, wsUCMRef } = useContext(WebSocketContext);
+  const { wsUPRef, wsStartGameRef, wsTRef, wsUCMRef, wsCFRef, wsTimerRef } = useContext(WebSocketContext);
 
   useEffect(() => {
     try {
@@ -139,12 +140,30 @@ function Partida() {
     }
   }, [wsUPRef.current]);
 
-  function empezarPartida() {
-    sessionStorage.setItem('partidaIniciada', "true");
-    setPartidaIniciada(true);
-    reorderPlayers(JSON.parse(sessionStorage.getItem("players")));
-    console.log("Partida iniciada");
-  }
+  useEffect(() => {
+    if (partidaIniciada && audioRef.current) {
+      if (!isMuted) {
+        audioRef.current.play().catch(error => {
+          console.error("Error al reproducir el audio:", error);
+        });
+      } else {
+        audioRef.current.pause();
+      }
+    }
+
+    // Detener el audio cuando el componente se desmonta o la partida termina
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0; // Reiniciar el audio
+      }
+    };
+  }, [partidaIniciada, isMuted]); // Se activa cuando la partida inicia o el estado mute cambia
+
+  // Maneja el click del botón de mute
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+  };
 
   // Conectar al WebSocket cuando el componente se monte
     useEffect(() => {
@@ -157,12 +176,12 @@ function Partida() {
           // Inicializar el WebSocket
           const player_id = parseInt(sessionStorage.getItem("player_id"), 10);
           wsStartGameRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaID}/status?player_id=${player_id}`);
-  
+
           // Evento cuando se abre la conexión
           wsStartGameRef.current.onopen = () => {
               console.log("Conectado al WebSocket de Iniciar Partida de estado de partida");
           };
-  
+
           // Evento cuando se recibe un mensaje del WebSocket
           wsStartGameRef.current.onmessage = (event) => {
               const message = JSON.parse(event.data);
@@ -171,7 +190,7 @@ function Partida() {
                 empezarPartida(); // Llamar a la función para iniciar la partida
               }
           };
-  
+
           // Evento cuando la conexión se cierra
           wsStartGameRef.current.onclose = () => {
               console.log("Conexión WebSocket de Iniciar Partida cerrada");
@@ -190,28 +209,41 @@ function Partida() {
 
     try {
       wsUCMRef.current = new WebSocket(
-        `ws://127.0.0.1:8000/ws/lobby/${partidaID}/select?player_id=${player_id}`,
+        `ws://127.0.0.1:8000/ws/lobby/${partidaID}/movement_cards?player_UUID=${identifier}`,
       );
 
       wsUCMRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        if (data.action === "select") {
-          sessionStorage.setItem("jugadorActualId", data.player_id);
-          setJugadorActualId(data.player_id);
-          sessionStorage.setItem("cartaMovimientoActualId", data.card_id);
-          setCartaMovimientoActualId(data.card_id);
-          sessionStorage.setItem("cartaMovimientoActualIndex", data.index);
-          setCartaMovimientoActualIndex(data.index);
-        }
-        else if (data.action === "use_card" || data.action === "recover_card") {
-          setJugando(false);
-        }
-        else {
-          throw new Error("Acción no reconocida."); 
-        }
+        switch (data.action) {
+          case "deal":
+            sessionStorage.setItem("cartas_mov", JSON.stringify(data.card_mov));
+            setCartasDelJugador(data.card_mov);
+            sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", cartasDelJugador.length);
+            setCantidadCartasMovimientoJugadorActual(cartasDelJugador.length);
+          break;
 
-        sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", data.len);
-        setCantidadCartasMovimientoJugadorActual(data.len);
+          case "select":
+            sessionStorage.setItem("jugadorActualId", data.player_id);
+            setJugadorActualId(data.player_id);
+            sessionStorage.setItem("cartaMovimientoActualId", data.card_id);
+            setCartaMovimientoActualId(data.card_id);
+            sessionStorage.setItem("cartaMovimientoActualIndex", data.index);
+            setCartaMovimientoActualIndex(data.index);
+          break;
+
+          case "use_card":
+          case "recover_card":
+            sessionStorage.setItem("jugadorActualId", data.player_id);
+            setJugadorActualId(data.player_id);
+            sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", data.len);
+            setCantidadCartasMovimientoJugadorActual(data.len);
+            sessionStorage.setItem("cartaMovimientoActualId", -1);
+            setCartaMovimientoActualId(-1);
+          break;
+
+          default:
+            throw new Error("Acción no reconocida: ", data.action);
+        }
         console.log("Mensaje recibido del WebSocket de Usar Carta de Movimiento:", data);
       }
 
@@ -243,8 +275,62 @@ function Partida() {
 			console.log("Received message:", event.data);
 			const updatedMessage = JSON.parse(event.data);
 			setActivePlayer({player_name: updatedMessage.player_name, player_id: updatedMessage.player_id});
+      sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", 3);
+      setCantidadCartasMovimientoJugadorActual(3);
+      sessionStorage.setItem("cartaMovimientoActualId", -1);
+      setCartaMovimientoActualId(-1);
+      setSeleccionada(false);
+      setJugando(false);
 		};
 	}, [player_id, partidaID, wsTRef]);
+
+  useEffect(() => {
+    if (wsCFRef.current && wsCFRef.current.readyState !== WebSocket.CLOSED) {
+      return;
+    }
+    try {
+      // Crear la conexión WebSocket
+      wsCFRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaID}/figs?player_id=${player_id}`);
+
+      /*wsCFRef.current.onopen = () => {
+        wsCFRef.current.send(JSON.stringify({ receive: 'cards'}));
+      };*/
+
+      // Manejar mensajes recibidos del WebSocket
+      wsCFRef.current.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        setMazo(data.players);
+      };
+
+      // Manejar errores en la conexión
+      wsCFRef.current.onerror = (error) => {
+        console.error('Error en WebSocket:', error);
+      };
+
+      // Manejar la desconexión del WebSocket
+      wsCFRef.current.onclose = () => {
+        console.log('Conexión WebSocket cerrada');
+      };
+
+    } catch (error) {
+      console.error('Error al conectar con el WebSocket:', error);
+    }
+  }, [wsCFRef.current/*, partidaIniciada, jugadorActualIndex*/]);
+
+
+  // Temporizador
+  useEffect(() => {
+    wsTimerRef.current = new WebSocket(`http://127.0.0.1:8000/ws/timer?player_id=${player_id}&game_id=${partidaID}`);
+
+    wsTimerRef.current.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setTime(data.time);
+    };
+
+    wsTimerRef.current.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+  }, [player_id, partidaID, wsTimerRef]);
 
   const handleCloseModal = () => {
     const partidaID = sessionStorage.getItem('partida_id');
@@ -258,8 +344,28 @@ function Partida() {
     navigate('/Opciones');
   };
 
+  function empezarPartida() {
+    sessionStorage.setItem('partidaIniciada', "true");
+    setPartidaIniciada(true);
+    reorderPlayers(JSON.parse(sessionStorage.getItem("players")));
+    console.log("Partida iniciada");
+  }
+
+
   return (
     <div className="container-partida">
+        {/* El elemento <audio> para la música de fondo */}
+    <audio ref={audioRef} loop>
+        <source src="/Hollow Knight OST - Crystal Peak.mp3" type="audio/mpeg" />
+        Tu navegador no soporta el audio.
+      </audio>
+
+      {/* Botón de mute */}
+      <button onClick={toggleMute} className="mute-button">
+  <i className={isMuted ? "fas fa-volume-mute" : "fas fa-volume-up"}></i>
+</button>
+
+
       {Array.isArray(jugadores) && jugadores.length > 0 ? (
         jugadores.map((jugador, index) => (
           <div key={jugador.player_id}>
@@ -277,6 +383,10 @@ function Partida() {
       <div className="tableroContainer">
         <TableroWithProvider />
       </div>
+      <div className="cancelar-movimientos-container">
+        <CancelarMovimientos
+        jugadorActual={activePlayer.player_name} />
+      </div>
       <div>
         {!partidaIniciada && <IniciarPartida empezarPartida={empezarPartida} />}
       </div>
@@ -288,18 +398,15 @@ function Partida() {
         <PasarTurno
           onTurnoCambiado={manejarFinTurno}
           tiempoLimite={tiempoLimite}
-          setTimeLeft={setTimeLeft}
+          setTimeLeft={setTime}
           disabled={activePlayer.player_id !== player_id}
         />
       </div>
       <div className="timer-container">
-        {jugadores && jugadores.length > 0 && (
+        {jugadores && jugadores.length > 0 && time > -1.0 && (
           <Temporizador
-            tiempoLimite={tiempoLimite}
-            jugadorActual={activePlayer.player_name}
-            timeLeft={timeLeft}
-            setTimeLeft={setTimeLeft}
-            onFinTurno={manejarFinTurno}
+            currentPlayer={activePlayer.player_name}
+            time={time}
             colorBloqueado={colorBloqueado}
           />
         )}

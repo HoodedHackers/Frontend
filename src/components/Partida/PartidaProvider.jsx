@@ -19,8 +19,10 @@ export const PartidaProvider = ({ children }) => {
   const [jugando, setJugando] = useState(false); // True si se ha elegido una carta de movimiento
 
   const [isOverlayVisible, setIsOverlayVisible] = useState();
-  
+
   const [isOwner] = useState(sessionStorage.getItem("isOwner") === 'true');
+
+  const [seleccionada, setSeleccionada] = useState(null);
 
   const [jugadorActualId, setJugadorActualId] = useState({});
 
@@ -29,6 +31,12 @@ export const PartidaProvider = ({ children }) => {
   const [cartaMovimientoActualIndex, setCartaMovimientoActualIndex] = useState({});
 
   const [cantidadCartasMovimientoJugadorActual, setCantidadCartasMovimientoJugadorActual] = useState(null);
+
+  const [cartasDelJugador, setCartasDelJugador] = useState(sessionStorage.getItem("cartas_mov") ? JSON.parse(sessionStorage.getItem("cartas_mov")) : [-1,-1,-1]);
+
+  const [mazo, setMazo] = useState([]);
+
+  const [cancelarHabilitado, setCancelarHabilitado] = useState(false);
 
   const handleMouseEnter = () => {
     setIsOverlayVisible(true);
@@ -57,6 +65,8 @@ export const PartidaProvider = ({ children }) => {
         handleMouseEnter,
         handleMouseLeave,
         isOwner,
+        seleccionada,
+        setSeleccionada,
         jugadorActualId,
         setJugadorActualId,
         cartaMovimientoActualId,
@@ -65,6 +75,12 @@ export const PartidaProvider = ({ children }) => {
         setCartaMovimientoActualIndex,
         cantidadCartasMovimientoJugadorActual,
         setCantidadCartasMovimientoJugadorActual,
+        cartasDelJugador,
+        setCartasDelJugador,
+        mazo,
+        setMazo,
+        cancelarHabilitado,
+        setCancelarHabilitado,
         colorBloqueado
       }}
     >
