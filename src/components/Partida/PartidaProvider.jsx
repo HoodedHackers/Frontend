@@ -20,6 +20,8 @@ export const PartidaProvider = ({ children }) => {
   
   const [isOwner] = useState(sessionStorage.getItem("isOwner") === 'true');
 
+  const [seleccionada, setSeleccionada] = useState(null);
+
   const [jugadorActualId, setJugadorActualId] = useState({});
 
   const [cartaMovimientoActualId, setCartaMovimientoActualId] = useState({});
@@ -28,7 +30,11 @@ export const PartidaProvider = ({ children }) => {
 
   const [cantidadCartasMovimientoJugadorActual, setCantidadCartasMovimientoJugadorActual] = useState(null);
 
+  const [cartasDelJugador, setCartasDelJugador] = useState(sessionStorage.getItem("cartas_mov") ? JSON.parse(sessionStorage.getItem("cartas_mov")) : [-1,-1,-1]);
+
   const [mazo, setMazo] = useState([]);
+
+  const [cancelarHabilitado, setCancelarHabilitado] = useState(false);
 
   const handleMouseEnter = () => {
     setIsOverlayVisible(true);
@@ -57,6 +63,8 @@ export const PartidaProvider = ({ children }) => {
         handleMouseEnter,
         handleMouseLeave,
         isOwner,
+        seleccionada,
+        setSeleccionada,
         jugadorActualId,
         setJugadorActualId,
         cartaMovimientoActualId,
@@ -65,8 +73,12 @@ export const PartidaProvider = ({ children }) => {
         setCartaMovimientoActualIndex,
         cantidadCartasMovimientoJugadorActual,
         setCantidadCartasMovimientoJugadorActual,
+        cartasDelJugador,
+        setCartasDelJugador,
         mazo,
-        setMazo
+        setMazo,
+        cancelarHabilitado,
+        setCancelarHabilitado
       }}
     >
       {children}

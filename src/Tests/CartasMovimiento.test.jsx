@@ -2,7 +2,7 @@ import React from 'react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import CartaMovimiento from '../components/Partida/CartasMovimiento/CartaMovimiento';
-import { CartasMovimientoMano, CartasMovimientoContext } from '../components/Partida/CartasMovimiento/CartasMovimientoMano';
+import { CartasMovimientoMano } from '../components/Partida/CartasMovimiento/CartasMovimientoMano';
 import { PartidaContext } from '../components/Partida/PartidaProvider';
 import { WebSocketProvider } from '../components/WebSocketsProvider';
 
@@ -16,9 +16,7 @@ const jugadores = [
   ];
 
 // Mock de los datos de las cartas de movimiento
-let cartaMovimientosMock = [
-  { player_id: 1, all_cards: [30, 21, 43] }
-];
+let cartasDelJugador = [30, 21, 43];
 
 const jugadorId = 1;
 
@@ -31,13 +29,10 @@ describe('Cartas de Movimiento', () => {
   it('Renderiza cartas boca abajo cuando la partida no inicio', () => {
     const partidaIniciada = false;
 
-    // Mockea useState para devolver los datos simulados de cartaMovimientos
-    vi.spyOn(React, 'useState').mockReturnValue([cartaMovimientosMock, vi.fn()]);
-
     // Renderiza el componente con los datos simulados
     render(
       <WebSocketProvider>
-        <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
+        <PartidaContext.Provider value={{ jugadores, partidaIniciada, cartasDelJugador }}>
           <CartasMovimientoMano 
             ubicacion={0}
             jugadorId={jugadorId}
@@ -51,50 +46,8 @@ describe('Cartas de Movimiento', () => {
     expect(cartasBocaAbajo).toHaveLength(3);
   });
 
-  it('Se conecta al endpoint para obtener las cartas', async () => {
-    const partidaIniciada = true;
-    // Mock de la respuesta del fetch
-    const responseMock =   { player_id: 1, all_cards: [30, 21, 43] };
-
-    // Simula el fetch para devolver la respuesta simulada
-    const fetchMock = vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve(responseMock),  // Simula la respuesta en formato JSON
-    });
-
-    // Renderiza el componente
-    render(
-      <WebSocketProvider>
-        <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
-          <CartasMovimientoMano 
-            ubicacion={0}
-            jugadorId={jugadorId}
-          />
-        </PartidaContext.Provider>
-      </WebSocketProvider> 
-    );
-
-    // Espera a que fetch sea llamado con los parámetros correctos
-    await waitFor(() => {
-      expect(fetchMock).toHaveBeenCalledWith(`http://127.0.0.1:8000/api/lobby/1/movs`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          game_id: parseInt(sessionStorage.getItem("partida_id"), 10),
-          player: sessionStorage.getItem("identifier")
-        })
-      });
-    });
-
-    // Verifica que las cartas están presentes
-    expect(screen.getByAltText("Carta de Movimiento 3")).toBeInTheDocument();
-    expect(screen.getByAltText("Carta de Movimiento 1")).toBeInTheDocument();
-    expect(screen.getByAltText("Carta de Movimiento 2")).toBeInTheDocument();
-  });
-
   it('Se renderizan todos los tipos de cartas de movimiento', () => {
     const tipos = [-1, 0, 1, 2, 3, 4, 5, 6]; // Tipos de carta a verificar
-    const seleccionada = null;
     const partidaIniciada = true;
 
     // Renderiza una carta por cada tipo
@@ -102,11 +55,9 @@ describe('Cartas de Movimiento', () => {
       render(
         <WebSocketProvider>
         <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
-          <CartasMovimientoContext.Provider value={{seleccionada}}> 
-            <CartaMovimiento 
-              id={tipo}
-            />
-          </CartasMovimientoContext.Provider>  
+          <CartaMovimiento 
+            id={tipo}
+          /> 
         </PartidaContext.Provider>
       </WebSocketProvider> 
       );
@@ -137,18 +88,12 @@ describe('Cartas de Movimiento', () => {
     const partidaIniciada = true;
 
     // Simula haber quitado 1 carta
-    const responseMock1 = { player_id: 1, all_cards: [30, 21] };
-
-    // Simula el fetch para devolver la respuesta simulada
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve(responseMock1),  // Simula la respuesta en formato JSON
-    });
+    const cartasDelJugador = [30, 21];
 
     // Renderiza el componente
     render(
       <WebSocketProvider>
-        <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
+        <PartidaContext.Provider value={{ jugadores, partidaIniciada, cartasDelJugador }}>
           <CartasMovimientoMano 
             ubicacion={0}
             jugadorId={jugadorId}
@@ -169,18 +114,12 @@ describe('Cartas de Movimiento', () => {
     const partidaIniciada = true;
 
     // Simula haber quitado 2 cartas
-    const responseMock2 = { player_id: 1, all_cards: [30] };
-
-    // Simula el fetch para devolver la respuesta simulada
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve(responseMock2),  // Simula la respuesta en formato JSON
-    });
+    const cartasDelJugador = [30];
 
     // Renderiza el componente
     render(
       <WebSocketProvider>
-        <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
+        <PartidaContext.Provider value={{ jugadores, partidaIniciada, cartasDelJugador }}>
           <CartasMovimientoMano 
             ubicacion={0}
             jugadorId={jugadorId}
@@ -201,20 +140,12 @@ describe('Cartas de Movimiento', () => {
     const partidaIniciada = true;
 
     // Simula haber quitado 3 cartas
-    const responseMock3 = {
-      player_id: 1, all_cards: []
-    };
-
-    // Simula el fetch para devolver la respuesta simulada
-    vi.spyOn(global, 'fetch').mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve(responseMock3),  // Simula la respuesta en formato JSON
-    });
+    const cartasDelJugador = [];
 
     // Renderiza el componente
     render(
       <WebSocketProvider>
-        <PartidaContext.Provider value={{ jugadores, partidaIniciada }}>
+        <PartidaContext.Provider value={{ jugadores, partidaIniciada, cartasDelJugador }}>
           <CartasMovimientoMano 
             ubicacion={0}
             jugadorId={jugadorId}
