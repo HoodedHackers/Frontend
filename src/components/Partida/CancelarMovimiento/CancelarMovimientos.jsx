@@ -3,7 +3,12 @@ import './CancelarMovimientos.css';
 import { PartidaContext } from '../PartidaProvider.jsx';
 
 const CancelarMovimientos = ({ disabled }) => {
-  const { partidaIniciada, setCancelarHabilitado, setCartasDelJugador } = useContext(PartidaContext);
+  const { 
+    partidaIniciada,
+    setCancelarHabilitado,
+    setCartasDelJugador,
+    setSeleccionadaMov
+  } = useContext(PartidaContext);
   const ident = sessionStorage.getItem("identifier");
   const gameId = sessionStorage.getItem("partida_id");
 
@@ -25,6 +30,7 @@ const CancelarMovimientos = ({ disabled }) => {
         setCancelarHabilitado(false);
         sessionStorage.setItem("cartas_mov", JSON.stringify(data.card_mov));
         setCartasDelJugador(data.card_mov);
+        setSeleccionadaMov({});
       }
     } catch (error) {
       console.error('Error al deshacer el movimiento:', error);
