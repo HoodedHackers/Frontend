@@ -1,6 +1,6 @@
 import "./Temporizador.css"; // Importa tu archivo CSS normal
 
-const Temporizador = ({ time, currentPlayer, colorBloqueado }) => {
+const Temporizador = ({ time, currentPlayer, color }) => {
   const minutes = Math.floor(time / 60);
   const seconds = Math.floor(time % 60);
 
@@ -28,7 +28,7 @@ const Temporizador = ({ time, currentPlayer, colorBloqueado }) => {
       <div
         className="color-bloqueado"
         style={{
-          backgroundColor: colorBloqueado,
+          backgroundColor: color,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -42,7 +42,7 @@ const Temporizador = ({ time, currentPlayer, colorBloqueado }) => {
           style={{
             width: "20px",
             height: "20px",
-            backgroundColor: colorBloqueado,
+            backgroundColor: color,
             borderRadius: "50%", // Redondear para que parezca un círculo
             display: "inline-block",
           }}

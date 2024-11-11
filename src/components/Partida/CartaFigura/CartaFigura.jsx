@@ -1,10 +1,6 @@
-// src/components/CartaFigura.jsx
-import React from 'react';
-// import PropTypes from 'prop-types';
-import './CartaFigura.css'; 
+import "./CartaFigura.css";
 
-function CartaFigura ({ tipo }) {
-
+function CartaFigura({ tipo, possibleFigures, colorBloqueado }) {
   const Images = [
     "/Imagenes/Figura/25.svg",
     "/Imagenes/Figura/1.svg",
@@ -31,21 +27,68 @@ function CartaFigura ({ tipo }) {
     "/Imagenes/Figura/22.svg",
     "/Imagenes/Figura/23.svg",
     "/Imagenes/Figura/24.svg",
-  ]
+  ];
+
+  const usarCartaFigura = async () => {
+    const game_id = sessionStorage.getItem("partida_id");
+    const identifier = sessionStorage.getItem("identifier");
+    const player_id = sessionStorage.getItem("player_id");
+    var my_moves = null;
+    var selected_move = null;
+    for (let posibilities of possibleFigures) {
+      if (posibilities.player_id == player_id) {
+        my_moves = posibilities.moves;
+        break;
+      }
+    }
+    for (let move of my_moves) {
+      if (move.fig_id == tipo) {
+        if (move.color != colorBloqueado) {
+          selected_move = move;
+          break;
+        }
+      }
+    }
+    if (selected_move === null) return;
+    const message = {
+      player_identifier: identifier,
+      card_id: tipo,
+      color: selected_move.color,
+    };
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/in-course/${game_id}/discard_figs`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(message),
+        },
+      );
+      if (!response.ok) {
+        throw new Error(
+          "Error al enviar la Carta de Figura elegida: ",
+          response,
+        );
+      } else {
+        console.log("Se envió la Carta de Figura elegida.");
+      }
+    } catch (error) {
+      console.error("Error al enviar la Carta de Figura elegida: ", response);
+    }
+  };
 
   return (
     <div className="carta-figura">
-      <img 
-        src={tipo == -1 ? "/Imagenes/Figura/back.svg" : Images[tipo]} 
-        alt={tipo == -1 ? "Carta de Movimiento 0" : `Carta de Movimiento ${tipo + 1}`} 
-        className='carta-figura-img'/>
+      <img
+        src={tipo == -1 ? "/Imagenes/Figura/back.svg" : Images[tipo]}
+        alt={tipo == -1 ? "Carta de Figura 0" : `Carta de Figura ${tipo + 1}`}
+        onClick={usarCartaFigura}
+        className="carta-figura-img"
+      />
     </div>
   );
-};
-
-// Definición de los tipos de props para validación
-// CartaFigura.propTypes = {
-//   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-// };
+}
 
 export default CartaFigura;

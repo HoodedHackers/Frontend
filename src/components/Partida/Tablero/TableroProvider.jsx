@@ -40,7 +40,9 @@ export const TableroProvider = ({ children }) => {
     cartaMovimientoActualIndex,
     setCartasDelJugador ,
     setJugando,
-    setColorBloquado
+    setColorBloquado,
+    setColorBloquadoRGB,
+    setPossibleFigures
   } = useContext(PartidaContext);
   const { wsBSRef } = useContext(WebSocketContext);
 
@@ -159,8 +161,9 @@ function numbersToSquares(colores, posicionesResaltadas) {
         sessionStorage.setItem("figurasEnTablero", JSON.stringify(data.possible_figures));
         setFigurasEnTablero(data.possible_figures);
         setSquares(numbersToSquares(data.board, extractedTiles));
-        setColorBloquado(COLORES[data.forbidenColor]);
-
+        setColorBloquadoRGB(COLORES[data.blocked_color - 1]);
+        setColorBloquado(data.blocked_color)
+        setPossibleFigures(data.possible_figures)
         //pa' proba'
         //setSquares(numbersToSquares(
         //  [1,2,1,2,4,3,1,3,2,2,2,1,1,4,4,2,1,4,1,2,1,3,3,4,1,4,3,4,3,4,2,3,3,3,2,4],

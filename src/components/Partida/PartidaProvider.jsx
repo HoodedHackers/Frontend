@@ -11,6 +11,8 @@ export const PartidaProvider = ({ children }) => {
 
   const [colorBloqueado, setColorBloquado] = useState(1);
 
+  const [possibleFigures, setPossibleFigures] = useState();
+
   const [posicionJugador, setPosicionJugador] = useState();
 
   //const [jugadorActualIndex, setJugadorActualIndex] = useState(parseInt(localStorage.getItem("jugadorActualIndex"), 10) || 0);
@@ -82,7 +84,9 @@ export const PartidaProvider = ({ children }) => {
         cancelarHabilitado,
         setCancelarHabilitado,
         colorBloqueado,
-        setColorBloquado
+        setColorBloquado,
+        possibleFigures,
+        setPossibleFigures
       }}
     >
       {children}

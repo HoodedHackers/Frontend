@@ -42,7 +42,7 @@ function Partida() {
     cartasDelJugador,
     setCartasDelJugador,
     setMazo,
-    colorBloqueado
+    colorBloqueadoRGB,
   } = useContext(PartidaContext);
 
   useEffect(() => {
@@ -407,7 +407,7 @@ function Partida() {
           <Temporizador
             currentPlayer={activePlayer.player_name}
             time={time}
-            colorBloqueado={colorBloqueado}
+            color={colorBloqueadoRGB}
           />
         )}
       </div>
