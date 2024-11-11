@@ -356,34 +356,39 @@ function Partida() {
       <div className="contenedor-chat">
         <Chat />
       </div>
-      <div className="cancelar-movimientos-container">
-        <CancelarMovimientos 
-        jugadorActual={activePlayer.player_name} />
-      </div>
-      <div>
-        {!partidaIniciada && <IniciarPartida empezarPartida={empezarPartida} />}
-      </div>
-      <div className="abandonar-partida-container">
-        {isOverlayVisible && <div className="overlay-supremo"></div>}
-        <AbandonarPartida />
-      </div>
-      <div className="pasar-turno-container">
-        <PasarTurno
-          onTurnoCambiado={manejarFinTurno}
-          tiempoLimite={tiempoLimite}
-          setTimeLeft={setTime}
-          disabled={activePlayer.player_id !== player_id}
-        />
-      </div>
-      <div className="timer-container">
-        {jugadores && jugadores.length > 0 && time > -1.0 && (
-          <Temporizador
-            currentPlayer={activePlayer.player_name}
-            time={time}
-          />
+      <div className="container-partida">
+        {/* El elemento <audio> para la música de fondo */}
+        <audio ref={audioRef} loop>
+          <source src="/Hollow Knight OST - Crystal Peak.mp3" type="audio/mpeg" />
+          Tu navegador no soporta el audio.
+        </audio>
+
+        {/* Botón de mute */}
+        <button onClick={toggleMute} className="mute-button">
+          <i className={isMuted ? "fas fa-volume-mute" : "fas fa-volume-up"}></i>
+        </button>
+
+        {Array.isArray(jugadores) && jugadores.length > 0 ? (
+          jugadores.map((jugador, index) => (
+            <div key={jugador.player_id}>
+              <Jugador
+                nombre={jugador.player_name}
+                ubicacion={`jugador${index + 1}`}
+              />
+              <CartasMovimientoMano ubicacion={index} jugadorId={jugador.player_id} />
+              <MazoCartaFigura ubicacion={index} />
+            </div>
+          ))
+        ) : (
+          <p>No hay jugadores en la partida.</p>
         )}
+
         <div className="tableroContainer">
           <TableroWithProvider />
+        </div>
+        <div className="cancelar-movimientos-container">
+          <CancelarMovimientos 
+          jugadorActual={activePlayer.player_name} />
         </div>
         <div>
           {!partidaIniciada && <IniciarPartida empezarPartida={empezarPartida} />}
@@ -396,18 +401,15 @@ function Partida() {
           <PasarTurno
             onTurnoCambiado={manejarFinTurno}
             tiempoLimite={tiempoLimite}
-            setTimeLeft={setTimeLeft}
+            setTimeLeft={setTime}
             disabled={activePlayer.player_id !== player_id}
           />
         </div>
         <div className="timer-container">
-          {jugadores && jugadores.length > 0 && (
+          {jugadores && jugadores.length > 0 && time > -1.0 && (
             <Temporizador
-              tiempoLimite={tiempoLimite}
-              jugadorActual={activePlayer.player_name}
-              timeLeft={timeLeft}
-              setTimeLeft={setTimeLeft}
-              onFinTurno={manejarFinTurno}
+              currentPlayer={activePlayer.player_name}
+              time={time}
             />
           )}
         </div>
