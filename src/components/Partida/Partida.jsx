@@ -45,7 +45,8 @@ function Partida() {
     setCartasDelJugador,
     setMazo,
     activePlayer,
-    setActivePlayer
+    setActivePlayer,
+    setColorBlock
   } = useContext(PartidaContext);
 
   useEffect(() => {
@@ -300,6 +301,7 @@ function Partida() {
       wsCFRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
         setMazo(data.players);
+        setColorBlock(data.blocked_color);
         sessionStorage.setItem("cartaMovimientoActualId", -1);
         setCartaMovimientoActualId(-1);
       };

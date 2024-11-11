@@ -52,7 +52,7 @@ export const TableroProvider = ({ children }) => {
   }
 
   // Colores disponibles
-  const COLORES = ['#f3e84c', '#1d53b6', '#f52020', '#27f178'];
+  const color = ['#f3e84c','#1d53b6','#f52020','#27f178'];
   const colorToImageMap = {
     normal: {
       '#f3e84c': '/Imagenes/Tablero/A.svg',
@@ -181,7 +181,8 @@ async function enviarMovimiento(identifier, origen, destino){
     const game_id = sessionStorage.getItem("partida_id");
     const message = {
       player_identifier: sessionStorage.getItem("identifier"),
-      card_id: id_figura
+      card_id: id_figura,
+      color: color
     };
 
    try {

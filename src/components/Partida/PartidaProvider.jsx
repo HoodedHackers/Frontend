@@ -42,6 +42,8 @@ export const PartidaProvider = ({ children }) => {
 
   const [activePlayer, setActivePlayer] = useState({});
 
+  const [colorBlock, setColorBlock] = useState(null);
+
   const handleMouseEnter = () => {
     setIsOverlayVisible(true);
   };
@@ -91,6 +93,8 @@ export const PartidaProvider = ({ children }) => {
         setCancelarHabilitado,
         activePlayer,
         setActivePlayer,
+        colorBlock,
+        setColorBlock,
       }}
     >
       {children}

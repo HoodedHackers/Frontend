@@ -94,26 +94,8 @@
     top: 50px; 
     left: 65%; 
   }
-}
+  .color-bloqueado {
+    width: 100%; /* Ajusta al ancho completo del contenedor */
+  }
 
-.temporizador-container {
-  display: flex;
-  align-items: center; /* Alinea verticalmente los elementos */
-  flex-direction: column;
-  margin: 10px;
-}
-
-/* Añade estos estilos para el rectángulo de color bloqueado */
-.color-bloqueado {
-  width: 80px; /* Ajustado a un tamaño más pequeño */
-  height: 40px; /* Ajustado a un tamaño más pequeño */
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
-  margin-left: 10px; /* Espaciado entre rectángulos */
-  position: relative; /* Para el posicionamiento de la etiqueta */
-  color: white;
-  font-weight: bold;
 }
