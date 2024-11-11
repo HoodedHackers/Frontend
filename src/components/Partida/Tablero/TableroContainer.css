@@ -5,6 +5,7 @@
   border: 6px solid; 
   border-image: linear-gradient(to bottom right, #cccccc, #999999) 1;
   box-sizing: border-box;
+  position: relative; /* Importante para que los elementos hijos con posicionamiento absoluto estén referenciados a este contenedor */
 }
 
 .square {
@@ -17,11 +18,10 @@
 
 .square.selected {
   animation: neonGlow 2s infinite; /* Animación del resplandor */
-
 }
 
 .square.highlighted {
-    border: 3px solid #fcf8f8;
+  border: 3px solid #ffffff;
 }
 
 .boardRow {
@@ -38,4 +38,23 @@
   100% {
     box-shadow: 0 0 10px #ffff00, 0 0 20px #ff00ff, 0 0 30px #00ffff;
   }
+}
+
+.modoDaltonismoButton {
+  padding: 5px 10px; /* Ajustamos el relleno para hacerlo más estrecho y largo */
+  background-color: #59595a;
+  color: white;
+  border: 2px solid #cccccc;
+  border-radius: 5px;
+  cursor: pointer;
+  position: absolute; /* Posicionamos el botón de manera absoluta */
+  top: -40px; /* Ajusta la distancia para que esté más cerca del tablero */
+  left: 50%; /* Centrado horizontalmente */
+  transform: translateX(-50%); /* Asegura que el botón esté centrado horizontalmente */
+  font-size: 11px; /* Ajusta el tamaño de fuente si es necesario */
+  display: inline-block; /* Permite que el botón ajuste su ancho al contenido */
+}
+
+.modoDaltonismoButton:hover {
+  background-color: #0056b3;
 }

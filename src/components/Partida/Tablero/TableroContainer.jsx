@@ -3,17 +3,19 @@ import { TableroContext, TableroProvider } from './TableroProvider.jsx';
 import { PartidaContext } from '../PartidaProvider.jsx';
 import './TableroContainer.css';
 
+
 function Square({ color, onClick, isSelected, isHighlighted }) {
-  const { colorToImageMap } = useContext(TableroContext);
+  const { colorToImageMap, modoDaltonismo } = useContext(TableroContext);
   const { jugando } = useContext(PartidaContext);
-  
+  const imageUrl = colorToImageMap[modoDaltonismo ? 'daltonismo' : 'normal'][color];
+
   return (
     <button
-      className={`square ${isSelected ? 'selected' : ''} ${isHighlighted ? 'highlighted' : ''}`} 
+      className={`square ${isSelected ? 'selected' : ''} ${isHighlighted ? 'highlighted' : ''}`}
       style={{
-        backgroundImage: `url(${colorToImageMap[color]})`,
+        backgroundImage: `url(${imageUrl})`,
         backgroundSize: 'cover',
-        backgroundPosition: 'center', 
+        backgroundPosition: 'center',
       }}
       onClick={onClick}
       disabled={!jugando}
@@ -44,8 +46,13 @@ function Tablero() {
 }
 
 function TableroContainer() {
+  const { toggleModoDaltonismo, modoDaltonismo } = useContext(TableroContext);
+
   return (
-    <div className="boardContainer"> 
+    <div className="boardContainer">
+      <button onClick={toggleModoDaltonismo} className="modoDaltonismoButton">
+        {modoDaltonismo ? 'Modo Normal' : 'Modo Daltonismo'}
+      </button>
       <Tablero />
     </div>
   );
@@ -58,5 +65,3 @@ export default function TableroWithProvider() {
     </TableroProvider>
   );
 }
-
-

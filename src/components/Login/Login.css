@@ -92,11 +92,11 @@
 
 .card {
   background-color: rgba(0, 0, 0, 0.7);
-  padding: 1.5rem;
+  padding: 2rem; 
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
   max-width: 400px;
-  width: 100%;
+  width: auto; 
   transition: transform 0.3s ease;
 }
 
@@ -135,8 +135,9 @@
 
 .infoContainer {
   margin-right: 200px;
-  max-width: 400px; 
+  width: auto;
   flex-shrink: 0; 
+  margin-top: -30px;
 }
 
 .custom-button-2{
@@ -157,8 +158,8 @@
 
 .devButtonContainer {
   position: fixed;
-  bottom: 20px;
-  left: 20px;
+  top: 20px; /* Mueve el contenedor hacia la parte superior */
+  right: 20px; /* Mueve el contenedor hacia la derecha */
   z-index: 10;
 }
 

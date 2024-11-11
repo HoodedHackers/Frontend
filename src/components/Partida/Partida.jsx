@@ -338,7 +338,6 @@ function Partida() {
   <i className={isMuted ? "fas fa-volume-mute" : "fas fa-volume-up"}></i>
 </button>
 
-
       {Array.isArray(jugadores) && jugadores.length > 0 ? (
         jugadores.map((jugador, index) => (
           <div key={jugador.player_id}>
@@ -353,6 +352,7 @@ function Partida() {
       ) : (
         <p>No hay jugadores en la partida.</p>
       )}
+
       <div className="tableroContainer">
         <TableroWithProvider />
       </div>

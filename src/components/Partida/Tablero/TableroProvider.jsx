@@ -1,16 +1,17 @@
 // TableroContext.jsx
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import {PartidaContext} from '../PartidaProvider';
+import { PartidaContext } from '../PartidaProvider';
 import { WebSocketContext } from '../../WebSocketsProvider.jsx';
 
 
 // Crear el contexto
 export const TableroContext = createContext();
 
+
 // Proveedor del contexto
 export const TableroProvider = ({ children }) => {
   const [squares, setSquares] = useState(generateInitialColors());
-  const [figurasEnTablero, setFigurasEnTablero] = useState([]); 
+  const [figurasEnTablero, setFigurasEnTablero] = useState([]);
   // figurasEnTablero es un arreglo de objetos con la siguiente estructura:
   //  [
   //    {
@@ -38,27 +39,40 @@ export const TableroProvider = ({ children }) => {
   const [jugadoresActivos, setJugadoresActivos] = useState([true, true, true, true]);
   const { cartaMovimientoActualId, cartaMovimientoActualIndex } = useContext(PartidaContext);
   const { wsBSRef } = useContext(WebSocketContext);
+  const [modoDaltonismo, setModoDaltonismo] = useState(false);
 
 
+  function toggleModoDaltonismo() {
+    setModoDaltonismo((prevModo) => !prevModo);
+  }
   // Colores disponibles
   const COLORES = ['#f3e84c', '#1d53b6', '#f52020', '#27f178'];
   const colorToImageMap = {
-    '#f3e84c': '/Imagenes/Tablero/A.svg',
-    '#1d53b6': '/Imagenes/Tablero/B.svg',
-    '#f52020': '/Imagenes/Tablero/C.svg',
-    '#27f178': '/Imagenes/Tablero/D.svg',
+    normal: {
+      '#f3e84c': '/Imagenes/Tablero/A.svg',
+      '#1d53b6': '/Imagenes/Tablero/B.svg',
+      '#f52020': '/Imagenes/Tablero/C.svg',
+      '#27f178': '/Imagenes/Tablero/D.svg',
+    },
+    daltonismo: {
+      '#f3e84c': '/Imagenes/Tablero/A_dalt.jpeg',
+      '#1d53b6': '/Imagenes/Tablero/B_dalt.jpeg',
+      '#f52020': '/Imagenes/Tablero/C_dalt.jpeg',
+      '#27f178': '/Imagenes/Tablero/D_dalt.jpeg',
+    }
   };
 
-function numbersToSquares(colores, posicionesResaltadas) {
-  let colors = ['#f3e84c',
-    '#1d53b6',
-    '#f52020',
-    '#27f178'];
+
+  function numbersToSquares(colores, posicionesResaltadas) {
+    let colors = ['#f3e84c',
+      '#1d53b6',
+      '#f52020',
+      '#27f178'];
     return colores.map((x, index) => ({
       color: colors[x - 1], // Asignar el color basado en el número
       highlighted: posicionesResaltadas.includes(index), // Verificar si la posición está resaltada
     }));
-}
+  }
 
   function generateInitialColors() {
     const colorDistribution = [
@@ -105,7 +119,7 @@ function numbersToSquares(colores, posicionesResaltadas) {
   }
 
   // Función para enviar el movimiento al backend
-  async function enviarMovimiento(identifier, origen, destino){
+  async function enviarMovimiento(identifier, origen, destino) {
     const game_id = sessionStorage.getItem("partida_id");
 
     try {
@@ -151,8 +165,8 @@ function numbersToSquares(colores, posicionesResaltadas) {
 
     try {
       wsBSRef.current = new WebSocket(`ws://localhost:8000/ws/lobby/${game_id}/board?player_id=${player_id}`);
-      wsBSRef.current.onopen = () => { wsBSRef.current.send(JSON.stringify({request: "status"})) };
-  
+      wsBSRef.current.onopen = () => { wsBSRef.current.send(JSON.stringify({ request: "status" })) };
+
       wsBSRef.current.onmessage = (event) => {
         console.log("Mensaje recibido por el WebSocket de Estado del Tablero: ", event.data);
         let data = JSON.parse(event.data);
@@ -170,9 +184,9 @@ function numbersToSquares(colores, posicionesResaltadas) {
     } catch (error) {
       console.error("Error al conectar al WebSocket de Estado del Tablero:", error);
     }
-    
+
   }, [wsBSRef.current]);
-  
+
   return (
     <TableroContext.Provider
       value={{
@@ -183,7 +197,9 @@ function numbersToSquares(colores, posicionesResaltadas) {
         handleSquareClick,
         colorToImageMap,
         figurasEnTablero,
-        setFigurasEnTablero
+        setFigurasEnTablero,
+        modoDaltonismo,
+        toggleModoDaltonismo
       }}
     >
       {children}

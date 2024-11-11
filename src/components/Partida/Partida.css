@@ -206,10 +206,3 @@ button:disabled {
   transition: transform 0.2s, background-color 0.2s;
   font-size: 18px; /* Ajusta el tamaño del icono */
 }
-
-/* Hover del botón */
-.mute-button:hover {
-  background-color: #282827;
-  transform: scale(1.05);
-}
-
