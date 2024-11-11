@@ -66,7 +66,8 @@ function CartaFigura ({ tipo }) {
       <img 
         src={tipo == -1 ? "/Imagenes/Figura/back.svg" : Images[tipo % 25]} 
         alt={tipo == -1 ? "Carta de Movimiento 0" : `Carta de Movimiento ${(tipo % 25) + 1}`} 
-        className='carta-figura-img'/>
+        className='carta-figura-img'
+      />
     </div>
   );
 };

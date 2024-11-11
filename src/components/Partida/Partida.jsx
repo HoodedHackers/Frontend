@@ -299,6 +299,7 @@ function Partida() {
       // Manejar mensajes recibidos del WebSocket
       wsCFRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
+        console.log('Mensaje recibido por ws de cartas figura:', data);
         setMazo(data.players);
         sessionStorage.setItem("cartaMovimientoActualId", -1);
         setCartaMovimientoActualId(-1);

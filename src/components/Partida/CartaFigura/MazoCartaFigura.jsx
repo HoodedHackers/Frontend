@@ -1,43 +1,85 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import CartaFigura from './CartaFigura'; 
 import { PartidaContext } from '../PartidaProvider.jsx';
 import './MazoCartaFigura.css'; 
 
 function MazoCartaFigura ({ubicacion}) { 
   const { handleMouseEnter, handleMouseLeave, mazo, jugadores } = useContext(PartidaContext);
+  const [cartasBloqueadas, setCartasBloqueadas] = useState([]);
+  //const jugadorID = sessionStorage.getItem('player_id');
+  const gameId = sessionStorage.getItem('partida_id');
   
-  // Funcion que ordena y filtra lo jugadores segun su id
   function ordenarPlayers(playerDecks, jugadores) {
-    // Obtenemos el orden de player_id desde jugadores
     const ordenJugadorIds = jugadores.map(jugador => jugador.player_id);
-  
-    // Filtramos dataPlayers para eliminar elementos no presentes en jugadores
     const jugadoresFiltrados = playerDecks.filter(jugador =>
       ordenJugadorIds.includes(jugador.player_id)
     );
-  
-    // Ordenamos jugadoresFiltrados según el orden de jugadores
     const jugadoresOrdenados = jugadoresFiltrados.sort((a, b) => {
       return ordenJugadorIds.indexOf(a.player_id) - ordenJugadorIds.indexOf(b.player_id);
     });
-  
     return jugadoresOrdenados;
+  };
+
+  function obtenerPlayerIdBloqueadoPorCarta(carta, mazoOrdenado) {
+    const jugadorConCarta = mazoOrdenado.find(player =>
+      player.cards.includes(carta)
+    );
+  
+    return jugadorConCarta ? jugadorConCarta.player_id : null;
   }
+
+  async function handleCardClick(carta, jugadorId, mazoOrdenado) {
+    
+    const jugadorIdBloqueado = obtenerPlayerIdBloqueadoPorCarta(carta, mazoOrdenado);
+
+    console.log('Jugador Id con carta bloqueada:', jugadorIdBloqueado);
+    
+    const blockRequest = {
+      identifier: sessionStorage.getItem('identifier'), // Identificador de la partida
+      id_player_block: jugadorIdBloqueado, // ID del jugador objetivo que posee la carta
+      id_card_block: carta // ID de la carta que se intenta bloquear
+    };
+  
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/lobby/${gameId}/block`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(blockRequest),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Error al bloquear la carta:', errorData.detail);
+      } else {
+        const data = await response.json();
+        setCartasBloqueadas([...cartasBloqueadas, carta]); //Las tengo que setear en partida para q se reflejen a todos
+        console.log('Carta bloqueada con éxito:', data);
+      }
+    } catch (error) {
+      console.error('Error al realizar la solicitud:', error);
+    }
+  };
   
   const mazoOrdenado = ordenarPlayers(mazo, jugadores);
-  const cartasDelJugador = mazoOrdenado[ubicacion]?.cards || [];;
+  const cartasJugadores = mazoOrdenado[ubicacion]?.cards || [];
+  const jugadorId = mazoOrdenado[ubicacion]?.player_id;
+
 
   return (
     <div className={`container-cartas-figura grupo-${ubicacion + 1}`}>
-      {cartasDelJugador.length > 0 ? (
-        cartasDelJugador.map((carta) => (
-          <div key={carta} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-            <CartaFigura tipo={carta} />
-          </div>
-        ))
-      ) : (
-        null
-      )}
+      {cartasJugadores.map((carta) => (
+        <div 
+        key={carta} 
+        onMouseEnter={handleMouseEnter} 
+        onMouseLeave={handleMouseLeave}
+        onClick={() => handleCardClick(carta, jugadorId, mazoOrdenado)}
+        className={cartasBloqueadas.includes(carta) ? 'carta-bloqueada' : ''} // Si la cartaa está en cartasBloqueadas, añade la clase 'carta-bloqueada'
+      >
+        <CartaFigura tipo={(carta % 25) + 1} />
+      </div>
+      ))}
     </div>
   );
 };
