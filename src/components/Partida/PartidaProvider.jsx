@@ -11,6 +11,8 @@ export const PartidaProvider = ({ children }) => {
 
   const [colorBloqueado, setColorBloquado] = useState(1);
 
+  const [colorBloqueadoRGB, setColorBloquadoRGB] = useState();
+
   const [possibleFigures, setPossibleFigures] = useState();
 
   const [posicionJugador, setPosicionJugador] = useState();
@@ -85,6 +87,8 @@ export const PartidaProvider = ({ children }) => {
         setCancelarHabilitado,
         colorBloqueado,
         setColorBloquado,
+        colorBloqueadoRGB,
+        setColorBloquadoRGB,
         possibleFigures,
         setPossibleFigures
       }}
