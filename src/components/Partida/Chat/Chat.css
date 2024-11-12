@@ -22,6 +22,20 @@
     white-space: pre-wrap; /* Permite saltos de línea y el wrap automático */
 }
 
+.li-message.descarte {
+    background-color: #E0F7FA; /* Azul claro */
+    border: 2px solid #0288D1; /* Azul oscuro */
+    color: #01579B; /* Azul oscuro para el texto */
+    border-radius: 15px; /* Bordes redondeados */
+    padding: 10px 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    word-wrap: break-word; /* Ajuste de línea */
+    white-space: pre-wrap; /* Saltos de línea */
+}
+
+
 
 .chat-input-container {
     display: flex;

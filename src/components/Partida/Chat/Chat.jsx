@@ -28,10 +28,36 @@
         wsCRef.current.onmessage = (event) => {
           const mensaje = JSON.parse(event.data);
           if (mensaje.message) {
-            setMensajes(prevMensajes => [
-              { usuario: mensaje.name, mensaje: mensaje.message },
-              ...prevMensajes,
-            ]);
+            if (mensaje.message.includes('descartado')) {
+              setMensajes(prevMensajes => [
+                { usuario: 'Sistema', mensaje: mensaje.message, tipo: 'descarte' },
+                ...prevMensajes,
+              ]);
+            }
+            else if (mensaje.message.includes('bloqueado')) {
+              setMensajes(prevMensajes => [
+                { usuario: 'Sistema', mensaje: mensaje.message, tipo: 'bloqueo' },
+                ...prevMensajes,
+              ]);
+            }
+            else if (mensaje.message.includes('turno')) {
+              setMensajes(prevMensajes => [
+                { usuario: 'Sistema', mensaje: mensaje.message, tipo: 'turno' },
+                ...prevMensajes,
+              ]);
+            }
+            else if (mensaje.message.includes('abandonado')) {
+              setMensajes(prevMensajes => [
+                { usuario: 'Sistema', mensaje: mensaje.message, tipo: 'abandono' },
+                ...prevMensajes,
+              ]);
+            }
+            else {
+              setMensajes(prevMensajes => [
+                { usuario: mensaje.name, mensaje: mensaje.message, tipo: '' },
+                ...prevMensajes,
+              ]);
+            }
           }
         };
   
