@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Chat from '../components/Partida/Chat/Chat.jsx';
 import { WebSocketContext } from '../components/WebSocketsProvider.jsx';
 import { MockWebSocket } from './mock-sockets.jsx';
+import { type } from '@testing-library/user-event/dist/cjs/utility/type.js';
 
 const mockGameId = '123';
 const mockPlayerId = '456';
@@ -96,9 +97,9 @@ describe('Chat Component', () => {
     // Simular recepción de varios mensajes
     socketMock.triggerOpen();
     const mensajes = [
-      { name: 'Jugador1', message: 'Mensaje 1' },
-      { name: 'Jugador2', message: 'Mensaje 2' },
-      { name: 'Jugador3', message: 'Mensaje 3' }
+      { name: 'Jugador 1', message: 'Mensaje 1' },
+      { name: 'Jugador 2', message: 'Mensaje 2' },
+      { name: 'Jugador 3', message: 'Mensaje 3' }
     ];
 
     mensajes.forEach(mensaje => socketMock.receiveMessage(mensaje));
@@ -111,4 +112,97 @@ describe('Chat Component', () => {
       });
     });
   });
+
+  it('Renderiza mensaje de descarte', async () => {
+    const wsCRef = { current: socketMock };
+
+    render(
+      <WebSocketContext.Provider value={{ wsCRef }}>
+        <Chat />
+      </WebSocketContext.Provider>
+    );
+
+    socketMock.triggerOpen();
+    const mensajes = [
+      { name: 'Jugador 1', message: 'Jugador 1 ha descartado una carta de figura.' },
+    ];
+
+    mensajes.forEach(mensaje => socketMock.receiveMessage(mensaje));
+
+    // Verificar que cada mensaje aparezca en el DOM
+    await waitFor(() => {
+      expect(screen.getByText('Sistema')).toBeInTheDocument();
+      expect(screen.getByText('Jugador 1 ha descartado una carta de figura.')).toBeInTheDocument();
+    });
+  });
+
+  it('Renderiza mensaje de bloqueo', async () => {
+    const wsCRef = { current: socketMock };
+
+    render(
+      <WebSocketContext.Provider value={{ wsCRef }}>
+        <Chat />
+      </WebSocketContext.Provider>
+    );
+
+    socketMock.triggerOpen();
+    const mensajes = [
+      { name: 'Jugador 1', message: 'Jugador 1 ha bloqueado una carta de figura.' },
+    ];
+
+    mensajes.forEach(mensaje => socketMock.receiveMessage(mensaje));
+
+    // Verificar que cada mensaje aparezca en el DOM
+    await waitFor(() => {
+      expect(screen.getByText('Sistema')).toBeInTheDocument();
+      expect(screen.getByText('Jugador 1 ha bloqueado una carta de figura.')).toBeInTheDocument();
+    });
+  });
+
+  it('Renderiza mensaje de turno', async () => {
+    const wsCRef = { current: socketMock };
+
+    render(
+      <WebSocketContext.Provider value={{ wsCRef }}>
+        <Chat />
+      </WebSocketContext.Provider>
+    );
+
+    socketMock.triggerOpen();
+    const mensajes = [
+      { name: 'Jugador 1', message: 'Turno de Jugador 1' },
+    ];
+
+    mensajes.forEach(mensaje => socketMock.receiveMessage(mensaje));
+
+    // Verificar que cada mensaje aparezca en el DOM
+    await waitFor(() => {
+      expect(screen.getByText('Sistema')).toBeInTheDocument();
+      expect(screen.getByText('Turno de Jugador 1')).toBeInTheDocument();
+    });
+  });
+
+  it('Renderiza mensaje de abandono', async () => {
+    const wsCRef = { current: socketMock };
+
+    render(
+      <WebSocketContext.Provider value={{ wsCRef }}>
+        <Chat />
+      </WebSocketContext.Provider>
+    );
+
+    socketMock.triggerOpen();
+    const mensajes = [
+      { name: 'Jugador 1', message: 'Jugador 1 ha abandonado la partida.' },
+    ];
+
+    mensajes.forEach(mensaje => socketMock.receiveMessage(mensaje));
+
+    // Verificar que cada mensaje aparezca en el DOM
+    await waitFor(() => {
+      expect(screen.getByText('Sistema')).toBeInTheDocument();
+      expect(screen.getByText('Jugador 1 ha abandonado la partida.')).toBeInTheDocument();
+    });
+  });
+
 });

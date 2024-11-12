@@ -42,7 +42,7 @@ export const TableroProvider = ({ children }) => {
     setJugandoMov,
     jugandoFig
   } = useContext(PartidaContext);
-  const { wsBSRef } = useContext(WebSocketContext);
+  const { wsBSRef, wsCRef } = useContext(WebSocketContext);
   const [errorMensaje, setErrorMensaje] = useState(null); // Nuevo estado para el mensaje de error
   const [modoDaltonismo, setModoDaltonismo] = useState(false);
 
@@ -108,12 +108,9 @@ function numbersToSquares(colores, posicionesResaltadas) {
     if (jugandoFig) {
       const playerId = parseInt(sessionStorage.getItem("player_id"), 10);
       const jugador = figurasEnTablero.find(j => j.player_id === playerId);
-      if(jugador.moves.some(move => move.tiles.includes(index))) { // Caso para descartar figura
+      if(jugador.moves.some(move => move.tiles.includes(index))) {
         const id_figura = jugador.moves.find(m => m.tiles.includes(index)).fig_id;
         enviarFigura(id_figura);
-      }
-      else { // Caso para bloquear figura
-        // TODO 
       }
     }
     else if (selectedIndex === index) {
@@ -175,7 +172,6 @@ async function enviarMovimiento(identifier, origen, destino){
   }
 }
 
-
   // Función para enviar la figura al backend
   async function enviarFigura(id_figura){
     const game_id = sessionStorage.getItem("partida_id");
@@ -196,7 +192,8 @@ async function enviarMovimiento(identifier, origen, destino){
        throw new Error("Error al enviar la Carta de Figura elegida: ", response);
      }
      else {
-       console.log("Se envió la Carta de Figura elegida.");
+        const player_name = sessionStorage.getItem("player_nickname");
+        wsCRef.current.send(JSON.stringify({message: `${player_name} ha descartado una carta de figura.`}));
      }
    } catch (error) {
      console.error("Error al enviar la Carta de Figura elegida: ", error);
@@ -208,10 +205,6 @@ async function enviarMovimiento(identifier, origen, destino){
     return possibleFigures.flatMap(player =>
       player.moves.flatMap(move => move.tiles)
     );
-  }
-
-  function closeError() {
-    setErrorMensaje(null);
   }
 
   useEffect(() => {

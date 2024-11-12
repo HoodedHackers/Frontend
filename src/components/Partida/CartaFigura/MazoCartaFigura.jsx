@@ -1,10 +1,20 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import CartaFigura from './CartaFigura'; 
 import { PartidaContext } from '../PartidaProvider.jsx';
+import { WebSocketContext } from '../../WebSocketsProvider.jsx';
 import './MazoCartaFigura.css'; 
 
 function MazoCartaFigura ({ubicacion}) { 
-  const { handleMouseEnter, handleMouseLeave, mazo, jugadores, cartasBloqueadas } = useContext(PartidaContext);
+  const { 
+    handleMouseEnter,
+    handleMouseLeave,
+    mazo,
+    jugadores,
+    cartasBloqueadas,
+    setSeleccionadaFig,
+    setJugandoFig
+  } = useContext(PartidaContext);
+  const { wsCRef } = useContext(WebSocketContext);
   const gameId = sessionStorage.getItem('partida_id');
   
   function ordenarPlayers(playerDecks, jugadores) {
@@ -51,6 +61,10 @@ function MazoCartaFigura ({ubicacion}) {
       } else {
         const data = await response.json();
         console.log('Carta bloqueada con éxito:', data);
+        setSeleccionadaFig({});
+        setJugandoFig(false);
+        const player_name = sessionStorage.getItem("player_nickname");
+        wsCRef.current.send(JSON.stringify({message: `${player_name} ha bloqueado una carta de figura.`}));
       }
     } catch (error) {
       console.error('Error al realizar la solicitud:', error);
@@ -75,7 +89,7 @@ function MazoCartaFigura ({ubicacion}) {
         }}
         className={cartasBloqueadas.includes(carta) ? 'carta-bloqueada' : ''}
       >
-        <CartaFigura tipo={(carta % 25)} />
+        <CartaFigura tipo={(carta)} />
       </div>
       ))}
     </div>

@@ -14,7 +14,6 @@ import CancelarMovimientos from "./CancelarMovimiento/CancelarMovimientos.jsx";
 import "./Partida.css";
 import { useNavigate } from "react-router-dom";
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { set } from "react-hook-form";
 
 
 function Partida() {
@@ -28,8 +27,8 @@ function Partida() {
     partidaIniciada,
     setPartidaIniciada,
     tiempoLimite,
-    setJugadores,
     jugadores,
+    setJugadores,
     posicionJugador,
     setPosicionJugador,
     setJugadorActualIndex,
@@ -51,6 +50,16 @@ function Partida() {
     setCartasBloqueadas
   } = useContext(PartidaContext);
 
+  const { 
+    wsUPRef,
+    wsStartGameRef,
+    wsTRef,
+    wsUCMRef,
+    wsCFRef,
+    wsTimerRef,
+    wsCRef 
+  } = useContext(WebSocketContext);
+
   useEffect(() => {
     const jugadoresParseados = JSON.parse(sessionStorage.getItem("players"));
     if (jugadoresParseados && Array.isArray(jugadoresParseados)) {
@@ -67,6 +76,12 @@ function Partida() {
       setJugadores([]);  // Asegura que jugadores sea un array vacío
     }
   }, [sessionStorage.getItem("players")]);
+
+  useEffect(() => {
+    if(partidaIniciada && activePlayer.player_id === player_id) {
+      wsCRef.current.send(JSON.stringify({message: `Turno de ${activePlayer.player_name}.`}));
+    }
+  }, [activePlayer]);
 
   const partidaID = sessionStorage.getItem('partida_id');
   const identifier = sessionStorage.getItem('identifier');
@@ -104,8 +119,6 @@ function Partida() {
     }
     return null;
   }
-
-  const { wsUPRef, wsStartGameRef, wsTRef, wsUCMRef, wsCFRef, wsTimerRef } = useContext(WebSocketContext);
 
   useEffect(() => {
     try {
@@ -308,15 +321,17 @@ function Partida() {
         const data = JSON.parse(event.data);
         console.log('Mensaje recibido por ws de cartas figura:', data);
         if (data.id_card_unlock){
+          sessionStorage.setItem("cartasBloqueadas", JSON.stringify(cartasBloqueadas.filter(id => id !== data.id_card_unlock)));
           setCartasBloqueadas(prevCartasBloqueadas => 
             prevCartasBloqueadas.filter(id => id !== data.id_card_unlock)
           );
         }
+        sessionStorage.setItem("cartasBloqueadas", JSON.stringify([...cartasBloqueadas, data.id_card_block]));
         data.id_card_block !== undefined && setCartasBloqueadas(prevCartasBloqueadas => [...prevCartasBloqueadas, data.id_card_block]);
+        sessionStorage.setItem("mazo", JSON.stringify(data.players));
         setMazo(data.players);
         sessionStorage.setItem("cartaMovimientoActualId", -1);
         setCartaMovimientoActualId(-1);
-
       };
 
       // Manejar errores en la conexión
