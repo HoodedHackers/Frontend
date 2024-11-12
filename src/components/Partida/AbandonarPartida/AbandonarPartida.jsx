@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AbandonarPartida.css';
-import { PartidaContext } from '../PartidaProvider';
-import { WebSocketContext, WebSocketProvider } from '../../WebSocketsProvider';
+import { WebSocketContext } from '../../WebSocketsProvider';
 
 const AbandonarPartida = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [fadeOut, setFadeOut] = useState(false);
-    const { wsUPRef } = useContext(WebSocketContext);
+    const { wsUPRef, wsCRef } = useContext(WebSocketContext);
     const navigate = useNavigate();
 
     const ident = sessionStorage.getItem('identifier');
@@ -38,7 +37,9 @@ const AbandonarPartida = () => {
                     sessionStorage.removeItem('partida_id');
                     sessionStorage.removeItem('isOwner');
                     sessionStorage.removeItem('partidaIniciada');
-                    wsUPRef.current.close(); 
+                    wsUPRef.current.close();
+                    const player_name = sessionStorage.getItem("player_nickname");
+                    wsCRef.current.send(JSON.stringify({message: `${player_name} ha abandonado la partida.`}));
                     navigate('/Opciones');
 
                 } else if (response.status === 404) {

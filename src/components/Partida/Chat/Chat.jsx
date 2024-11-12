@@ -98,10 +98,32 @@
       <div>
         <ul className="ul-chat">
           {mensajes.map((mensaje, index) => (
-            <li key={index} className="li-message">
-              <div><b>{mensaje.usuario}</b></div>
-              <div>{mensaje.mensaje}</div>
-            </li>
+            mensaje.tipo === 'descarte' ? (
+              <li key={index} className="li-message descarte">
+                <div><b>{mensaje.usuario}</b></div>
+                <div>{mensaje.mensaje}</div>
+              </li>
+            ) : mensaje.tipo === 'bloqueo' ? (
+              <li key={index} className="li-message bloqueo">
+                <div><b>{mensaje.usuario}</b></div>
+                <div>{mensaje.mensaje}</div>
+              </li>
+            ) : mensaje.tipo === 'turno' ? (
+              <li key={index} className="li-message turno">
+                <div><b>{mensaje.usuario}</b></div>
+                <div>{mensaje.mensaje}</div>
+              </li>
+            ) : mensaje.tipo === 'abandono' ? (
+              <li key={index} className="li-message abandono">
+                <div><b>{mensaje.usuario}</b></div>
+                <div>{mensaje.mensaje}</div>
+              </li>
+            ) : (
+              <li key={index} className="li-message">
+                <div><b>{mensaje.usuario}</b></div>
+                <div>{mensaje.mensaje}</div>
+              </li>
+            )
           ))}
         </ul>
         <div className="chat-input-container">
