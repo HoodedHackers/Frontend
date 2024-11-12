@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import MazoCartaFigura from '../components/Partida/CartaFigura/MazoCartaFigura.jsx';
 import { PartidaContext } from '../components/Partida/PartidaProvider.jsx';
+import { WebSocketProvider } from '../components/WebSocketsProvider.jsx';
 
 describe('MazoCartaFigura', () => {
   const mockHandleMouseEnter = vi.fn();
@@ -28,9 +29,11 @@ describe('MazoCartaFigura', () => {
 
   it('No renderiza nada si no hay cartas en la ubicación especificada', () => {
     render(
-      <PartidaContext.Provider value={{ ...mockContext, mazo: [] }}>
-        <MazoCartaFigura ubicacion={0} />
-      </PartidaContext.Provider>
+      <WebSocketProvider>
+        <PartidaContext.Provider value={{ ...mockContext, mazo: [] }}>
+          <MazoCartaFigura ubicacion={0} />
+        </PartidaContext.Provider>
+      </WebSocketProvider>
     );
 
     const cartas = screen.queryAllByRole('img');
