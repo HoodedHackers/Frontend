@@ -79,7 +79,7 @@ function Partida() {
 
   useEffect(() => {
     if(partidaIniciada && activePlayer.player_id === player_id) {
-      wsCRef.current.send(JSON.stringify({message: `turno de ${activePlayer.player_name}.`}));
+      wsCRef.current.send(JSON.stringify({message: `Turno de ${activePlayer.player_name}.`}));
     }
   }, [activePlayer]);
 

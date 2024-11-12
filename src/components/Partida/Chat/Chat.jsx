@@ -32,7 +32,7 @@
           const tiposMensaje = {
             descarte: /ha descartado una carta/,
             bloqueo: /ha bloqueado una carta/,
-            turno: /^turno de\b/,
+            turno: /^Turno de\b/,
             abandono: /ha abandonado la partida/
           };
 
