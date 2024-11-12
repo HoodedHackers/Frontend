@@ -3,6 +3,7 @@ import CartaFigura from './CartaFigura';
 import { PartidaContext } from '../PartidaProvider.jsx';
 import { WebSocketContext } from '../../WebSocketsProvider.jsx';
 import './MazoCartaFigura.css';
+import { json } from 'react-router-dom';
 
 function MazoCartaFigura ({ubicacion}) {
   const {
@@ -36,9 +37,24 @@ function MazoCartaFigura ({ubicacion}) {
     return jugadorConCarta ? jugadorConCarta.player_id : null;
   }
 
-  async function handleCardClickBlock(carta, jugadorId, mazoOrdenado, color) {
+  function obtenerPrimerTile(fig_id) {
+    const figurasEnTablero = JSON.parse(sessionStorage.getItem('figurasEnTablero'));
+    for (const jugador of figurasEnTablero) {
+      for (const movimiento of jugador.moves) {
+        if (movimiento.fig_id === fig_id && movimiento.tiles.length > 0) {
+          return movimiento.tiles[0]; // Retorna el primer entero en `tiles`
+        }
+      }
+    }
+    return null; // Si no se encuentra el fig_id
+  }
+  
+
+  async function handleCardClickBlock(carta, jugadorId, mazoOrdenado) {
 
     const jugadorIdBloqueado = obtenerPlayerIdBloqueadoPorCarta(carta, mazoOrdenado);
+    const board = JSON.parse(sessionStorage.getItem('board'));
+    const color = board[obtenerPrimerTile(carta)];
 
     const blockRequest = {
       identifier: sessionStorage.getItem('identifier'), // Identificador de la partida
