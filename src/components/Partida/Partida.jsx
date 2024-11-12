@@ -8,6 +8,7 @@ import IniciarPartida from "./IniciarPartida/IniciarPartida.jsx";
 import AbandonarPartida from "./AbandonarPartida/AbandonarPartida.jsx";
 import PasarTurno from "./PasarTurno/PasarTurno.jsx";
 import Temporizador from "./Temporizador/Temporizador.jsx";
+import Chat from "./Chat/Chat.jsx";
 import { WebSocketContext } from '../WebSocketsProvider.jsx';
 import CancelarMovimientos from "./CancelarMovimiento/CancelarMovimientos.jsx";
 import "./Partida.css";
@@ -83,7 +84,7 @@ function Partida() {
     }
   };
 
-  function reorderPlayers (players) {
+  function reorderPlayers(players) {
     if (players && Array.isArray(players)) {
       const posicionJugador = players.findIndex(jugador => jugador.player_id === parseInt(sessionStorage.getItem("player_id"), 10));
       setPosicionJugador(posicionJugador);
@@ -121,8 +122,8 @@ function Partida() {
           setShowModal(true);
         }
         if (data.players && Array.isArray(data.players)) {
-            setJugadores(data.players);
-            sessionStorage.setItem("players", JSON.stringify(data.players) || []);
+          setJugadores(data.players);
+          sessionStorage.setItem("players", JSON.stringify(data.players) || []);
           console.log("Jugadores recibidos del WebSocket de Unirse a Partida");
         }
       };
@@ -168,40 +169,40 @@ function Partida() {
   };
 
   // Conectar al WebSocket cuando el componente se monte
-    useEffect(() => {
-      if (wsStartGameRef.current && wsStartGameRef.current.readyState !== WebSocket.CLOSED) {
-        return;
+  useEffect(() => {
+    if (wsStartGameRef.current && wsStartGameRef.current.readyState !== WebSocket.CLOSED) {
+      return;
+    }
+
+    try {
+      if (partidaID && identifier) {
+        // Inicializar el WebSocket
+        const player_id = parseInt(sessionStorage.getItem("player_id"), 10);
+        wsStartGameRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaID}/status?player_id=${player_id}`);
+
+        // Evento cuando se abre la conexión
+        wsStartGameRef.current.onopen = () => {
+          console.log("Conectado al WebSocket de Iniciar Partida de estado de partida");
+        };
+
+        // Evento cuando se recibe un mensaje del WebSocket
+        wsStartGameRef.current.onmessage = (event) => {
+          const message = JSON.parse(event.data);
+          console.log("Mensaje recibido:", message);
+          if (message.status === "started") {
+            empezarPartida(); // Llamar a la función para iniciar la partida
+          }
+        };
+
+        // Evento cuando la conexión se cierra
+        wsStartGameRef.current.onclose = () => {
+          console.log("Conexión WebSocket de Iniciar Partida cerrada");
+        };
       }
-
-      try {
-        if (partidaID && identifier) {
-          // Inicializar el WebSocket
-          const player_id = parseInt(sessionStorage.getItem("player_id"), 10);
-          wsStartGameRef.current = new WebSocket(`ws://127.0.0.1:8000/ws/lobby/${partidaID}/status?player_id=${player_id}`);
-
-          // Evento cuando se abre la conexión
-          wsStartGameRef.current.onopen = () => {
-              console.log("Conectado al WebSocket de Iniciar Partida de estado de partida");
-          };
-
-          // Evento cuando se recibe un mensaje del WebSocket
-          wsStartGameRef.current.onmessage = (event) => {
-              const message = JSON.parse(event.data);
-              console.log("Mensaje recibido:", message);
-              if (message.status === "started") {
-                empezarPartida(); // Llamar a la función para iniciar la partida
-              }
-          };
-
-          // Evento cuando la conexión se cierra
-          wsStartGameRef.current.onclose = () => {
-              console.log("Conexión WebSocket de Iniciar Partida cerrada");
-          };
-        }
-      } catch (error) {
-        console.error("Error al conectar al WebSocket de Iniciar Partida:", error);
-      }
-    }, [wsStartGameRef.current]);
+    } catch (error) {
+      console.error("Error al conectar al WebSocket de Iniciar Partida:", error);
+    }
+  }, [wsStartGameRef.current]);
 
   // Conectar al WebSocket de Usar Carta de Movimiento
   useEffect(() => {
@@ -222,7 +223,7 @@ function Partida() {
             setCartasDelJugador(data.card_mov);
             sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", cartasDelJugador.length);
             setCantidadCartasMovimientoJugadorActual(cartasDelJugador.length);
-          break;
+            break;
 
           case "select":
             sessionStorage.setItem("jugadorActualId", data.player_id);
@@ -231,7 +232,7 @@ function Partida() {
             setCartaMovimientoActualId(data.card_id);
             sessionStorage.setItem("cartaMovimientoActualIndex", data.index);
             setCartaMovimientoActualIndex(data.index);
-          break;
+            break;
 
           case "use_card":
           case "recover_card":
@@ -241,7 +242,7 @@ function Partida() {
             setCantidadCartasMovimientoJugadorActual(data.len);
             sessionStorage.setItem("cartaMovimientoActualId", -1);
             setCartaMovimientoActualId(-1);
-          break;
+            break;
 
           default:
             throw new Error("Acción no reconocida: ", data.action);
@@ -266,17 +267,17 @@ function Partida() {
   }, [wsUCMRef.current]);
 
 
-	useEffect(() => {
-		wsTRef.current = new WebSocket(`ws://localhost:8000/ws/lobby/${partidaID}/turns?player_id=${player_id}`);
+  useEffect(() => {
+    wsTRef.current = new WebSocket(`ws://localhost:8000/ws/lobby/${partidaID}/turns?player_id=${player_id}`);
 
-		wsTRef.current.onopen = () => {
-			wsTRef.current.send(JSON.stringify({request: "status"}))
-		};
+    wsTRef.current.onopen = () => {
+      wsTRef.current.send(JSON.stringify({ request: "status" }))
+    };
 
-		wsTRef.current.onmessage = (event) => {
-			console.log("Received message:", event.data);
-			const updatedMessage = JSON.parse(event.data);
-			setActivePlayer({player_name: updatedMessage.player_name, player_id: updatedMessage.player_id});
+    wsTRef.current.onmessage = (event) => {
+      console.log("Received message:", event.data);
+      const updatedMessage = JSON.parse(event.data);
+      setActivePlayer({ player_name: updatedMessage.player_name, player_id: updatedMessage.player_id });
       sessionStorage.setItem("cantidadCartasMovimientoJugadorActual", 3);
       setCantidadCartasMovimientoJugadorActual(3);
       sessionStorage.setItem("cartaMovimientoActualId", -1);
@@ -285,8 +286,8 @@ function Partida() {
       setJugandoMov(false);
       setSeleccionadaFig({});
       setJugandoFig(false);
-		};
-	}, [player_id, partidaID, wsTRef]);
+    };
+  }, [player_id, partidaID, wsTRef]);
 
   useEffect(() => {
     if (wsCFRef.current && wsCFRef.current.readyState !== WebSocket.CLOSED) {
@@ -355,80 +356,85 @@ function Partida() {
 
 
   return (
-    <div className="container-partida">
+    <div className="partida-con-chat">
+      <div className="contenedor-chat">
+        <Chat />
+      </div>
+      <div className="container-partida">
         {/* El elemento <audio> para la música de fondo */}
-    <audio ref={audioRef} loop>
-        <source src="/Hollow Knight OST - Crystal Peak.mp3" type="audio/mpeg" />
-        Tu navegador no soporta el audio.
-      </audio>
+        <audio ref={audioRef} loop>
+          <source src="/Hollow Knight OST - Crystal Peak.mp3" type="audio/mpeg" />
+          Tu navegador no soporta el audio.
+        </audio>
 
-      {/* Botón de mute */}
-      <button onClick={toggleMute} className="mute-button">
-  <i className={isMuted ? "fas fa-volume-mute" : "fas fa-volume-up"}></i>
-</button>
+        {/* Botón de mute */}
+        <button onClick={toggleMute} className="mute-button">
+          <i className={isMuted ? "fas fa-volume-mute" : "fas fa-volume-up"}></i>
+        </button>
 
 
-      {Array.isArray(jugadores) && jugadores.length > 0 ? (
-        jugadores.map((jugador, index) => (
-          <div key={jugador.player_id}>
-            <Jugador
-              nombre={jugador.player_name}
-              ubicacion={`jugador${index + 1}`}
-            />
-            <CartasMovimientoMano ubicacion={index} jugadorId={jugador.player_id} />
-            <MazoCartaFigura ubicacion={index} />
-          </div>
-        ))
-      ) : (
-        <p>No hay jugadores en la partida.</p>
-      )}
-      <div className="tableroContainer">
-        <TableroWithProvider />
-      </div>
-      <div className="cancelar-movimientos-container">
-  <CancelarMovimientos 
-    disabled={activePlayer.player_id !== player_id} 
-  />
-</div>
-
-      <div>
-        {!partidaIniciada && <IniciarPartida empezarPartida={empezarPartida} />}
-      </div>
-      <div className="abandonar-partida-container">
-        {isOverlayVisible && <div className="overlay-supremo"></div>}
-        <AbandonarPartida />
-      </div>
-      <div className="pasar-turno-container">
-        <PasarTurno
-          onTurnoCambiado={manejarFinTurno}
-          tiempoLimite={tiempoLimite}
-          setTimeLeft={setTime}
-          disabled={activePlayer.player_id !== player_id}
-        />
-      </div>
-      <div className="timer-container">
-        {jugadores && jugadores.length > 0 && time > -1.0 && (
-          <Temporizador
-            currentPlayer={activePlayer.player_name}
-            time={time}
-          />
+        {Array.isArray(jugadores) && jugadores.length > 0 ? (
+          jugadores.map((jugador, index) => (
+            <div key={jugador.player_id}>
+              <Jugador
+                nombre={jugador.player_name}
+                ubicacion={`jugador${index + 1}`}
+              />
+              <CartasMovimientoMano ubicacion={index} jugadorId={jugador.player_id} />
+              <MazoCartaFigura ubicacion={index} />
+            </div>
+          ))
+        ) : (
+          <p>No hay jugadores en la partida.</p>
         )}
-      </div>
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <div className="modal-header">
-            </div>
-            <div className="modal-body">
-              <p>{modalMessage}</p>
-            </div>
-            <div className="modal-footer">
-              <button onClick={handleCloseModal}>Cerrar</button>
+        <div className="tableroContainer">
+          <TableroWithProvider />
+        </div>
+        <div className="cancelar-movimientos-container">
+          <CancelarMovimientos
+            disabled={activePlayer.player_id !== player_id}
+          />
+        </div>
+
+        <div>
+          {!partidaIniciada && <IniciarPartida empezarPartida={empezarPartida} />}
+        </div>
+        <div className="abandonar-partida-container">
+          {isOverlayVisible && <div className="overlay-supremo"></div>}
+          <AbandonarPartida />
+        </div>
+        <div className="pasar-turno-container">
+          <PasarTurno
+            onTurnoCambiado={manejarFinTurno}
+            tiempoLimite={tiempoLimite}
+            setTimeLeft={setTime}
+            disabled={activePlayer.player_id !== player_id}
+          />
+        </div>
+        <div className="timer-container">
+          {jugadores && jugadores.length > 0 && time > -1.0 && (
+            <Temporizador
+              currentPlayer={activePlayer.player_name}
+              time={time}
+            />
+          )}
+        </div>
+        {showModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <div className="modal-header">
+              </div>
+              <div className="modal-body">
+                <p>{modalMessage}</p>
+              </div>
+              <div className="modal-footer">
+                <button onClick={handleCloseModal}>Cerrar</button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-      {isOverlayVisible && <div className="overlay"></div>}
+        )}
+        {isOverlayVisible && <div className="overlay"></div>}
+      </div>
     </div>
   );
 }
