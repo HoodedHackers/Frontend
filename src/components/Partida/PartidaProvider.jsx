@@ -44,7 +44,7 @@ export const PartidaProvider = ({ children }) => {
 
   const [cartasBloqueadas, setCartasBloqueadas] = useState(sessionStorage.getItem("cartasBloqueadas") ? JSON.parse(sessionStorage.getItem("cartasBloqueadas")) : []);
 
-  const [forbiddenColor, setForbiddenColor] = useState('0');
+  const [forbiddenColor, setForbiddenColor] = useState(null);
 
   const handleMouseEnter = () => {
     setIsOverlayVisible(true);

@@ -228,7 +228,7 @@ async function enviarMovimiento(identifier, origen, destino){
         setSquares(numbersToSquares(data.board, extractedTiles));
         sessionStorage.setItem("board", JSON.stringify(data.board));
         setForbiddenColor(COLORES[data.forbidden_color - 1]);
-
+        setJugandoMov(false);
         //pa' proba'
         //setSquares(numbersToSquares(
         //  [1,2,1,2,4,3,1,3,2,2,2,1,1,4,4,2,1,4,1,2,1,3,3,4,1,4,3,4,3,4,2,3,3,3,2,4],
