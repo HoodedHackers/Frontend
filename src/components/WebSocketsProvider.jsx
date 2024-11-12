@@ -10,6 +10,7 @@ export const WebSocketProvider = ({ children }) => {
     const wsTRef = useRef(null); // WebSocket para pasar turno
     const wsBSRef = useRef(null); // WebSocket para el Estado del Tablero (Board State)
     const wsCFRef = useRef(null); // WebSocket para cartas de figuras
+    const wsCRef = useRef(null); // WebSocket para el Chat
     const wsTimerRef = useRef(null); // WebSocket para temporizador
 
   return (
@@ -22,7 +23,8 @@ export const WebSocketProvider = ({ children }) => {
         wsTRef,
         wsBSRef,
         wsCFRef,
-        wsTimerRef,
+        wsCRef,
+        wsTimerRef
       }}
     >
       {children}
