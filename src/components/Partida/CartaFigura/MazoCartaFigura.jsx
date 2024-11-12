@@ -4,9 +4,7 @@ import { PartidaContext } from '../PartidaProvider.jsx';
 import './MazoCartaFigura.css'; 
 
 function MazoCartaFigura ({ubicacion}) { 
-  const { handleMouseEnter, handleMouseLeave, mazo, jugadores } = useContext(PartidaContext);
-  const [cartasBloqueadas, setCartasBloqueadas] = useState([]);
-  //const jugadorID = sessionStorage.getItem('player_id');
+  const { handleMouseEnter, handleMouseLeave, mazo, jugadores, cartasBloqueadas } = useContext(PartidaContext);
   const gameId = sessionStorage.getItem('partida_id');
   
   function ordenarPlayers(playerDecks, jugadores) {
@@ -28,11 +26,9 @@ function MazoCartaFigura ({ubicacion}) {
     return jugadorConCarta ? jugadorConCarta.player_id : null;
   }
 
-  async function handleCardClick(carta, jugadorId, mazoOrdenado) {
+  async function handleCardClickBlock(carta, jugadorId, mazoOrdenado) {
     
     const jugadorIdBloqueado = obtenerPlayerIdBloqueadoPorCarta(carta, mazoOrdenado);
-
-    console.log('Jugador Id con carta bloqueada:', jugadorIdBloqueado);
     
     const blockRequest = {
       identifier: sessionStorage.getItem('identifier'), // Identificador de la partida
@@ -54,7 +50,6 @@ function MazoCartaFigura ({ubicacion}) {
         console.error('Error al bloquear la carta:', errorData.detail);
       } else {
         const data = await response.json();
-        setCartasBloqueadas([...cartasBloqueadas, carta]); //Las tengo que setear en partida para q se reflejen a todos
         console.log('Carta bloqueada con éxito:', data);
       }
     } catch (error) {
@@ -66,7 +61,6 @@ function MazoCartaFigura ({ubicacion}) {
   const cartasJugadores = mazoOrdenado[ubicacion]?.cards || [];
   const jugadorId = mazoOrdenado[ubicacion]?.player_id;
 
-
   return (
     <div className={`container-cartas-figura grupo-${ubicacion + 1}`}>
       {cartasJugadores.map((carta) => (
@@ -74,10 +68,14 @@ function MazoCartaFigura ({ubicacion}) {
         key={carta} 
         onMouseEnter={handleMouseEnter} 
         onMouseLeave={handleMouseLeave}
-        onClick={() => handleCardClick(carta, jugadorId, mazoOrdenado)}
-        className={cartasBloqueadas.includes(carta) ? 'carta-bloqueada' : ''} // Si la cartaa está en cartasBloqueadas, añade la clase 'carta-bloqueada'
+        onClick={() => {
+          if (jugadorId !== sessionStorage.getItem('player_id')) {
+            handleCardClickBlock(carta, jugadorId, mazoOrdenado);
+          }
+        }}
+        className={cartasBloqueadas.includes(carta) ? 'carta-bloqueada' : ''}
       >
-        <CartaFigura tipo={(carta % 25) + 1} />
+        <CartaFigura tipo={(carta % 25)} />
       </div>
       ))}
     </div>
