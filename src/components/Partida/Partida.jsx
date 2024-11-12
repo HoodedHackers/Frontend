@@ -321,15 +321,17 @@ function Partida() {
         const data = JSON.parse(event.data);
         console.log('Mensaje recibido por ws de cartas figura:', data);
         if (data.id_card_unlock){
+          sessionStorage.setItem("cartasBloqueadas", JSON.stringify(cartasBloqueadas.filter(id => id !== data.id_card_unlock)));
           setCartasBloqueadas(prevCartasBloqueadas => 
             prevCartasBloqueadas.filter(id => id !== data.id_card_unlock)
           );
         }
+        sessionStorage.setItem("cartasBloqueadas", JSON.stringify([...cartasBloqueadas, data.id_card_block]));
         data.id_card_block !== undefined && setCartasBloqueadas(prevCartasBloqueadas => [...prevCartasBloqueadas, data.id_card_block]);
+        sessionStorage.setItem("mazo", JSON.stringify(data.players));
         setMazo(data.players);
         sessionStorage.setItem("cartaMovimientoActualId", -1);
         setCartaMovimientoActualId(-1);
-
       };
 
       // Manejar errores en la conexión

@@ -36,13 +36,13 @@ export const PartidaProvider = ({ children }) => {
 
   const [cartasDelJugador, setCartasDelJugador] = useState(sessionStorage.getItem("cartas_mov") ? JSON.parse(sessionStorage.getItem("cartas_mov")) : [-1,-1,-1]);
 
-  const [mazo, setMazo] = useState([]);
+  const [mazo, setMazo] = useState(sessionStorage.getItem("mazo") ? JSON.parse(sessionStorage.getItem("mazo")) : []);
 
   const [cancelarHabilitado, setCancelarHabilitado] = useState(false);
 
   const [activePlayer, setActivePlayer] = useState({});
 
-  const [cartasBloqueadas, setCartasBloqueadas] = useState([]);
+  const [cartasBloqueadas, setCartasBloqueadas] = useState(sessionStorage.getItem("cartasBloqueadas") ? JSON.parse(sessionStorage.getItem("cartasBloqueadas")) : []);
 
   const handleMouseEnter = () => {
     setIsOverlayVisible(true);
