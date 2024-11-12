@@ -9,7 +9,7 @@ export const TableroContext = createContext();
 // Proveedor del contexto
 export const TableroProvider = ({ children }) => {
   const [squares, setSquares] = useState(generateInitialColors());
-  const [figurasEnTablero, setFigurasEnTablero] = useState([]);
+  const [figurasEnTablero, setFigurasEnTablero] = useState([]); 
   // figurasEnTablero es un arreglo de objetos con la siguiente estructura:
   //  [
   //    {
@@ -35,14 +35,12 @@ export const TableroProvider = ({ children }) => {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [turnoActual, setTurnoActual] = useState(0);
   const [jugadoresActivos, setJugadoresActivos] = useState([true, true, true, true]);
-  const {
+  const { 
     cartaMovimientoActualId,
-    cartaMovimientoActualIndex,
+    cartaMovimientoActualIndex, 
     setCartasDelJugador ,
     setJugandoMov,
-    setColorBloquado,
-    setColorBloquadoRGB,
-    setPossibleFigures
+    jugandoFig
   } = useContext(PartidaContext);
   const { wsBSRef } = useContext(WebSocketContext);
   const [errorMensaje, setErrorMensaje] = useState(null); // Nuevo estado para el mensaje de error
@@ -57,11 +55,16 @@ export const TableroProvider = ({ children }) => {
   };
 
 function numbersToSquares(colores, posicionesResaltadas) {
-  return colores.map((x, index) => ({
-    color: COLORES[x - 1], // Asignar el color basado en el número
-    highlighted: posicionesResaltadas.includes(index), // Verificar si la posición está resaltada
-  }));
+  let colors = ['#f3e84c',
+    '#1d53b6',
+    '#f52020',
+    '#27f178'];
+    return colores.map((x, index) => ({
+      color: colors[x - 1], // Asignar el color basado en el número
+      highlighted: posicionesResaltadas.includes(index), // Verificar si la posición está resaltada
+    }));
 }
+
 
   // Temporizador para borrar el mensaje de error después de 3 segundos
   useEffect(() => {
@@ -88,7 +91,18 @@ function numbersToSquares(colores, posicionesResaltadas) {
   }
 
   function handleSquareClick(index) {
-    if (selectedIndex === index) {
+    if (jugandoFig) {
+      const playerId = parseInt(sessionStorage.getItem("player_id"), 10);
+      const jugador = figurasEnTablero.find(j => j.player_id === playerId);
+      if(jugador.moves.some(move => move.tiles.includes(index))) { // Caso para descartar figura
+        const id_figura = jugador.moves.find(m => m.tiles.includes(index)).fig_id;
+        enviarFigura(id_figura);
+      }
+      else { // Caso para bloquear figura
+        // TODO 
+      }
+    }
+    else if (selectedIndex === index) {
       // Si el índice ya está seleccionado, deselecciona el cuadrado
       setSelectedIndex(null);
     } else if (selectedIndex === null) {
@@ -98,10 +112,10 @@ function numbersToSquares(colores, posicionesResaltadas) {
       // Guardar la posición de origen y destino
       const origen = selectedIndex;
       const destino = index;
-
+  
       // Obtener el ID de la carta en uso y el identifier
       const identifier = sessionStorage.getItem("identifier");
-
+  
       // Enviar la información al backend
       enviarMovimiento(identifier, origen, destino);
     }
@@ -147,11 +161,43 @@ async function enviarMovimiento(identifier, origen, destino){
   }
 }
 
+
+  // Función para enviar la figura al backend
+  async function enviarFigura(id_figura){
+    const game_id = sessionStorage.getItem("partida_id");
+    const message = {
+      player_identifier: sessionStorage.getItem("identifier"),
+      card_id: id_figura
+    };
+
+   try {
+     const response = await fetch(`http://127.0.0.1:8000/api/lobby/in-course/${game_id}/discard_figs`, {
+       method: "POST",
+       headers: {
+         "Content-Type": "application/json",
+       },
+       body: JSON.stringify(message),
+     });
+     if (!response.ok) {
+       throw new Error("Error al enviar la Carta de Figura elegida: ", response);
+     }
+     else {
+       console.log("Se envió la Carta de Figura elegida.");
+     }
+   } catch (error) {
+     console.error("Error al enviar la Carta de Figura elegida: ", error);
+   }  
+  }
+
   // Función para extraer todas las fichas resaltas
   function extractHighlightedTiles(possibleFigures) {
     return possibleFigures.flatMap(player =>
       player.moves.flatMap(move => move.tiles)
     );
+  }
+
+  function closeError() {
+    setErrorMensaje(null);
   }
 
   useEffect(() => {
@@ -165,7 +211,7 @@ async function enviarMovimiento(identifier, origen, destino){
     try {
       wsBSRef.current = new WebSocket(`ws://localhost:8000/ws/lobby/${game_id}/board?player_id=${player_id}`);
       wsBSRef.current.onopen = () => { wsBSRef.current.send(JSON.stringify({request: "status"})) };
-
+  
       wsBSRef.current.onmessage = (event) => {
         console.log("Mensaje recibido por el WebSocket de Estado del Tablero: ", event.data);
         let data = JSON.parse(event.data);
@@ -173,21 +219,19 @@ async function enviarMovimiento(identifier, origen, destino){
         sessionStorage.setItem("figurasEnTablero", JSON.stringify(data.possible_figures));
         setFigurasEnTablero(data.possible_figures);
         setSquares(numbersToSquares(data.board, extractedTiles));
-        setColorBloquadoRGB(COLORES[data.blocked_color - 1]);
-        setColorBloquado(data.blocked_color)
-        setPossibleFigures(data.possible_figures)
+
         //pa' proba'
         //setSquares(numbersToSquares(
         //  [1,2,1,2,4,3,1,3,2,2,2,1,1,4,4,2,1,4,1,2,1,3,3,4,1,4,3,4,3,4,2,3,3,3,2,4],
         //  [0,3,6,8,9,10,12,15,17,18,23,24,26,29,31,32,33,35])
-        //);
+        //); 
       };
     } catch (error) {
       console.error("Error al conectar al WebSocket de Estado del Tablero:", error);
     }
-
+    
   }, [wsBSRef.current]);
-
+  
   return (
     <TableroContext.Provider
       value={{

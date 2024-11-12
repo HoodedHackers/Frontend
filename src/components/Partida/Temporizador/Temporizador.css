@@ -18,9 +18,9 @@
 }
 
 .rectangulo {
-  width: 60px; /* Ajustado a un tamaño más pequeño */
+  width: 80px; 
   height: auto;
-  padding: 5px; /* Ajustado para reducir el espacio interno */
+  padding: 7px;
   border-radius: 10px;
   background: radial-gradient(circle, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 100%);
   display: flex;
@@ -32,12 +32,12 @@
   border: 5px solid rgba(0, 0, 0, 0.4);
   transition: background 0.3s;
   text-align: center;
-  min-width: 80px; /* Ajustado para un mínimo tamaño más pequeño */
+  min-width: 100px;
 }
 
 /* Estilo del texto del Temporizador */
 .timer-text {
-  font-size: 0.9rem; /* Tamaño de texto ajustado */
+  font-size: 1rem;
   font-weight: bold;
   color: #ffeb3b;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
@@ -47,8 +47,8 @@
 /* Indicador del turno actual */
 .turnIndicator {
   word-wrap: break-word; /* Asegura que el texto largo se ajuste dentro del contenedor */
-  margin-top: 3px; /* Espaciado ajustado */
-  font-size: 0.9rem; /* Tamaño de texto ajustado */
+  margin-top: 5px;
+  font-size: 1rem;
   color: #ffffff;
   max-width: 100%;
 }
@@ -56,16 +56,16 @@
 /* Media query para pantallas pequeñas (menos de 480px) */
 @media (max-width: 480px) {
   .rectangulo {
-    width: 30px; /* Ajustado a un tamaño más pequeño */
+    width: 40px; 
     padding: 5px;
   }
 
   .timer-text {
-    font-size: 0.8rem; /* Tamaño de texto ajustado */
+    font-size: 0.9rem;
   }
 
   .turnIndicator {
-    font-size: 0.8rem; /* Tamaño de texto ajustado */
+    font-size: 0.9rem; 
   }
 
   .timer-container {
@@ -78,42 +78,20 @@
 /* Media query para pantallas medianas (entre 480px y 768px) */
 @media (min-width: 480px) and (max-width: 768px) {
   .rectangulo {
-    width: 40px; /* Ajustado a un tamaño más pequeño */
+    width: 50px; 
     padding: 6px; 
   }
 
   .timer-text {
-    font-size: 0.9rem; 
+    font-size: 1rem; 
   }
 
   .turnIndicator {
-    font-size: 0.9rem; 
+    font-size: 1rem; 
   }
 
   .timer-container {
     top: 50px; 
     left: 65%; 
   }
-}
-
-.temporizador-container {
-  display: flex;
-  align-items: center; /* Alinea verticalmente los elementos */
-  flex-direction: column;
-  margin: 10px;
-}
-
-/* Añade estos estilos para el rectángulo de color bloqueado */
-.color-bloqueado {
-  width: 80px; /* Ajustado a un tamaño más pequeño */
-  height: 40px; /* Ajustado a un tamaño más pequeño */
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
-  margin-left: 10px; /* Espaciado entre rectángulos */
-  position: relative; /* Para el posicionamiento de la etiqueta */
-  color: white;
-  font-weight: bold;
 }

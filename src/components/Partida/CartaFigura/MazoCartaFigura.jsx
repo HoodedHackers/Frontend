@@ -1,25 +1,20 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import CartaFigura from './CartaFigura'; 
 import { PartidaContext } from '../PartidaProvider.jsx';
-import './MazoCartaFigura.css';
+import './MazoCartaFigura.css'; 
 
-function MazoCartaFigura ({ubicacion}) {
-  const { handleMouseEnter, handleMouseLeave, mazo, jugadores, cartasBloqueadas, possibleFigures, colorBloqueado } = useContext(PartidaContext);
+function MazoCartaFigura ({ubicacion}) { 
+  const { handleMouseEnter, handleMouseLeave, mazo, jugadores, cartasBloqueadas } = useContext(PartidaContext);
   const gameId = sessionStorage.getItem('partida_id');
-
+  
   function ordenarPlayers(playerDecks, jugadores) {
     const ordenJugadorIds = jugadores.map(jugador => jugador.player_id);
-
-    // Filtramos dataPlayers para eliminar elementos no presentes en jugadores
     const jugadoresFiltrados = playerDecks.filter(jugador =>
       ordenJugadorIds.includes(jugador.player_id)
     );
-
-    // Ordenamos jugadoresFiltrados según el orden de jugadores
     const jugadoresOrdenados = jugadoresFiltrados.sort((a, b) => {
       return ordenJugadorIds.indexOf(a.player_id) - ordenJugadorIds.indexOf(b.player_id);
     });
-
     return jugadoresOrdenados;
   };
 
@@ -80,7 +75,7 @@ function MazoCartaFigura ({ubicacion}) {
         }}
         className={cartasBloqueadas.includes(carta) ? 'carta-bloqueada' : ''}
       >
-        <CartaFigura tipo={carta} />
+        <CartaFigura tipo={(carta % 25)} />
       </div>
       ))}
     </div>

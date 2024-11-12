@@ -9,12 +9,6 @@ export const PartidaProvider = ({ children }) => {
 
   const [jugadores, setJugadores] = useState([]);
 
-  const [colorBloqueado, setColorBloquado] = useState(1);
-
-  const [colorBloqueadoRGB, setColorBloquadoRGB] = useState();
-
-  const [possibleFigures, setPossibleFigures] = useState();
-
   const [posicionJugador, setPosicionJugador] = useState();
 
   //const [jugadorActualIndex, setJugadorActualIndex] = useState(parseInt(localStorage.getItem("jugadorActualIndex"), 10) || 0);
@@ -25,7 +19,7 @@ export const PartidaProvider = ({ children }) => {
   const [jugandoFig, setJugandoFig] = useState(false); // True si se ha elegido una carta de figura
 
   const [isOverlayVisible, setIsOverlayVisible] = useState();
-
+  
   const [isOwner] = useState(sessionStorage.getItem("isOwner") === 'true');
 
   const [seleccionadaMov, setSeleccionadaMov] = useState(null);
@@ -100,13 +94,7 @@ export const PartidaProvider = ({ children }) => {
         activePlayer,
         setActivePlayer,
         cartasBloqueadas,
-        setCartasBloqueadas,
-        colorBloqueado,
-        setColorBloquado,
-        colorBloqueadoRGB,
-        setColorBloquadoRGB,
-        possibleFigures,
-        setPossibleFigures
+        setCartasBloqueadas
       }}
     >
       {children}
