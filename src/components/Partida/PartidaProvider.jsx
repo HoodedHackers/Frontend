@@ -42,6 +42,8 @@ export const PartidaProvider = ({ children }) => {
 
   const [activePlayer, setActivePlayer] = useState({});
 
+  const [cartasBloqueadas, setCartasBloqueadas] = useState([]);
+
   const handleMouseEnter = () => {
     setIsOverlayVisible(true);
   };
@@ -91,6 +93,8 @@ export const PartidaProvider = ({ children }) => {
         setCancelarHabilitado,
         activePlayer,
         setActivePlayer,
+        cartasBloqueadas,
+        setCartasBloqueadas
       }}
     >
       {children}

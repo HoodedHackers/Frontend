@@ -46,7 +46,9 @@ function Partida() {
     setCartasDelJugador,
     setMazo,
     activePlayer,
-    setActivePlayer
+    setActivePlayer,
+    cartasBloqueadas,
+    setCartasBloqueadas
   } = useContext(PartidaContext);
 
   useEffect(() => {
@@ -113,6 +115,10 @@ function Partida() {
       wsUPRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
         console.log("Mensaje recibido del WebSocket de Unirse a Partida:", data);
+        if (data.winner) {
+          setModalMessage(`¡Felicitaciones ${data.winner}, has ganado el juego!`);
+          setShowModal(true);
+        }
         if (data.response === player_id) {
           setModalMessage(`¡Felicitaciones ${name} Ganaste el juego!`);
           setShowModal(true);
@@ -300,9 +306,17 @@ function Partida() {
       // Manejar mensajes recibidos del WebSocket
       wsCFRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
+        console.log('Mensaje recibido por ws de cartas figura:', data);
+        if (data.id_card_unlock){
+          setCartasBloqueadas(prevCartasBloqueadas => 
+            prevCartasBloqueadas.filter(id => id !== data.id_card_unlock)
+          );
+        }
+        data.id_card_block !== undefined && setCartasBloqueadas(prevCartasBloqueadas => [...prevCartasBloqueadas, data.id_card_block]);
         setMazo(data.players);
         sessionStorage.setItem("cartaMovimientoActualId", -1);
         setCartaMovimientoActualId(-1);
+
       };
 
       // Manejar errores en la conexión
@@ -336,14 +350,13 @@ function Partida() {
   }, [player_id, partidaID, wsTimerRef]);
 
   const handleCloseModal = () => {
-    const partidaID = sessionStorage.getItem('partida_id');
     wsUPRef.current.close();
     sessionStorage.removeItem('players');
     sessionStorage.removeItem('partida_id');
     sessionStorage.removeItem('isOwner');
     sessionStorage.removeItem('timeLeft');
     sessionStorage.removeItem('partidaIniciada');
-    setShowModal(false);  // Cerrar el modal
+    setShowModal(false); 
     navigate('/Opciones');
   };
 
