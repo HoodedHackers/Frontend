@@ -40,7 +40,6 @@ export const TableroProvider = ({ children }) => {
     cartaMovimientoActualIndex,
     setCartasDelJugador ,
     setJugandoMov,
-    jugandoFig,
     setColorBloquado,
     setColorBloquadoRGB,
     setPossibleFigures
