@@ -19,7 +19,7 @@ export const PartidaProvider = ({ children }) => {
   const [jugandoFig, setJugandoFig] = useState(false); // True si se ha elegido una carta de figura
 
   const [isOverlayVisible, setIsOverlayVisible] = useState();
-  
+
   const [isOwner] = useState(sessionStorage.getItem("isOwner") === 'true');
 
   const [seleccionadaMov, setSeleccionadaMov] = useState(null);
@@ -43,6 +43,8 @@ export const PartidaProvider = ({ children }) => {
   const [activePlayer, setActivePlayer] = useState({});
 
   const [cartasBloqueadas, setCartasBloqueadas] = useState(sessionStorage.getItem("cartasBloqueadas") ? JSON.parse(sessionStorage.getItem("cartasBloqueadas")) : []);
+
+  const [forbiddenColor, setForbiddenColor] = useState('0');
 
   const handleMouseEnter = () => {
     setIsOverlayVisible(true);
@@ -94,7 +96,9 @@ export const PartidaProvider = ({ children }) => {
         activePlayer,
         setActivePlayer,
         cartasBloqueadas,
-        setCartasBloqueadas
+        setCartasBloqueadas,
+        forbiddenColor,
+        setForbiddenColor
       }}
     >
       {children}

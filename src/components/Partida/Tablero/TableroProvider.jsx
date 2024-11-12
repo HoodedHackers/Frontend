@@ -9,7 +9,7 @@ export const TableroContext = createContext();
 // Proveedor del contexto
 export const TableroProvider = ({ children }) => {
   const [squares, setSquares] = useState(generateInitialColors());
-  const [figurasEnTablero, setFigurasEnTablero] = useState([]); 
+  const [figurasEnTablero, setFigurasEnTablero] = useState([]);
   // figurasEnTablero es un arreglo de objetos con la siguiente estructura:
   //  [
   //    {
@@ -35,12 +35,13 @@ export const TableroProvider = ({ children }) => {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [turnoActual, setTurnoActual] = useState(0);
   const [jugadoresActivos, setJugadoresActivos] = useState([true, true, true, true]);
-  const { 
+  const {
     cartaMovimientoActualId,
-    cartaMovimientoActualIndex, 
+    cartaMovimientoActualIndex,
     setCartasDelJugador ,
     setJugandoMov,
-    jugandoFig
+    jugandoFig,
+    setForbiddenColor
   } = useContext(PartidaContext);
   const { wsBSRef, wsCRef } = useContext(WebSocketContext);
   const [errorMensaje, setErrorMensaje] = useState(null); // Nuevo estado para el mensaje de error
@@ -52,29 +53,25 @@ export const TableroProvider = ({ children }) => {
   }
 
   // Colores disponibles
-  const COLORES = ['#f3e84c', '#1d53b6', '#f52020', '#27f178'];
+  const COLORES = ['#f52020', '#f3e84c', '#27f178', '#1d53b6'];
   const colorToImageMap = {
     normal: {
-      '#f3e84c': '/Imagenes/Tablero/A.svg',
-      '#1d53b6': '/Imagenes/Tablero/B.svg',
-      '#f52020': '/Imagenes/Tablero/C.svg',
-      '#27f178': '/Imagenes/Tablero/D.svg',
+      '#f52020': '/Imagenes/Tablero/A.svg',
+      '#f3e84c': '/Imagenes/Tablero/B.svg',
+      '#27f178': '/Imagenes/Tablero/C.svg',
+      '#1d53b6': '/Imagenes/Tablero/D.svg',
     },
     daltonismo: {
-      '#f3e84c': '/Imagenes/Tablero/A_dalt.jpeg',
-      '#1d53b6': '/Imagenes/Tablero/B_dalt.jpeg',
-      '#f52020': '/Imagenes/Tablero/C_dalt.jpeg',
-      '#27f178': '/Imagenes/Tablero/D_dalt.jpeg',
+      '#f52020': '/Imagenes/Tablero/A_dalt.jpeg',
+      '#f3e84c': '/Imagenes/Tablero/B_dalt.jpeg',
+      '#27f178': '/Imagenes/Tablero/C_dalt.jpeg',
+      '#1d53b6': '/Imagenes/Tablero/D_dalt.jpeg',
     }
   };
 
 function numbersToSquares(colores, posicionesResaltadas) {
-  let colors = ['#f3e84c',
-    '#1d53b6',
-    '#f52020',
-    '#27f178'];
     return colores.map((x, index) => ({
-      color: colors[x - 1], // Asignar el color basado en el número
+      color: COLORES[x - 1], // Asignar el color basado en el número
       highlighted: posicionesResaltadas.includes(index), // Verificar si la posición está resaltada
     }));
 }
@@ -109,8 +106,10 @@ function numbersToSquares(colores, posicionesResaltadas) {
       const playerId = parseInt(sessionStorage.getItem("player_id"), 10);
       const jugador = figurasEnTablero.find(j => j.player_id === playerId);
       if(jugador.moves.some(move => move.tiles.includes(index))) {
-        const id_figura = jugador.moves.find(m => m.tiles.includes(index)).fig_id;
-        enviarFigura(id_figura);
+        const move = jugador.moves.find(m => m.tiles.includes(index));
+        const id_figura = move.fig_id;
+        const color = move.color;
+        enviarFigura(id_figura, color);
       }
     }
     else if (selectedIndex === index) {
@@ -123,10 +122,10 @@ function numbersToSquares(colores, posicionesResaltadas) {
       // Guardar la posición de origen y destino
       const origen = selectedIndex;
       const destino = index;
-  
+
       // Obtener el ID de la carta en uso y el identifier
       const identifier = sessionStorage.getItem("identifier");
-  
+
       // Enviar la información al backend
       enviarMovimiento(identifier, origen, destino);
     }
@@ -173,11 +172,12 @@ async function enviarMovimiento(identifier, origen, destino){
 }
 
   // Función para enviar la figura al backend
-  async function enviarFigura(id_figura){
+  async function enviarFigura(id_figura, color){
     const game_id = sessionStorage.getItem("partida_id");
     const message = {
       player_identifier: sessionStorage.getItem("identifier"),
-      card_id: id_figura
+      card_id: id_figura,
+      color: color
     };
 
    try {
@@ -197,7 +197,7 @@ async function enviarMovimiento(identifier, origen, destino){
      }
    } catch (error) {
      console.error("Error al enviar la Carta de Figura elegida: ", error);
-   }  
+   }
   }
 
   // Función para extraer todas las fichas resaltas
@@ -218,7 +218,7 @@ async function enviarMovimiento(identifier, origen, destino){
     try {
       wsBSRef.current = new WebSocket(`ws://localhost:8000/ws/lobby/${game_id}/board?player_id=${player_id}`);
       wsBSRef.current.onopen = () => { wsBSRef.current.send(JSON.stringify({request: "status"})) };
-  
+
       wsBSRef.current.onmessage = (event) => {
         console.log("Mensaje recibido por el WebSocket de Estado del Tablero: ", event.data);
         let data = JSON.parse(event.data);
@@ -226,19 +226,21 @@ async function enviarMovimiento(identifier, origen, destino){
         sessionStorage.setItem("figurasEnTablero", JSON.stringify(data.possible_figures));
         setFigurasEnTablero(data.possible_figures);
         setSquares(numbersToSquares(data.board, extractedTiles));
+        sessionStorage.setItem("board", JSON.stringify(data.board));
+        setForbiddenColor(COLORES[data.forbidden_color - 1]);
 
         //pa' proba'
         //setSquares(numbersToSquares(
         //  [1,2,1,2,4,3,1,3,2,2,2,1,1,4,4,2,1,4,1,2,1,3,3,4,1,4,3,4,3,4,2,3,3,3,2,4],
         //  [0,3,6,8,9,10,12,15,17,18,23,24,26,29,31,32,33,35])
-        //); 
+        //);
       };
     } catch (error) {
       console.error("Error al conectar al WebSocket de Estado del Tablero:", error);
     }
-    
+
   }, [wsBSRef.current]);
-  
+
   return (
     <TableroContext.Provider
       value={{

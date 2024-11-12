@@ -47,17 +47,18 @@ function Partida() {
     activePlayer,
     setActivePlayer,
     cartasBloqueadas,
-    setCartasBloqueadas
+    setCartasBloqueadas,
+    forbiddenColor
   } = useContext(PartidaContext);
 
-  const { 
+  const {
     wsUPRef,
     wsStartGameRef,
     wsTRef,
     wsUCMRef,
     wsCFRef,
     wsTimerRef,
-    wsCRef 
+    wsCRef
   } = useContext(WebSocketContext);
 
   useEffect(() => {
@@ -322,7 +323,7 @@ function Partida() {
         console.log('Mensaje recibido por ws de cartas figura:', data);
         if (data.id_card_unlock){
           sessionStorage.setItem("cartasBloqueadas", JSON.stringify(cartasBloqueadas.filter(id => id !== data.id_card_unlock)));
-          setCartasBloqueadas(prevCartasBloqueadas => 
+          setCartasBloqueadas(prevCartasBloqueadas =>
             prevCartasBloqueadas.filter(id => id !== data.id_card_unlock)
           );
         }
@@ -371,7 +372,7 @@ function Partida() {
     sessionStorage.removeItem('isOwner');
     sessionStorage.removeItem('timeLeft');
     sessionStorage.removeItem('partidaIniciada');
-    setShowModal(false); 
+    setShowModal(false);
     navigate('/Opciones');
   };
 
@@ -444,6 +445,7 @@ function Partida() {
             <Temporizador
               currentPlayer={activePlayer.player_name}
               time={time}
+              color={forbiddenColor}
             />
           )}
         </div>

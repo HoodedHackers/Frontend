@@ -1,6 +1,6 @@
 import "./Temporizador.css"; // Importa tu archivo CSS normal
 
-const Temporizador = ({ time, currentPlayer }) => {
+const Temporizador = ({ time, currentPlayer, color }) => {
   const minutes = Math.floor(time / 60);
   const seconds = Math.floor(time % 60);
 
@@ -22,6 +22,29 @@ const Temporizador = ({ time, currentPlayer }) => {
         <p>
           Turno: <strong>{currentPlayer}</strong>
         </p>
+      </div>
+      <div
+        className="color-bloqueado"
+        style={{
+          backgroundColor: color,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "40px",
+          marginLeft: "-1px", // Ajusta este valor según sea necesario
+        }}
+      >
+        <span style={{ fontSize: "25px", marginRight: "10px" }}>🔒</span>{" "}
+        {/* Aumentar el tamaño del candado */}
+        <div
+          style={{
+            width: "20px",
+            height: "20px",
+            backgroundColor: color,
+            borderRadius: "50%", // Redondear para que parezca un círculo
+            display: "inline-block",
+          }}
+        />
       </div>
     </div>
   );
