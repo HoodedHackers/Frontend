@@ -40,8 +40,11 @@ export const TableroProvider = ({ children }) => {
     cartaMovimientoActualIndex,
     setCartasDelJugador ,
     setJugandoMov,
+    jugandoFig,
+    colorBloqueado,
     setColorBloquado,
     setColorBloquadoRGB,
+    possibleFigures,
     setPossibleFigures
   } = useContext(PartidaContext);
   const { wsBSRef } = useContext(WebSocketContext);
@@ -88,6 +91,14 @@ function numbersToSquares(colores, posicionesResaltadas) {
   }
 
   function handleSquareClick(index) {
+    if (jugandoFig) {
+      const playerId = parseInt(sessionStorage.getItem("player_id"), 10);
+      const jugador = figurasEnTablero.find(j => j.player_id === playerId);
+      if(jugador.moves.some(move => move.tiles.includes(index))) {
+        const id_figura = jugador.moves.find(m => m.tiles.includes(index)).fig_id;
+        enviarFigura(id_figura);
+      }
+    }
     if (selectedIndex === index) {
       // Si el índice ya está seleccionado, deselecciona el cuadrado
       setSelectedIndex(null);
@@ -108,44 +119,95 @@ function numbersToSquares(colores, posicionesResaltadas) {
   }
 
   // Función para enviar el movimiento al backend
-async function enviarMovimiento(identifier, origen, destino){
-  const game_id = sessionStorage.getItem("partida_id");
+  async function enviarMovimiento(identifier, origen, destino){
+    const game_id = sessionStorage.getItem("partida_id");
 
-  try {
-    const response = await fetch(`http://127.0.0.1:8000/api/game/${game_id}/play_card`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        identifier: identifier, // UUID del jugador
-        origin_tile: origen, // Posición de origen
-        dest_tile: destino, // Posición de destino
-        card_mov_id: cartaMovimientoActualId, // ID de la carta
-        index_hand: cartaMovimientoActualIndex, // Índice de la carta en la mano
-      }),
-    });
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/game/${game_id}/play_card`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          identifier: identifier, // UUID del jugador
+          origin_tile: origen, // Posición de origen
+          dest_tile: destino, // Posición de destino
+          card_mov_id: cartaMovimientoActualId, // ID de la carta
+          index_hand: cartaMovimientoActualIndex, // Índice de la carta en la mano
+        }),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (!response.ok) {
-      setErrorMensaje(data.detail); // Guardar el mensaje de error
-      console.error("Error al realizar el movimiento:", data.detail);
-    }
-    else {
+      if (!response.ok) {
+        setErrorMensaje(data.detail); // Guardar el mensaje de error
+        console.error("Error al realizar el movimiento:", data.detail);
+      }
+      else {
+        sessionStorage.setItem("cartas_mov", JSON.stringify(data.card_mov));
+        setCartasDelJugador(data.card_mov);
+        setJugandoMov(false);
+        setSelectedIndex(null); // Desseleccionar después de un movimiento exitoso
+        setErrorMensaje(null); // Limpiar el mensaje de error si el movimiento es exitoso
+      }
+    } catch (error) {
+      setErrorMensaje("Error al conectar con el servidor."); // Guardar mensaje de error de conexión
       sessionStorage.setItem("cartas_mov", JSON.stringify(data.card_mov));
       setCartasDelJugador(data.card_mov);
-      setJugandoMov(false);
-      setSelectedIndex(null); // Desseleccionar después de un movimiento exitoso
-      setErrorMensaje(null); // Limpiar el mensaje de error si el movimiento es exitoso
+      console.error("Error al conectar con el servidor:", error);
     }
-  } catch (error) {
-    setErrorMensaje("Error al conectar con el servidor."); // Guardar mensaje de error de conexión
-    sessionStorage.setItem("cartas_mov", JSON.stringify(data.card_mov));
-    setCartasDelJugador(data.card_mov);
-    console.error("Error al conectar con el servidor:", error);
   }
-}
+
+  // Función para enviar la figura al backend
+  async function enviarFigura(id_figura){
+    const game_id = sessionStorage.getItem("partida_id");
+    const identifier = sessionStorage.getItem("identifier");
+    const player_id = sessionStorage.getItem("player_id");
+    var my_moves = null;
+    var selected_move = null;
+    for (let posibilities of possibleFigures) {
+      if (posibilities.player_id == player_id) {
+        my_moves = posibilities.moves;
+        break;
+      }
+    }
+    for (let move of my_moves) {
+      if (move.fig_id == id_figura) {
+        if (move.color != colorBloqueado) {
+          selected_move = move;
+          break;
+        }
+      }
+    }
+    if (selected_move === null) return;
+    const message = {
+      player_identifier: identifier,
+      card_id: id_figura,
+      color: selected_move.color,
+    };
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/in-course/${game_id}/discard_figs`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(message),
+        },
+      );
+      if (!response.ok) {
+        throw new Error(
+          "Error al enviar la Carta de Figura elegida: ",
+          response,
+        );
+      } else {
+        console.log("Se envió la Carta de Figura elegida.");
+      }
+    } catch (error) {
+      console.error("Error al enviar la Carta de Figura elegida: ", error);
+    }  
+  }
 
   // Función para extraer todas las fichas resaltas
   function extractHighlightedTiles(possibleFigures) {
