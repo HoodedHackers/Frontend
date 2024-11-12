@@ -4,8 +4,7 @@ import { PartidaContext } from '../PartidaProvider.jsx';
 // import PropTypes from 'prop-types';
 import './CartaFigura.css'; 
 
-function CartaFigura ({ tipo }) {
-
+function CartaFigura({ tipo, possibleFigures, colorBloqueado }) {
   const Images = [
     "/Imagenes/Figura/25.svg",
     "/Imagenes/Figura/1.svg",
@@ -32,7 +31,7 @@ function CartaFigura ({ tipo }) {
     "/Imagenes/Figura/22.svg",
     "/Imagenes/Figura/23.svg",
     "/Imagenes/Figura/24.svg",
-  ]
+  ];
 
   const { 
     setJugandoFig,
@@ -54,6 +53,54 @@ function CartaFigura ({ tipo }) {
     setJugandoFig(true);
     if (seleccionadaFig != tipo) {
       setSeleccionadaFig(tipo);  
+    }
+
+    const game_id = sessionStorage.getItem("partida_id");
+    const identifier = sessionStorage.getItem("identifier");
+    const player_id = sessionStorage.getItem("player_id");
+    var my_moves = null;
+    var selected_move = null;
+    for (let posibilities of possibleFigures) {
+      if (posibilities.player_id == player_id) {
+        my_moves = posibilities.moves;
+        break;
+      }
+    }
+    for (let move of my_moves) {
+      if (move.fig_id == tipo) {
+        if (move.color != colorBloqueado) {
+          selected_move = move;
+          break;
+        }
+      }
+    }
+    if (selected_move === null) return;
+    const message = {
+      player_identifier: identifier,
+      card_id: tipo,
+      color: selected_move.color,
+    };
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/in-course/${game_id}/discard_figs`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(message),
+        },
+      );
+      if (!response.ok) {
+        throw new Error(
+          "Error al enviar la Carta de Figura elegida: ",
+          response,
+        );
+      } else {
+        console.log("Se envió la Carta de Figura elegida.");
+      }
+    } catch (error) {
+      console.error("Error al enviar la Carta de Figura elegida: ", response);
     }
   };
 
